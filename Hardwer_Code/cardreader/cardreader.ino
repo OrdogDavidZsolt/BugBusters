@@ -42,8 +42,12 @@ void setup()
         Serial.println("DHCP failed"); // Error msg
         delay(1000);    // Try again after 1 sec
     }
-    Serial.println("DHCP configured:");  // Debug msg
-    Serial.print("Assigned IP: "); Serial.println(Ethernet.localIP()); // IP address from DHCP
+    Serial.println("DHCP configured");  // Debug msg
+
+    // Network infromations for debug
+    Serial.print("Assigned IP: "); Serial.println(Ethernet.localIP());    // IP address from DHCP
+    Serial.print("Subnet mask: "); Serial.println(Ethernet.subnetMask()); // Netmask from DHCP
+    Serial.print("Gateway IP:  "); Serial.println(Ethernet.gatewayIP());  // Gateway from DHCP
     
 }
 
