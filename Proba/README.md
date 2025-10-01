@@ -1,0 +1,1 @@
+Ez egy próba mappa a commit, push, pull gyakorlására. Ide nem kerül projekt komponens
