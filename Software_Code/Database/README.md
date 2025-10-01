@@ -1,0 +1,1 @@
+Ebbe a mappába kerül az összes adatbázissal kapcsolatos fájl, kivéve a DB_Connection.java
