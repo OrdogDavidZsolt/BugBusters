@@ -12,8 +12,14 @@
 #include <ESPmDNS.h>
 
 
+// ------------- Defines -------------
+#define SERVER_NAME "dataserver.local"
+#define SERVER_PORT 54321
+
+
 // ------------ Globals -------------
 byte mac[6]; // MAC address of W5500, walue from ESP's MAC
+EthernetClient client;
  
 void setup()
 {
@@ -40,7 +46,7 @@ void setup()
     while (Ethernet.begin(mac) == 0)
     {
         Serial.println("DHCP failed"); // Error msg
-        delay(1000);    // Try again after 1 sec
+        delay(1000); // Try again after 1 sec
     }
     Serial.println("DHCP configured");  // Debug msg
 
@@ -48,6 +54,29 @@ void setup()
     Serial.print("Assigned IP: "); Serial.println(Ethernet.localIP());    // IP address from DHCP
     Serial.print("Subnet mask: "); Serial.println(Ethernet.subnetMask()); // Netmask from DHCP
     Serial.print("Gateway IP:  "); Serial.println(Ethernet.gatewayIP());  // Gateway from DHCP
+    
+    // mDNS configuration
+    while (!MDNS.begin("esp32")) // Start mDNS client
+    {
+        Serial.println("mDNS failed");
+        delay(1000); // Try again after 1 sec
+    }
+    Serial.println("mDNS started");
+
+    // Find mDNS server and get IP
+    IPAddress serverIP;
+    while (!MDNS.queryHost(SERVER_NAME, serverIP))
+    {
+        Serial.println("Cannot resolve mDNS server name");
+        delay(1000); // Try again after 1 sec
+    }
+    Serial.println("mDNS resolved");  //Debug message
+
+    // mDNS server information
+    Serial.print("Resolved: "); Serial.print(SERVER_NAME); Serial.print(" -> ");
+    Serial.println(serverIP);
+    
+
     
 }
 
