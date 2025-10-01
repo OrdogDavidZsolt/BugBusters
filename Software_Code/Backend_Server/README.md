@@ -1,0 +1,1 @@
+Ebben a mappában van a Backend Server komponenseit alkotó összes Java kód (osztály)

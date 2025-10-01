@@ -1,0 +1,1 @@
+Ebben a mappában lesz az összes Java kód, ami a Backend Server és a UI része
