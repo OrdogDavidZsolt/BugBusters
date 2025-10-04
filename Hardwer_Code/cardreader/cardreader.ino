@@ -75,9 +75,6 @@ void setup()
     // mDNS server information
     Serial.print("Resolved: "); Serial.print(SERVER_NAME); Serial.print(" -> ");
     Serial.println(serverIP);
-    
-
-    
 }
 
 void loop()

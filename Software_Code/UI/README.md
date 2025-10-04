@@ -1,1 +1,1 @@
-Ebben a mappában van a összes JavaFX-el és UI-al kapcsolatos fájl
+Ebben a mappában van a összes JavaFX-el és UI-al kapcsolatos fájl (HTML, CSS, JavaScript)
