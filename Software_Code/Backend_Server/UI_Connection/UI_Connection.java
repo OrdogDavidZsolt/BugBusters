@@ -20,7 +20,7 @@ public class UI_Connection implements HttpHandler
     @Override
     public void handle(HttpExchange exchange) throws IOException
     {
-        String response = "<h1>Hello from Java server!</h1>";
+        String response = "<h1>Hello from Java server!</h1>"; // példa resonpse
 
         try
         {
