@@ -8,15 +8,33 @@
 package Software_Code.Backend_Server.UI_Connection;
 
 // ------------- Importok -------------
-import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 
 
-public class UI_Connection {
-    
+public class UI_Connection implements HttpHandler
+{
+    @Override
+    public void handle(HttpExchange exchange) throws IOException
+    {
+        String response = "<h1>Hello from Java server!</h1>";
+
+        try
+        {
+            // Válasz fejléce a http kérésre, 200-as kód és a teljes válasz (body) mérete  
+            exchange.sendResponseHeaders(200, response.getBytes().length);
+            
+            // Teljes válasz (body) küldése a kérésre
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());  // tényleges küldés
+            os.close(); // a szerver végzett a válasszal, lezérja az output streamet
+        }
+        catch (IOException e)
+        {
+            System.out.println(">>UI_Connection: IO Exception when handling response: " + e.getMessage());
+        }
+    }
 }
