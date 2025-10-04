@@ -3,7 +3,7 @@
  * A többi kódban csak metódusok (API-k) legyenek, main nem kell!
  */
 
-package Software_Code.Backend_Server;
+package Software_Code.Backend_Server.Controller;
 
 public class Controller {
     

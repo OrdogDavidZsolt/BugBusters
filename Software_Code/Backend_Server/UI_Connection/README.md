@@ -1,0 +1,1 @@
+Ebben a mappában vannak a Backend Server UI_Connection komponenséhez tartozó osztályok

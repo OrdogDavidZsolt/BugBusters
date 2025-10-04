@@ -1,4 +1,4 @@
-package Software_Code.Backend_Server;
+package Software_Code.Backend_Server.HW_Connection;
 
 public class HW_Connection
 {
