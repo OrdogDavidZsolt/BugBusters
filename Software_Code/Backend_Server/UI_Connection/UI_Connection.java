@@ -20,6 +20,10 @@ public class UI_Connection implements HttpHandler
     @Override
     public void handle(HttpExchange exchange) throws IOException
     {
+        /**
+         * Ez a metódus fut le minden egyes alkalommal, amikor egy kliens, pl böngésző kérést küld a szerverre
+         * Ez a metódus fog választ adni a kérésre
+         */
         String response = "<h1>Hello from Java server!</h1>"; // példa resonpse
 
         try
