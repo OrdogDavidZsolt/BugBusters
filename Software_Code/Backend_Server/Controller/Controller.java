@@ -1,7 +1,14 @@
 /**
  * Ez a fájl indítja el a teljes backend szervert
  * A többi kódban csak metódusok (API-k) legyenek, main nem kell!
- */
+ * 
+ * Fordítás:
+ * ~/Szoftverfejlesztes$ javac ./Software_Code/Backend_Server/Controller/Controller.java
+ * Futtatás:
+ * ~/Szoftverfejlesztes$ sudo java Software_Code.Backend_Server.Controller.Controller 
+ * 
+ * A sudo azért kell, mert a tűzfalon átállítja a kód a 80-as port elérhetőségét
+ */ 
 
 package Software_Code.Backend_Server.Controller;
 
@@ -9,7 +16,6 @@ package Software_Code.Backend_Server.Controller;
 // ------------- Importok -------------
 // UI_Conncetion szükségletek
 import com.sun.net.httpserver.HttpServer;
-
 import Software_Code.Backend_Server.UI_Connection.UI_Connection;
 
 import java.io.IOException;
@@ -55,7 +61,7 @@ public class Controller {
              * minden kéréshez meghívja a megfelelő handlert
              */
             server.start();
-            
+
             System.out.println(">>Controller: UI_Server started on port 80!");
         }
         catch (IOException e)
