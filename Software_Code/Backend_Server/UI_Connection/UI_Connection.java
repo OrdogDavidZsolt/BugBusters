@@ -115,4 +115,42 @@ public class UI_Connection
         }
         
     }
+
+    static public class DataHandler implements HttpHandler
+    {
+        private String response;
+        private int responseCode;
+
+        @Override
+        public void handle(HttpExchange exchange) throws IOException
+        {
+            // Csak POST kérésekre fókuszál
+            if ("POST".equalsIgnoreCase(exchange.getRequestMethod()))
+            {
+                // Body kiolvasása a kérelemből
+                byte[] data = exchange.getRequestBody().readAllBytes();
+                String body = new String(data, "UTF-8");
+
+                // Debug infó
+                System.out.println(">>UI_Connection: Received data: " + body);
+
+                // Kötelező HTTP válasz - 200-as kóddal
+                // a válasz majd az adatbázisból fog visszajönni
+                this.response = "Data received, checking in database...";
+                this.responseCode = 200;
+            }
+            else // Nem POST kérések
+            {
+                this.response = "Method Not Allowed";
+                this.responseCode = 405;
+            }
+
+            exchange.sendResponseHeaders(this.responseCode, this.response.length());
+            try (OutputStream os = exchange.getResponseBody())
+            {
+                os.write(this.response.getBytes());
+            }
+        }
+        
+    }
 }
