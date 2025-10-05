@@ -1,0 +1,13 @@
+# ------------ JAVA ------------
+*.class
+*.war
+*.ear
+
+# ------------ Maven/Gradle ------------
+target/
+build/
+
+# ------------ IntelliJ IDEA ------------
+.idea/
+*.iml
+out/
