@@ -12,38 +12,16 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
 
 
-public class UI_Connection implements HttpHandler
+public class UI_Connection
 {
-    @Override
-    public void handle(HttpExchange exchange) throws IOException
-    {
-        /**
-         * Ez a metódus fut le minden egyes alkalommal, amikor egy kliens, pl böngésző kérést küld a szerverre
-         * Ez a metódus fog választ adni a kérésre
-         */
-        String response = "<h1>Hello from Java server! Second test message</h1>"; // példa resonpse
-
-        try
-        {
-            // Válasz fejléce a http kérésre, 200-as kód és a teljes válasz (body) mérete  
-            exchange.sendResponseHeaders(200, response.getBytes().length);
-            
-            // Teljes válasz (body) küldése a kérésre
-            OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());  // tényleges küldés
-            os.close(); // a szerver végzett a válasszal, lezérja az output streamet
-        }
-        catch (IOException e)
-        {
-            System.out.println(">>UI_Connection: IO Exception when handling response: " + e.getMessage());
-        }
-    }
-
+    
     public static void start_UI_Server()
     {
         try
@@ -61,7 +39,9 @@ public class UI_Connection implements HttpHandler
              *      második paraméter a HttpHandler-t implementáló osztály: UI_Connection.java
              *      ez az osztály tartalmaz egy 'public void handle(HttpExchange exchange)' metódust
              */
-            server.createContext("/", new UI_Connection());
+            server.createContext("/", new FileHandler("Software_Code/UI/index.html", "text/html"));
+            server.createContext("/style.css", new FileHandler("Software_Code/UI/style.css", "text/css"));
+            server.createContext("/script.js", new FileHandler("Software_Code/UI/script.js", "application/javascript"));
             /**
              * setExecutor: a HttpServer külön szálakon képes kéréseket kezelni
              * az executor határozza meg a szálakat
@@ -82,5 +62,57 @@ public class UI_Connection implements HttpHandler
         {
             System.out.println(">>Controller: IO exception upon UI_Server start: " + e.getMessage());
         }
+    }
+
+    /* ----------- Handler Osztályok ----------- */
+    /**
+     * 
+     */
+    static public class FileHandler implements HttpHandler
+    {
+        private final String filePath;
+        private final String contentType;
+
+        public FileHandler(String filePath, String contentType)
+        {
+            this.filePath = filePath;
+            this.contentType = contentType;
+        }
+
+        @Override
+        public void handle(HttpExchange exchange) {
+            /**
+             * Ez a metódus fut le minden egyes alkalommal, amikor egy kliens, pl böngésző kérést küld a szerverre
+             * Ez a metódus fog választ adni a kérésre, egy magadott file-ból
+             */
+            System.out.println(">>UI_Connection: New UI req.:" + filePath);
+            try
+            {
+                File file = new File(filePath);
+                if (!file.exists()) {
+                    String notFound = "404 Not Found";
+                    exchange.sendResponseHeaders(404, notFound.length());
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(notFound.getBytes());
+                    }
+                    return;
+                }
+
+                byte[] bytes = Files.readAllBytes(file.toPath());
+                exchange.getResponseHeaders().set("Content-Type", contentType + "; charset=UTF-8");
+                exchange.sendResponseHeaders(200, bytes.length);
+
+                try (OutputStream os = exchange.getResponseBody())
+                {
+                    os.write(bytes);
+                }
+            }
+            catch (IOException e)
+            {
+                System.out.println(">>UI_Connection: IO Exception when handling response: " + e.getMessage());
+            }
+            System.out.println(">>UI_Connection: Done:" + filePath);
+        }
+        
     }
 }
