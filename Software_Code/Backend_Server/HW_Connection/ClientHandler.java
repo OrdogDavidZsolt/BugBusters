@@ -1,5 +1,9 @@
 package Software_Code.Backend_Server.HW_Connection;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable
@@ -20,5 +24,14 @@ public class ClientHandler implements Runnable
         String clientIP = socket.getInetAddress().getHostAddress(); //kiolvassa kliens IP címét
         System.out.println("Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
 
+        try(BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())))
+        //      ^  karakteresen olvassuk               ^ soronként tudjuk olvasni     ^ ezek a bejövő adatok a klienstől
+        {
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            //                                       ^ kimenő adatok a kliensnek   ^ azonnal elküldi a kliensnek
+        }
+        catch (IOException e) {
+            System.out.println("A kliens bontotta a kapcsolatot: " + clientIP);
+        }
     }
 }
