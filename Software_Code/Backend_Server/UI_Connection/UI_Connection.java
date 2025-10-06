@@ -25,6 +25,8 @@ import java.util.Map;
 
 public class UI_Connection
 {
+
+    private static final int PORT = 80; // tipikus HTTP port
     
     public static void start_UI_Server()
     {
@@ -37,7 +39,7 @@ public class UI_Connection
              *      Mivel backlog == 0, a váarkozó kapcsolatok számát az oprendszerfogja korlátozni max. 128-ra (!)
              * Ez a  .create() metódus még nem indítja el a szervert, csak a kódobjektumot hozza létre
              */
-            HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
             /**
              * createContext: endpoint hozzáadása a szerverhez
              *      második paraméter a HttpHandler-t implementáló osztály: UI_Connection.java
@@ -58,17 +60,23 @@ public class UI_Connection
              */
             server.start();
 
-            System.out.println(">>Controller: UI_Server started on port 80!");
+            System.out.println(">>UI_Connection: UI_Server started on port " + PORT + "!");
         }
         catch (IOException e)
         {
-            System.out.println(">>Controller: IO exception upon UI_Server start: " + e.getMessage());
+            System.out.println(">>UI_Connection: IO exception upon UI_Server start: " + e.getMessage());
         }
+    }
+
+    public static int getPort()
+    {
+        return UI_Connection.PORT;
     }
 
     /* ----------- Handler Osztályok ----------- */
     /**
-     * 
+     * Jelenleg használt handler(ek): StaticFileHandler
+     * Kommunikációhoz használt handler: DataHandler
      */
     static public class FileHandler implements HttpHandler
     {

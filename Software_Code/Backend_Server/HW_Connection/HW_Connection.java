@@ -38,6 +38,11 @@ public class HW_Connection
         }
     }
 
+    public static int getPort()
+    {
+        return HW_Connection.PORT;
+    }
+
     public static class ClientHandler implements Runnable  //futtatható szál legyen
     {
         private Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
