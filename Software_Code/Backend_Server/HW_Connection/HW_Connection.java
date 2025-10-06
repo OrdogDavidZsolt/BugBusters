@@ -26,7 +26,7 @@ public class HW_Connection
                 Socket clientSocket = serverSocket.accept(); //ez a blokkoló hívás, vagyis addig várunk, amíg egy kliens csatlakozik
                 //^ ha jön egy új kliens, akkor létrejön egy Socket objektum, ami az adott klienssel kommunikál
 
-                //pool.execute(new ClientHandler());
+                pool.execute(new ClientHandler(clientSocket));
             }
         }
         catch (IOException e)
