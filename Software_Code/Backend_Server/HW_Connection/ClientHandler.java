@@ -25,10 +25,17 @@ public class ClientHandler implements Runnable
         System.out.println("Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
 
         try(BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())))
-        //      ^  karakteresen olvassuk               ^ soronként tudjuk olvasni     ^ ezek a bejövő adatok a klienstől
+             // ^  karakteresen olvassuk               ^ soronként tudjuk olvasni     ^ ezek a bejövő adatok a klienstől
         {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            //                                       ^ kimenő adatok a kliensnek   ^ azonnal elküldi a kliensnek
+                                                  // ^ kimenő adatok a kliensnek   ^ azonnal elküldi a kliensnek
+            String line;
+
+            while((line = in.readLine()) != null) //beolvassa soronként, amit a kliens küld
+            {
+                System.out.println("[" + clientIP + "] -> " + line); //mit küldött a kliens
+            }
+
         }
         catch (IOException e) {
             System.out.println("A kliens bontotta a kapcsolatot: " + clientIP);
