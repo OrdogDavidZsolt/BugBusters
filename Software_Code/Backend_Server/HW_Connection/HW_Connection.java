@@ -11,7 +11,7 @@ public class HW_Connection
     private static final int PORT = 54321; //ezen a porton hallgat a szerver
     private static final int THREAD_POOL_SIZE = 50; // egyszerre max. 50 kliens
 
-    public static void main(String[] args) {
+    public static void start_HW_Server() {
 
 
         ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
