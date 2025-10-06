@@ -34,11 +34,27 @@ public class ClientHandler implements Runnable
             while((line = in.readLine()) != null) //beolvassa soronként, amit a kliens küld
             {
                 System.out.println("[" + clientIP + "] -> " + line); //mit küldött a kliens
+
+                // válasz a kliensnek
+                out.println("OK, megkaptam: " + line);
             }
 
         }
-        catch (IOException e) {
+        catch (IOException e)
+        {
             System.out.println("A kliens bontotta a kapcsolatot: " + clientIP);
+        }
+        finally
+        {
+            try
+            {
+                socket.close(); //lezárja a kapcsolatot, akkor is ha hiba van (ne halmozódjanak fel a hibás kapcsolatok)
+            }
+            catch (IOException e)
+            {
+                //ignore
+            }
+
         }
     }
 }
