@@ -19,7 +19,7 @@ public class HW_Connection
 
         try(ServerSocket serverSocket = new ServerSocket(PORT))
         {
-            System.out.println("Szerver elindult a " + PORT + " porton...");
+            System.out.println(">>HW_Connection: HW Szerver elindult a " + PORT + " porton...");
 
             while (true) // a szerver folyamatosan figyeli a klienseket
             {
@@ -31,7 +31,7 @@ public class HW_Connection
         }
         catch (IOException e)
         {
-            e.printStackTrace(); // ha hiba van kiirjuk mi a baj
+            System.out.println(">>HW_Connection: IOException: " + e.getMessage());  // ha hiba van kiirjuk mi a baj
         }
 
 

@@ -6,9 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ClientHandler implements Runnable
-
-        //futtatható szál legyen
+public class ClientHandler implements Runnable  //futtatható szál legyen
 {
     private Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
 
@@ -22,27 +20,27 @@ public class ClientHandler implements Runnable
     public void run()
     {
         String clientIP = socket.getInetAddress().getHostAddress(); //kiolvassa kliens IP címét
-        System.out.println("Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
+        System.out.println(">>HW_Connection: Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
 
-        try(BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())))
-             // ^  karakteresen olvassuk               ^ soronként tudjuk olvasni     ^ ezek a bejövő adatok a klienstől
-        {
+        try(BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+            // ^  karakteresen olvassuk               ^ soronként tudjuk olvasni     ^ ezek a bejövő adatok a klienstől
+
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                                                  // ^ kimenő adatok a kliensnek   ^ azonnal elküldi a kliensnek
+                                        // ^ kimenő adatok a kliensnek   ^ azonnal elküldi a kliensnek
             String line;
 
             while((line = in.readLine()) != null) //beolvassa soronként, amit a kliens küld
             {
-                System.out.println("[" + clientIP + "] -> " + line); //mit küldött a kliens
+                System.out.println(">>HW_Conncetion: [" + clientIP + "] -> " + line); //mit küldött a kliens
 
                 // válasz a kliensnek
-                out.println("OK, megkaptam: " + line);
+                out.println("OK, megkaptam: " + line); // Ez nem tudom mennyire lesz jó, mert a kliens nem fogja tudni kiírni ezt sehová sem
             }
 
         }
         catch (IOException e)
         {
-            System.out.println("A kliens bontotta a kapcsolatot: " + clientIP);
+            System.out.println(">>HW_Conncetion: A kliens bontotta a kapcsolatot: " + clientIP);
         }
         finally
         {
