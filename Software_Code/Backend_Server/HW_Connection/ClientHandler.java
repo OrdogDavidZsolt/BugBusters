@@ -17,6 +17,8 @@ public class ClientHandler implements Runnable
     @Override
     public void run()
     {
+        String clientIP = socket.getInetAddress().getHostAddress(); //kiolvassa kliens IP címét
+        System.out.println("Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
 
     }
 }
