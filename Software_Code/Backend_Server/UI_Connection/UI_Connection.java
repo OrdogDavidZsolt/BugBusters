@@ -17,6 +17,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class UI_Connection
@@ -39,9 +43,7 @@ public class UI_Connection
              *      második paraméter a HttpHandler-t implementáló osztály: UI_Connection.java
              *      ez az osztály tartalmaz egy 'public void handle(HttpExchange exchange)' metódust
              */
-            server.createContext("/", new FileHandler("Software_Code/UI/index.html", "text/html"));
-            server.createContext("/style.css", new FileHandler("Software_Code/UI/style.css", "text/css"));
-            server.createContext("/script.js", new FileHandler("Software_Code/UI/script.js", "application/javascript"));
+            server.createContext("/", new StaticFileHandler("Software_Code/UI"));
             /**
              * setExecutor: a HttpServer külön szálakon képes kéréseket kezelni
              * az executor határozza meg a szálakat
@@ -114,6 +116,61 @@ public class UI_Connection
             System.out.println(">>UI_Connection: Done:" + filePath);
         }
         
+    }
+
+    static class StaticFileHandler implements HttpHandler {
+        private final Path rootDir;
+        private final Map<String, String> mimeTypes = new HashMap<>();
+
+        public StaticFileHandler(String rootDir) {
+            this.rootDir = Paths.get(rootDir);
+
+            // Tartalomtípusok (Content-Type)
+            mimeTypes.put("html", "text/html");
+            mimeTypes.put("css", "text/css");
+            mimeTypes.put("js", "application/javascript");
+            mimeTypes.put("ico", "image/x-icon");
+            mimeTypes.put("png", "image/png");
+            mimeTypes.put("jpg", "image/jpeg");
+            mimeTypes.put("jpeg", "image/jpeg");
+            mimeTypes.put("gif", "image/gif");
+            mimeTypes.put("svg", "image/svg+xml");
+        }
+
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            String requestedPath = exchange.getRequestURI().getPath();
+            System.out.println(">>UI_Connection: Request: " + requestedPath);
+            // Ha csak "/"-t kér, legyen index.html
+            if (requestedPath.equals("/")) {
+                requestedPath = "/index.html";
+            }
+
+            Path filePath = rootDir.resolve("." + requestedPath).normalize();
+            if (!Files.exists(filePath) || !filePath.startsWith(rootDir)) {
+                String notFound = "404 Not Found";
+                exchange.sendResponseHeaders(404, notFound.length());
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(notFound.getBytes());
+                }
+                return;
+            }
+
+            // Kiterjesztés alapján MIME-típus
+            String ext = "";
+            int dot = filePath.toString().lastIndexOf('.');
+            if (dot >= 0) ext = filePath.toString().substring(dot + 1).toLowerCase();
+            String mimeType = mimeTypes.getOrDefault(ext, "application/octet-stream");
+
+            // Válasz küldése
+            byte[] bytes = Files.readAllBytes(filePath);
+            exchange.getResponseHeaders().set("Content-Type", mimeType + "; charset=UTF-8");
+            exchange.sendResponseHeaders(200, bytes.length);
+
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(bytes);
+            }
+        }
     }
 
     static public class DataHandler implements HttpHandler
