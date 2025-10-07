@@ -12,16 +12,77 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        /* világos mód háttér */
+        body.light-mode {
+            background: linear-gradient(135deg, #f6f9fc 0%, #dbeafe 50%, #f6f9fc 100%);
+        }
+
+        .controls-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            /* ERŐSEBB ALAP ÁRNYÉK */
+            box-shadow: 0 18px 60px rgba(2,6,23,0.28);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transition: box-shadow 0.3s ease;
+        }
+
+        /* világos módban a controls-panel árnyéka még hangsúlyosabb */
+        body.light-mode .controls-panel {
+            box-shadow: 0 22px 80px rgba(2,6,23,0.20);
+        }
+
+        /* KÉRDŐJEL GOMB (bal oldalon a controls-panelen belül) */
+        .help-btn {
+            display: inline-grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, rgba(102,126,234,0.10), rgba(118,75,162,0.06));
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            padding: 0;
+            margin-right: 4px;
+            /* ERŐSEBB GOMB ÁRNYÉK */
+            box-shadow: 0 10px 30px rgba(2,6,23,0.18);
+        }
+
+        .help-btn:active { transform: scale(0.98); }
+        .help-btn svg { width: 18px; height: 18px; display:block; }
+
+        /* világos módban a gomb tónusát igazítjuk és árnyékát növeljük */
+        body.light-mode .help-btn {
+            background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(59,130,246,0.03));
+            box-shadow: 0 12px 36px rgba(37,99,235,0.14);
         }
 
         .login-container {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            /* ERŐSEBB ÁRNYÉK SÖTÉT TÉMÁHOZ */
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.45);
             padding: 48px;
             width: 100%;
             max-width: 420px;
             animation: fadeIn 0.5s ease-in;
+            transition: box-shadow 0.5s ease, border 0.3s ease, transform 0.25s ease;
+        }
+
+        /* VILÁGOS MÓDBAN: jóval erősebb árnyék és finom szegély a jobb kontraszthoz */
+        body.light-mode .login-container {
+            box-shadow: 0 48px 160px rgba(2,6,23,0.30); /* erősebb, mélyebb árnyék */
+            border: 1px solid rgba(16, 24, 40, 0.06);
         }
 
         @keyframes fadeIn {
@@ -41,6 +102,11 @@
             font-weight: 700;
             margin-bottom: 8px;
             text-align: center;
+            transition: color 0.5s ease;
+        }
+
+        body.light-mode h1 {
+            color: #2563eb;
         }
 
         .subtitle {
@@ -48,6 +114,11 @@
             font-size: 14px;
             text-align: center;
             margin-bottom: 32px;
+            transition: color 0.5s ease;
+        }
+
+        body.light-mode .subtitle {
+            color: #64748b;
         }
 
         .form-group {
@@ -77,6 +148,12 @@
             border-color: #667eea;
             background: white;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         input::placeholder {
@@ -97,6 +174,11 @@
             margin-right: 10px;
             cursor: pointer;
             accent-color: #667eea;
+            transition: accent-color 0.3s ease;
+        }
+
+        body.light-mode .checkbox-container input[type="checkbox"] {
+            accent-color: #2563eb;
         }
 
         .checkbox-container label {
@@ -118,40 +200,184 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease, box-shadow 0.25s ease;
             margin-top: 8px;
+            /* erősebb gomb árnyék alapból */
+            box-shadow: 0 14px 40px rgba(2,6,23,0.28);
+        }
+
+        /* világos mód gomb árnyék kiegészítés (erős, de lágy) */
+        body.light-mode .login-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            box-shadow: 0 18px 48px rgba(37, 99, 235, 0.18);
         }
 
         .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 18px 48px rgba(102, 126, 234, 0.5);
+        }
+
+        body.light-mode .login-btn:hover {
+            box-shadow: 0 22px 60px rgba(37, 99, 235, 0.28);
         }
 
         .login-btn:active {
             transform: translateY(0);
         }
 
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 32px 24px;
-            }
+        .mode-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+        }
 
-            h1 {
-                font-size: 24px;
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e0;
+            transition: 0.4s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body.light-mode input:checked + .slider {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* HELP MODAL / OVERLAY */
+        /* NOTE: removed display:none and replaced with opacity/visibility + transitions for smooth animation */
+        .help-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(6, 7, 12, 0.55);
+            z-index: 1500; /* a login-container fölé kerül */
+            padding: 24px;
+
+            /* hidden initial state */
+            opacity: 0;
+            pointer-events: none;
+            transform: translateZ(0);
+            will-change: opacity;
+            /* kortyabb, de lágy easing a fluid érzésért */
+            transition: opacity 360ms cubic-bezier(.22,.9,.12,1);
+        }
+
+        /* when open: visible + pointer events enabled */
+        .help-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .help-modal {
+            width: 100%;
+            max-width: 760px;
+            max-height: calc(100vh - 80px);
+            overflow: auto;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), white);
+            border-radius: 14px;
+            padding: 24px;
+            /* erőteljesebb modal árnyék */
+            box-shadow: 0 60px 180px rgba(2,6,23,0.32);
+            position: relative;
+
+            /* start slightly down & scaled down + invisible */
+            opacity: 0;
+            transform: translateY(14px) scale(0.985);
+            will-change: transform, opacity;
+            transition: transform 420ms cubic-bezier(.22,.9,.12,1), opacity 360ms cubic-bezier(.22,.9,.12,1);
+        }
+
+        /* bring modal up when overlay open */
+        .help-overlay.is-open .help-modal {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* világos mód finomítása a modalra: még erősebb, de levegős */
+        body.light-mode .help-modal {
+            box-shadow: 0 70px 220px rgba(2,6,23,0.24);
+            border: 1px solid rgba(16,24,40,0.06);
+        }
+
+        .help-modal h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        .help-modal p {
+            color: #334155;
+            line-height: 1.5;
+        }
+
+        .help-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: inline-grid;
+            place-items: center;
+            box-shadow: 0 8px 26px rgba(2,6,23,0.18);
+        }
+
+        .help-close svg { width: 18px; height: 18px; }
+
+        /* mobil / reszponzív: a modal teljes szélességet kihasználja, belső padding csökken */
+        @media (max-width: 520px) {
+            .help-modal {
+                max-width: calc(100% - 32px);
+                padding: 18px;
+                border-radius: 12px;
             }
+            .login-container { padding: 32px 20px; }
         }
 
         @media (max-width: 360px) {
-            .login-container {
-                padding: 24px 16px;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-
-            input, .login-btn {
-                padding: 10px 12px;
-                font-size: 14px;
-            }
+            .login-container { padding: 22px 14px; }
+            .help-modal { padding: 14px; }
         }

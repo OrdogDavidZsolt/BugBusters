@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="style.css">
     <title>Login</title>
-    
 </head>
-<body>
-    <div class="login-container">
-        <h1>Welcome Back</h1>
+<body class="light-mode">
+    <div class="controls-panel" role="region" aria-label="Controls panel">
+        <button id="helpBtn" class="help-btn" aria-label="Open help" title="Help">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(37,99,235,0.12)"/>
+                <path d="M12 7a3 3 0 00-3 3h2a1 1 0 112 0c0 .552-.448 1-1 1-.552 0-1 .448-1 1v1h2v-1c0-1.105.895-2 2-2a3 3 0 00-3-3zM11 17h2v2h-2z" fill="#1e293b"/>
+            </svg>
+        </button>
+
+        <span class="mode-label">Light Mode</span>
+        <label class="switch" aria-hidden="true">
+            <input type="checkbox" id="modeToggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="login-container" id="loginContainer">
+        <h1>Attendance<br>Registration Application</h1>
         <p class="subtitle">Please enter your credentials to continue</p>
         
         <form id="loginForm">
@@ -44,6 +58,24 @@
             
             <button type="submit" class="login-btn">Log In</button>
         </form>
+    </div>
+
+    <!-- HELP OVERLAY / MODAL -->
+    <!-- aria-hidden starts true (számítógépes olvashatóság miatt) -->
+    <div id="helpOverlay" class="help-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="help-modal" role="document" aria-labelledby="helpTitle">
+            <button class="help-close" id="helpCloseBtn" aria-label="Close help">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M6 6L18 18M6 18L18 6" stroke="#0f172a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <h2 id="helpTitle">Help / Information</h2>
+            <p>
+                This is a placeholder help text. You can replace this with any instructions, tooltips, FAQs or guidance that matches your page's tone and style.
+                The modal is responsive and will cover the central panel when opened. Click outside the box, press the × button or hit Esc to close.
+            </p>
+        </div>
     </div>
 
     <script src="script.js"></script>
