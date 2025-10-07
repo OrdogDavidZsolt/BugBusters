@@ -1,8 +1,8 @@
-const modeToggle = document.getElementById('modeToggle');
+// Mode toggle functionality (változatlan)
+        const modeToggle = document.getElementById('modeToggle');
         const body = document.body;
         const modeLabel = document.querySelector('.mode-label');
 
-        // Inicializálás
         if (body.classList.contains('light-mode')) {
             modeToggle.checked = false;
             modeLabel.textContent = 'Light Mode';
@@ -21,90 +21,56 @@ const modeToggle = document.getElementById('modeToggle');
             }
         });
 
-        // Show/hide password
         document.getElementById('showPassword').addEventListener('change', function() {
             const passwordInput = document.getElementById('password');
             passwordInput.type = this.checked ? 'text' : 'password';
         });
 
-        // Login form submission (demo)
+        // Submit: most elküldjük a kiválasztott módot is (frissítve a login alertet)
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
-            alert('Login submitted!\nUsername: ' + username);
+            const mode = document.querySelector('input[name="loginMode"]:checked').value;
+
+            // Itt lehet bedobni külön admin-logikát (pl. külön mező, 2FA, stb.)
+            alert('Login submitted!\nUsername: ' + username + '\nMode: ' + (mode === 'admin' ? 'Admin' : 'Normal'));
         });
 
-
-        // HELP modal functionality (smooth open/close with transitions)
+        // HELP modal functionality (változatlan)
         const helpBtn = document.getElementById('helpBtn');
         const helpOverlay = document.getElementById('helpOverlay');
         const helpCloseBtn = document.getElementById('helpCloseBtn');
 
-        // Accessibility / state helpers
-        function lockScroll() {
-            document.documentElement.style.overflow = 'hidden';
-            document.body.style.overflow = 'hidden';
-        }
-        function unlockScroll() {
-            document.documentElement.style.overflow = '';
-            document.body.style.overflow = '';
-        }
+        function lockScroll() { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+        function unlockScroll() { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
 
-        // Open immediately makes the panel visible (aria-hidden false),
-        // and CSS animates opacity/transform.
         function openHelp() {
-            // stop any pending hide cleanup
             helpOverlay.removeEventListener('transitionend', onHideTransitionEnd);
-
             helpOverlay.classList.add('is-open');
             helpOverlay.setAttribute('aria-hidden', 'false');
             lockScroll();
-
-            // focus the close button for keyboard users
-            // small timeout to allow focusable element to become visible (optional)
             window.setTimeout(() => helpCloseBtn.focus(), 80);
         }
 
-        // When closing: remove the "is-open" class which triggers the CSS hide transition.
-        // Wait for transitionend before finishing cleanup (aria-hidden true + restore focus/scroll).
         function closeHelp() {
-            // if already hidden, do nothing
             if (!helpOverlay.classList.contains('is-open')) return;
-
-            // start hide transition
             helpOverlay.classList.remove('is-open');
-
-            // add listener to finalize after transition(s)
             helpOverlay.addEventListener('transitionend', onHideTransitionEnd);
         }
 
         function onHideTransitionEnd(e) {
-            // we only care about overlay's opacity transition end
             if (e.propertyName && (e.propertyName === 'opacity' || e.propertyName === 'transform')) {
-                // mark aria-hidden and restore scrolling and focus
                 helpOverlay.setAttribute('aria-hidden', 'true');
                 unlockScroll();
                 helpBtn.focus();
-
-                // remove this handler
                 helpOverlay.removeEventListener('transitionend', onHideTransitionEnd);
             }
         }
 
         helpBtn.addEventListener('click', openHelp);
         helpCloseBtn.addEventListener('click', closeHelp);
-
-        helpOverlay.addEventListener('click', function(e) {
-            if (e.target === helpOverlay) closeHelp();
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && helpOverlay.classList.contains('is-open')) {
-                closeHelp();
-            }
-        });
-
-        // Keep focus inside modal while open
+        helpOverlay.addEventListener('click', function(e) { if (e.target === helpOverlay) closeHelp(); });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && helpOverlay.classList.contains('is-open')) closeHelp(); });
         document.addEventListener('focus', function(event) {
             if (!helpOverlay.classList.contains('is-open')) return;
             if (!helpOverlay.contains(event.target)) {
@@ -112,3 +78,62 @@ const modeToggle = document.getElementById('modeToggle');
                 helpCloseBtn.focus();
             }
         }, true);
+
+        // FULLSCREEN toggle functionality (változatlan)
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const fullscreenIcon = document.getElementById('fullscreenIcon');
+
+        const expandIcon = '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="#1e293b"/>';
+        const compressIcon = '<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" fill="#1e293b"/>';
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function updateFullscreenIcon() {
+            if (document.fullscreenElement) {
+                fullscreenIcon.innerHTML = compressIcon;
+                fullscreenBtn.setAttribute('title', 'Exit fullscreen');
+            } else {
+                fullscreenIcon.innerHTML = expandIcon;
+                fullscreenBtn.setAttribute('title', 'Fullscreen');
+            }
+        }
+
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        document.addEventListener('fullscreenchange', updateFullscreenIcon);
+
+        // Kiegészítés: ha a felhasználó választja az "admin" módot, frissítünk egy kis hintet és a címkét
+        const modeUserRadio = document.getElementById('modeUser');
+        const modeAdminRadio = document.getElementById('modeAdmin');
+        const modeHint = document.getElementById('modeHint');
+        const pageTitle = document.getElementById('pageTitle');
+        const pageSubtitle = document.getElementById('pageSubtitle');
+
+        function updateModeUI() {
+            const selected = document.querySelector('input[name="loginMode"]:checked').value;
+            if (selected === 'admin') {
+                modeHint.textContent = 'Admin bejelentkezés -- külön jogosultság szükséges.';
+                pageSubtitle.textContent = 'Use your admin credentials to sign in.';
+            } else {
+                modeHint.textContent = 'Válaszd ki a bejelentkezés módját.';
+                pageTitle.innerHTML = 'Attendance<br>Registrator Application';
+                pageSubtitle.textContent = 'Please enter your credentials to continue';
+            }
+
+            // frissítjük az aria-selected attribútumokat (jobb accessibility)
+            modeUserRadio.nextElementSibling.setAttribute('aria-selected', selected === 'user');
+            modeAdminRadio.nextElementSibling.setAttribute('aria-selected', selected === 'admin');
+        }
+
+        modeUserRadio.addEventListener('change', updateModeUI);
+        modeAdminRadio.addEventListener('change', updateModeUI);
+
+        // inicializálás
+        updateModeUI();
