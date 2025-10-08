@@ -16,7 +16,7 @@ public class HW_Connection
 
     public static void start_HW_Server() {
 
-
+    
         ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         //^ ez egy szál kezelő szolgáltatás, létrehoz egy olyan szál poolt, ami legfeljebb 50 klien kezelését engedi
 
