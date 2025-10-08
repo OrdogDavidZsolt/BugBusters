@@ -4,12 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="style.css">
-    <title>Login</title>
+    <link id="faviconLink" rel="icon" type="image/x-icon" href="favicon-light.ico">
+    <title>Login - Attendance Registration Application</title>
 </head>
 <body class="light-mode">
-    <!-- két külön konténer: bal felső és jobb felső -->
     <div class="controls-left" role="region" aria-label="Left controls">
-        <!-- HELP (balra költözött) -->
         <div class="control-item">
             <button id="helpBtn" class="help-btn" aria-label="Open help" title="Help">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
@@ -19,9 +18,7 @@
             </button>
         </div>
 
-        <!-- SERVER STATUS (balra költözött) -->
         <div class="control-card server-card" id="serverCard" role="status" aria-label="Szerver állapota: offline" title="Szerver státusz: offline">
-            <!-- szerver ikon -->
             <svg class="server-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
                 <rect x="3" y="4" width="18" height="6" rx="1.5" fill="#eef2ff" stroke="#c7d2fe"/>
                 <rect x="3" y="14" width="18" height="6" rx="1.5" fill="#f8fafc" stroke="#e6e9f7"/>
@@ -30,17 +27,12 @@
                 <rect x="11" y="8" width="6" height="2" rx="0.5" fill="#cbd5e1"/>
                 <rect x="11" y="18" width="6" height="2" rx="0.5" fill="#cbd5e1"/>
             </svg>
-
-            <!-- felirat -->
             <span class="server-status">Offline</span>
-
-            <!-- piros pont -->
             <span class="status-dot pulse" aria-hidden="true"></span>
         </div>
     </div>
 
     <div class="controls-container" role="region" aria-label="Right controls">
-        <!-- MODE TOGGLE (jobb felső) -->
         <div class="control-card">
             <span class="mode-label">Light Mode</span>
             <label class="switch" aria-hidden="true">
@@ -49,7 +41,6 @@
             </label>
         </div>
 
-        <!-- FULLSCREEN (jobb felső) -->
         <div class="control-item">
             <button id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" title="Fullscreen">
                 <svg id="fullscreenIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
@@ -60,11 +51,10 @@
     </div>
 
     <div class="login-container" id="loginContainer">
-        <h1 id="pageTitle">Attendance<br>Registrator Application</h1>
+        <h1 id="pageTitle">Attendance<br>Registration Application</h1>
         <p class="subtitle" id="pageSubtitle">Please enter your credentials to continue</p>
         
         <form id="loginForm">
-            <!-- ÚJ: Módválasztó -->
             <div class="form-group mode-select" aria-label="Bejelentkezés típusa">
                 <div class="segmented" role="tablist" aria-label="Bejelentkezési mód">
                     <input type="radio" id="modeUser" name="loginMode" value="user" checked>
@@ -73,7 +63,7 @@
                     <input type="radio" id="modeAdmin" name="loginMode" value="admin">
                     <label for="modeAdmin" role="tab" aria-selected="false">Admin</label>
                 </div>
-                <div class="mode-hint" id="modeHint">Válaszd ki a bejelentkezés módját.</div>
+                <div class="mode-hint" id="modeHint">Please select login method</div>
             </div>
 
             <div class="form-group">
@@ -91,15 +81,10 @@
             </div>
             
             <button type="submit" class="login-btn">Log In</button>
-
-            <!-- ======= KÉPZETT: site credit a login gomb alatt =======
-                 tartalom: "2025 • Bug Busters" (kérés szerinti) -->
             <p class="site-credit" role="note">v0.1 • 2025 • Bug Busters</p>
-            <!-- ======= /vége ======= -->
         </form>
     </div>
 
-    <!-- HELP OVERLAY / MODAL (változatlan) -->
     <div id="helpOverlay" class="help-overlay" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="help-modal" role="document" aria-labelledby="helpTitle">
             <button class="help-close" id="helpCloseBtn" aria-label="Close help">
@@ -107,7 +92,6 @@
                     <path d="M6 6L18 18M6 18L18 6" stroke="#0f172a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
-
             <h2 id="helpTitle">Help / Information</h2>
             <p>
                 This is a placeholder help text. You can replace this with any instructions, tooltips, FAQs or guidance that matches your page's tone and style.
@@ -116,7 +100,6 @@
         </div>
     </div>
 
-    <!-- (JS részek változatlanok, nem kell módosítani) -->
     <script src="script.js"></script>
 </body>
 </html>
