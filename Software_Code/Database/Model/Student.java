@@ -16,16 +16,13 @@ public class Student {
     public Student() {}
 
     //Constructor for retrieving from DB (with id)
-    public Student(int id, String name, String major, String email) {
-        this.student_id = id;
+    public Student(String name, String major, String email) {
         this.name = name;
         this.major = major;
         this.email = email;
     }
 
     public int getId() { return student_id; }
-
-    public void setId(int id) { this.student_id = id; }
 
     public String getName() { return name; }
 
@@ -42,7 +39,7 @@ public class Student {
     @Override
     public String toString() {
         return "Student{" +
-                "student_id=" + student_id +
+                "student_id=" + getId() +
                 ", name='" + name + '\'' +
                 ", major='" + major + '\'' +
                 ", email='" + email + '\'' +

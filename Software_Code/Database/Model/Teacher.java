@@ -15,15 +15,12 @@ public class Teacher {
 
     public Teacher() {}
 
-    public Teacher(int id, String name, String email) {
-        this.teacher_id = id;
+    public Teacher(String name, String email) {
         this.name = name;
         this.email = email;
     }
 
     public int getId() { return teacher_id; }
-
-    public void setId(int id) { this.teacher_id = id; }
 
     public String getName() { return name; }
 
@@ -36,7 +33,7 @@ public class Teacher {
     @Override
     public String toString() {
         return "Teacher{" +
-                "teacher_id=" + teacher_id +
+                "teacher_id=" + getId() +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';

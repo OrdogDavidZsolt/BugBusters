@@ -9,7 +9,6 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int course_id;
 
-    private int teacher_id;
     private int student_id;
 
     @ManyToOne
@@ -18,19 +17,16 @@ public class Course {
 
     public Course() {}
 
-    public Course(int course_id, int teacher_id, int student_id) {
-        this.course_id = course_id;
-        this.teacher_id = teacher_id;
+    public Course(int teacher_id, int student_id) {
+        this.teacher = teacher;
         this.student_id = student_id;
     }
 
     public int getCourse_id() { return course_id; }
 
-    public void setCourse_id(int course_id) { this.course_id = course_id; }
+    public Teacher getTeacher() { return teacher; }
 
-    public int getTeacher_id() { return teacher_id; }
-
-    public void setTeacher_id(int teacher_id) { this.teacher_id = teacher_id; }
+    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
 
     public int getStudent_id() { return student_id; }
 
@@ -39,8 +35,8 @@ public class Course {
     @Override
     public String toString() {
         return "Course{" +
-                "course_id=" + course_id +
-                ", teacher_id=" + teacher_id +
+                "course_id=" + getCourse_id() +
+                ", teacher=" + (teacher != null ? teacher.getId() : null) +
                 ", student_id=" + student_id +
                 '}';
     }
