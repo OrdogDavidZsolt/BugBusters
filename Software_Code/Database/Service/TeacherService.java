@@ -1,3 +1,4 @@
+/*
 package Software_Code.Database.Service;
 
 import Software_Code.Database.Dao.TeacherDao;
@@ -16,3 +17,4 @@ public class TeacherService {
         return teacherDao.getAllTeachers();
     }
 }
+*/
