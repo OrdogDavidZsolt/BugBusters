@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link id="faviconLink" rel="icon" type="image/x-icon" href="favicon-light.ico">
+    <title>Admin Dashboard - Attendance Registration Application</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-mode">
+    <div class="controls-left" role="region" aria-label="Left controls">
+        <div class="control-item">
+            <button id="logoutBtn" class="logout-btn" aria-label="Logout" title="Logout">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="#1e293b"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="controls-container" role="region" aria-label="Controls">
+        <div class="control-card">
+            <span class="mode-label">Light Mode</span>
+            <label class="switch" aria-hidden="true">
+                <input type="checkbox" id="modeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="control-item">
+            <button id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" title="Fullscreen">
+                <svg id="fullscreenIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="#1e293b"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="main-card">
+        <h1 class="main-title">Device Management Dashboard</h1>
+        <p class="main-label">Monitor and manage all connected devices</p>
+        <p class="main-label"><strong>Total Devices:</strong> 6 | <strong>Online:</strong> 4 | <strong>Offline:</strong> 2</p>
+
+        <div class="devices-container">
+            <div class="container-fluid">
+                <div class="row g-4">
+                    <!-- Device 1 -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="device-card">
+                            <div class="device-name">Scanner Unit A1</div>
+                            <div class="device-info"><strong>ID:</strong> DEV-001</div>
+                            <div class="device-info"><strong>Position:</strong> Main Entrance</div>
+                            <div class="device-info"><strong>Type:</strong> QR Scanner</div>
+                            <span class="status-badge status-online">● Online</span>
+                        </div>
+                    </div>
+
+                    <!-- Device 2 -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="device-card">
+                            <div class="device-name">Scanner Unit B2</div>
+                            <div class="device-info"><strong>ID:</strong> DEV-002</div>
+                            <div class="device-info"><strong>Position:</strong> Building B - Floor 2</div>
+                            <div class="device-info"><strong>Type:</strong> RFID Reader</div>
+                            <span class="status-badge status-online">● Online</span>
+                        </div>
+                    </div>
+
+                    <!-- Device 3 -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="device-card">
+                            <div class="device-name">Terminal C3</div>
+                            <div class="device-info"><strong>ID:</strong> DEV-003</div>
+                            <div class="device-info"><strong>Position:</strong> Reception Desk</div>
+                            <div class="device-info"><strong>Type:</strong> Touch Terminal</div>
+                            <span class="status-badge status-offline">● Offline</span>
+                        </div>
+                    </div>
+
+                    <!-- Device 4 -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="device-card">
+                            <div class="device-name">Mobile Unit M1</div>
+                            <div class="device-info"><strong>ID:</strong> DEV-004</div>
+                            <div class="device-info"><strong>Position:</strong> Parking Lot</div>
+                            <div class="device-info"><strong>Type:</strong> Mobile Scanner</div>
+                            <span class="status-badge status-online">● Online</span>
+                        </div>
+                    </div>
+
+                    <!-- Device 5 -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="device-card">
+                            <div class="device-name">Kiosk K1</div>
+                            <div class="device-info"><strong>ID:</strong> DEV-005</div>
+                            <div class="device-info"><strong>Position:</strong> Cafeteria</div>
+                            <div class="device-info"><strong>Type:</strong> Self-Service Kiosk</div>
+                            <span class="status-badge status-online">● Online</span>
+                        </div>
+                    </div>
+
+                    <!-- Device 6 -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="device-card">
+                            <div class="device-name">Gateway G1</div>
+                            <div class="device-info"><strong>ID:</strong> DEV-006</div>
+                            <div class="device-info"><strong>Position:</strong> Server Room</div>
+                            <div class="device-info"><strong>Type:</strong> Network Gateway</div>
+                            <span class="status-badge status-offline">● Offline</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="site-credit" role="note">v0.1 • 2025 • Bug Busters</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
