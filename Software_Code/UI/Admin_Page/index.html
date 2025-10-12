@@ -572,6 +572,132 @@
             box-shadow: 0 22px 80px rgba(2,6,23,0.32);
         }
 
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 50px 150px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1) translateY(0);
+        }
+
+        body.light-mode .modal-card {
+            box-shadow: 0 50px 150px rgba(2, 6, 23, 0.4);
+        }
+
+        .modal-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-icon.warning {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+        }
+
+        .modal-icon.info {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1));
+        }
+
+        body.light-mode .modal-icon.info {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(59, 130, 246, 0.1));
+        }
+
+        .modal-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .modal-message {
+            font-size: 15px;
+            color: #718096;
+            text-align: center;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.confirm {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+        }
+
+        .modal-btn.confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .modal-btn.confirm.info {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        }
+
+        .modal-btn.confirm.info:hover {
+            box-shadow: 0 8px 20px var(--accent-shadow);
+        }
+
+        .modal-btn.cancel {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .modal-btn.cancel:hover {
+            background: #edf2f7;
+        }
+
     </style>
 </head>
 <body class="light-mode">
@@ -731,6 +857,23 @@
         <p class="site-credit" role="note">v0.1 • 2025 • Bug Busters</p>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-card">
+            <div class="modal-icon" id="modalIcon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="#dc2626"/>
+                </svg>
+            </div>
+            <h2 class="modal-title" id="modalTitle">Confirm Action</h2>
+            <p class="modal-message" id="modalMessage">Are you sure you want to proceed?</p>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" id="modalCancel">Cancel</button>
+                <button class="modal-btn confirm" id="modalConfirm">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
         const modeToggle = document.getElementById('modeToggle');
@@ -803,8 +946,65 @@
 
         const logoutBtn = document.getElementById('logoutBtn');
         logoutBtn.addEventListener('click', function() {
-            if (confirm('Are you sure you want to logout?')) {
-                window.location.href = '../Login_Page/index.html';
+            showConfirmModal(
+                'Logout',
+                'Are you sure you want to logout?',
+                'info',
+                function() {
+                    window.location.href = '../Login_Page/index.html';
+                }
+            );
+        });
+
+        // Modal functions
+        let modalCallback = null;
+
+        function showConfirmModal(title, message, type, onConfirm) {
+            const modal = document.getElementById('confirmModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalConfirmBtn = document.getElementById('modalConfirm');
+            
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalCallback = onConfirm;
+            
+            // Update icon and button style based on type
+            if (type === 'warning') {
+                modalIcon.className = 'modal-icon warning';
+                modalIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="#dc2626"/></svg>';
+                modalConfirmBtn.className = 'modal-btn confirm';
+            } else {
+                modalIcon.className = 'modal-icon info';
+                modalIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="#667eea"/></svg>';
+                modalConfirmBtn.className = 'modal-btn confirm info';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function hideConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            modal.classList.remove('active');
+            modalCallback = null;
+        }
+
+        document.getElementById('modalConfirm').addEventListener('click', function() {
+            if (modalCallback) {
+                modalCallback();
+            }
+            hideConfirmModal();
+        });
+
+        document.getElementById('modalCancel').addEventListener('click', function() {
+            hideConfirmModal();
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('confirmModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideConfirmModal();
             }
         });
 
@@ -830,17 +1030,24 @@
         }
 
         function deleteDevice(button) {
-            if (confirm('Are you sure you want to delete this device?')) {
-                const col = button.closest('.col-12');
-                col.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                col.style.opacity = '0';
-                col.style.transform = 'scale(0.8)';
-                
-                setTimeout(() => {
-                    col.remove();
-                    updateDeviceCounts();
-                }, 300);
-            }
+            const col = button.closest('.col-12');
+            const deviceName = col.querySelector('.device-name').textContent;
+            
+            showConfirmModal(
+                'Delete Device',
+                `Are you sure you want to delete "${deviceName}"? This action cannot be undone.`,
+                'warning',
+                function() {
+                    col.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    col.style.opacity = '0';
+                    col.style.transform = 'scale(0.8)';
+                    
+                    setTimeout(() => {
+                        col.remove();
+                        updateDeviceCounts();
+                    }, 300);
+                }
+            );
         }
 
         function addNewDevice() {
