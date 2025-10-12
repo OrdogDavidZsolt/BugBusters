@@ -1,3 +1,5 @@
+package DB;
+
 import Software_Code.Database.Model.*;
 import jakarta.persistence.*;
 import java.sql.SQLException;
