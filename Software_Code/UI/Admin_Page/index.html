@@ -390,6 +390,116 @@
             color: #dc2626;
         }
 
+        .edit-btn {
+            position: absolute;
+            top: 12px;
+            right: 52px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1));
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        body.light-mode .edit-btn {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(59, 130, 246, 0.1));
+        }
+
+        .device-card:hover .edit-btn {
+            opacity: 1;
+        }
+
+        .edit-btn:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.25), rgba(118, 75, 162, 0.2));
+            transform: scale(1.1);
+        }
+
+        body.light-mode .edit-btn:hover {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(59, 130, 246, 0.2));
+        }
+
+        .edit-btn svg {
+            width: 16px;
+            height: 16px;
+            color: #667eea;
+        }
+
+        body.light-mode .edit-btn svg {
+            color: #2563eb;
+        }
+
+        .device-card.editing {
+            border-color: var(--accent-1);
+            box-shadow: 0 16px 40px var(--accent-shadow);
+        }
+
+        .editable-field {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .editable-field:focus {
+            outline: none;
+            border-color: var(--accent-1);
+            background: white;
+            box-shadow: 0 0 0 3px var(--accent-shadow);
+        }
+
+        .editable-field.name-field {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .save-btn, .cancel-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px var(--accent-shadow);
+        }
+
+        .cancel-btn {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .cancel-btn:hover {
+            background: #edf2f7;
+        }
+
         @media (max-width: 1200px) {
             .main-card {
                 width: 85%;
@@ -504,6 +614,11 @@
                     <!-- Device 1 -->
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="device-card">
+                            <button class="edit-btn" onclick="editDevice(this)">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                                </svg>
+                            </button>
                             <button class="delete-btn" onclick="deleteDevice(this)">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
@@ -520,6 +635,11 @@
                     <!-- Device 2 -->
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="device-card">
+                            <button class="edit-btn" onclick="editDevice(this)">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                                </svg>
+                            </button>
                             <button class="delete-btn" onclick="deleteDevice(this)">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
@@ -536,6 +656,11 @@
                     <!-- Device 3 -->
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="device-card">
+                            <button class="edit-btn" onclick="editDevice(this)">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                                </svg>
+                            </button>
                             <button class="delete-btn" onclick="deleteDevice(this)">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
@@ -552,6 +677,11 @@
                     <!-- Device 4 -->
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="device-card">
+                            <button class="edit-btn" onclick="editDevice(this)">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                                </svg>
+                            </button>
                             <button class="delete-btn" onclick="deleteDevice(this)">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
@@ -568,6 +698,11 @@
                     <!-- Device 5 -->
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="device-card">
+                            <button class="edit-btn" onclick="editDevice(this)">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                                </svg>
+                            </button>
                             <button class="delete-btn" onclick="deleteDevice(this)">
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
@@ -719,6 +854,11 @@
             
             newCol.innerHTML = `
                 <div class="device-card">
+                    <button class="edit-btn" onclick="editDevice(this)">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                        </svg>
+                    </button>
                     <button class="delete-btn" onclick="deleteDevice(this)">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
@@ -741,6 +881,119 @@
             }, 10);
             
             updateDeviceCounts();
+        }
+
+        // Edit device function
+        function editDevice(button) {
+            const card = button.closest('.device-card');
+            
+            // Check if already editing
+            if (card.classList.contains('editing')) {
+                return;
+            }
+            
+            // Store original content
+            const deviceName = card.querySelector('.device-name').textContent;
+            const deviceInfos = card.querySelectorAll('.device-info');
+            const deviceId = deviceInfos[0].textContent.replace('ID:', '').trim();
+            const devicePosition = deviceInfos[1].textContent.replace('Position:', '').trim();
+            const deviceType = deviceInfos[2].textContent.replace('Type:', '').trim();
+            const statusBadge = card.querySelector('.status-badge');
+            const isOnline = statusBadge.classList.contains('status-online');
+            
+            // Create edit form
+            card.classList.add('editing');
+            const timestamp = Date.now();
+            card.innerHTML = `
+                <button class="edit-btn" style="opacity: 0.5; cursor: not-allowed;">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button class="delete-btn" style="opacity: 0.5; cursor: not-allowed;">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <input type="text" class="editable-field name-field" value="${deviceName}" placeholder="Device Name">
+                <input type="text" class="editable-field" value="${deviceId}" placeholder="Device ID">
+                <input type="text" class="editable-field" value="${devicePosition}" placeholder="Position">
+                <input type="text" class="editable-field" value="${deviceType}" placeholder="Device Type">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <label style="font-size: 14px; color: #4a5568; font-weight: 600;">Status:</label>
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" name="status-${timestamp}" value="online" ${isOnline ? 'checked' : ''}>
+                        <span style="font-size: 14px; color: #047857;">Online</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" name="status-${timestamp}" value="offline" ${!isOnline ? 'checked' : ''}>
+                        <span style="font-size: 14px; color: #dc2626;">Offline</span>
+                    </label>
+                </div>
+                <div class="edit-actions">
+                    <button class="save-btn" onclick="saveDevice(this)">Save</button>
+                    <button class="cancel-btn" onclick="cancelEdit(this, '${deviceName.replace(/'/g, "\\'")}', '${deviceId.replace(/'/g, "\\'")}', '${devicePosition.replace(/'/g, "\\'")}', '${deviceType.replace(/'/g, "\\'")}', ${isOnline})">Cancel</button>
+                </div>
+            `;
+        }
+
+        function saveDevice(button) {
+            const card = button.closest('.device-card');
+            const inputs = card.querySelectorAll('.editable-field');
+            const nameInput = inputs[0].value.trim();
+            const idInput = inputs[1].value.trim();
+            const positionInput = inputs[2].value.trim();
+            const typeInput = inputs[3].value.trim();
+            const statusRadio = card.querySelector('input[type="radio"]:checked');
+            const isOnline = statusRadio.value === 'online';
+            
+            if (!nameInput || !idInput || !positionInput || !typeInput) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            card.classList.remove('editing');
+            card.innerHTML = `
+                <button class="edit-btn" onclick="editDevice(this)">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button class="delete-btn" onclick="deleteDevice(this)">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <div class="device-name">${nameInput}</div>
+                <div class="device-info"><strong>ID:</strong> ${idInput}</div>
+                <div class="device-info"><strong>Position:</strong> ${positionInput}</div>
+                <div class="device-info"><strong>Type:</strong> ${typeInput}</div>
+                <span class="status-badge ${isOnline ? 'status-online' : 'status-offline'}">● ${isOnline ? 'Online' : 'Offline'}</span>
+            `;
+            
+            updateDeviceCounts();
+        }
+
+        function cancelEdit(button, name, id, position, type, isOnline) {
+            const card = button.closest('.device-card');
+            card.classList.remove('editing');
+            card.innerHTML = `
+                <button class="edit-btn" onclick="editDevice(this)">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button class="delete-btn" onclick="deleteDevice(this)">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <div class="device-name">${name}</div>
+                <div class="device-info"><strong>ID:</strong> ${id}</div>
+                <div class="device-info"><strong>Position:</strong> ${position}</div>
+                <div class="device-info"><strong>Type:</strong> ${type}</div>
+                <span class="status-badge ${isOnline ? 'status-online' : 'status-offline'}">● ${isOnline ? 'Online' : 'Offline'}</span>
+            `;
         }
 
         // Initialize counts
