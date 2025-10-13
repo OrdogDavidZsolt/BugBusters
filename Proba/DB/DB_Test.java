@@ -38,6 +38,7 @@ public class DB_Test {
         em.close();
         emf.close();
 
+        System.out.println("http://localhost:8082");
         System.out.println("All entities persisted successfully!");
     }
 
