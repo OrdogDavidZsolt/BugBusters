@@ -6,6 +6,7 @@
 # ------------ Maven/Gradle ------------
 target/
 build/
+bin/
 
 # ------------ IntelliJ IDEA ------------
 .idea/
