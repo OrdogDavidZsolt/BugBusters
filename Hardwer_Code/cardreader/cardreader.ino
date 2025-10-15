@@ -9,21 +9,41 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>
-#include <ESPmDNS.h>
+#include <MFRC522.h>
 
 
 // ------------- Defines -------------
-#define SERVER_NAME "dataserver.local"
+#define SERVER_NAME "bence-Mint"
 #define SERVER_PORT 54321
+
+// Pheripehrias
+#define SPI_SCK  4
+#define SPI_MISO 3
+#define SPI_MOSI 2
+#define W5500_CS  5
+#define W5500_RST 6
+#define MFRC_CS  7
+#define MFRC_RST 8
+#define LED_R 10
+#define LED_G 20
+#define LED_B 21
 
 
 // ------------ Globals -------------
 byte mac[6]; // MAC address of W5500, walue from ESP's MAC
 EthernetClient client;
- 
+IPAddress serverIP(192, 168, 1, 67);    // ez kell megoldani névfeloldással
+MFRC522 mfrc(MFRC_CS, MFRC_RST);
+String uidStr;
+
 void setup()
 {
     Serial.begin(115200);
+    while (!Serial)
+    {
+        ;
+    }
+    SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI);
 
     uint64_t chipMac = ESP.getEfuseMac(); // ESP's factory MAC, 48 bits
     mac[0] = (chipMac >> 40) & 0xFF;
@@ -42,6 +62,7 @@ void setup()
     Serial.println();
     // DEBUG }
 
+    Ethernet.init(W5500_CS);
     // Initialize W5500 via DHCP
     while (Ethernet.begin(mac) == 0)
     {
@@ -55,29 +76,57 @@ void setup()
     Serial.print("Subnet mask: "); Serial.println(Ethernet.subnetMask()); // Netmask from DHCP
     Serial.print("Gateway IP:  "); Serial.println(Ethernet.gatewayIP());  // Gateway from DHCP
     
-    // mDNS configuration
-    while (!MDNS.begin("esp32")) // Start mDNS client
-    {
-        Serial.println("mDNS failed");
-        delay(1000); // Try again after 1 sec
-    }
-    Serial.println("mDNS started");
-
-    // Find mDNS server and get IP
-    IPAddress serverIP;
-    while (!MDNS.queryHost(SERVER_NAME, serverIP))
-    {
-        Serial.println("Cannot resolve mDNS server name");
-        delay(1000); // Try again after 1 sec
-    }
-    Serial.println("mDNS resolved");  //Debug message
-
-    // mDNS server information
-    Serial.print("Resolved: "); Serial.print(SERVER_NAME); Serial.print(" -> ");
-    Serial.println(serverIP);
+    mfrc.PCD_Init();
 }
 
 void loop()
 {
+    uidStr = readUID();
+    if (uidStr != "")
+    {
+        sendUIDToServer(serverIP, uidStr);
+    }
+}
 
+String readUID()
+{
+    // Check for new card 
+    if ( ! mfrc.PICC_IsNewCardPresent()) return "";
+    if ( ! mfrc.PICC_ReadCardSerial()) return "";
+
+    // Read UID from RFID tag
+    String uidStr = "";
+    for (byte i = 0; i < mfrc.uid.size; i++) {
+        if (uidStr.length()) uidStr += ":";
+        if (mfrc.uid.uidByte[i] < 0x10) uidStr += "0";
+        uidStr += String(mfrc.uid.uidByte[i], HEX);
+    }
+    uidStr.toUpperCase();
+
+    // Debug Message
+    Serial.print("Tag UID: ");
+    Serial.println(uidStr);
+
+    return uidStr;
+}
+
+bool sendUIDToServer(IPAddress serverIp, String uidStr)
+{
+    // Check connection and reconnect if nececerry
+    if (!client.connected()) {
+        client.stop();
+        Serial.print("Connect to: ");
+        Serial.print(serverIp);
+        Serial.print(":");
+        Serial.println(SERVER_PORT);
+        if (!client.connect(serverIp, SERVER_PORT)) {
+            Serial.println("Server connection request failed");
+            return false; // Cannot send data
+        }
+    }
+
+    // Data format: "UID=AA:BB:CC\n"
+    String outMsg = "UID=" + uidStr + "\n";
+    client.print(outMsg);
+    Serial.print("Sent: "); Serial.println(outMsg);
 }
