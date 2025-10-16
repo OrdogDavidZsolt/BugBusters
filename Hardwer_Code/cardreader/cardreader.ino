@@ -32,7 +32,7 @@
 // ------------ Globals -------------
 byte mac[6]; // MAC address of W5500, walue from ESP's MAC
 EthernetClient client;
-IPAddress serverIP(192, 168, 1, 67);    // ez kell megoldani névfeloldással
+IPAddress serverIP(172, 22, 225, 174);    // ez kell megoldani névfeloldással
 MFRC522 mfrc(MFRC_CS, MFRC_RST);
 String uidStr;
 
@@ -43,6 +43,7 @@ void setup()
     {
         ;
     }
+    Serial.println("YY");
     SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI);
 
     uint64_t chipMac = ESP.getEfuseMac(); // ESP's factory MAC, 48 bits
