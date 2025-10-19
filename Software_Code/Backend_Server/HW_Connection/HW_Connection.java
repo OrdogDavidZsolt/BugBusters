@@ -16,21 +16,22 @@ public class HW_Connection
 
     public static void start_HW_Server() {
     
-        //külön listener szál az accept() blokkoló tulajdonsága miatt --> így most megy a program a fő szálon, minden más mehet mellette a szervernél.
+        //külön listener szál az accept() blokkoló tulajdonsága miatt --> így most megy a program a fő szálon
+        // minden más mehet mellette a szervernél.
         // Ha jön egy kliens, akkor létrejön egy külön szál, ami megszűnik, ha elvégzi a feladatát.
         new Thread(() ->
         {
             ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-            //^ ez egy szál kezelő szolgáltatás, létrehoz egy olyan szál poolt, ami legfeljebb 50 kliens kezelését engedi
-
+            //^ ez egy szál kezelő szolgáltatás, létrehoz egy olyan szál poolt,
+            // ami legfeljebb 50 kliens kezelését engedi
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
                 System.out.println(">>HW_Connection: HW Szerver elindult a " + PORT + " porton...");
 
                 while (true) // a szerver folyamatosan figyeli a klienseket
                 {
-                    Socket clientSocket = serverSocket.accept(); //ez a blokkoló hívás, vagyis addig várunk, amíg egy kliens csatlakozik
+                    Socket clientSocket = serverSocket.accept(); //ez a blokkoló hívás, vagyis addig várunk,
+                    // amíg egy kliens csatlakozik
                     //^ ha jön egy új kliens, akkor létrejön egy Socket objektum, ami az adott klienssel kommunikál
-
                     pool.execute(new ClientHandler(clientSocket));
                 }
             } catch (IOException e) {
@@ -72,7 +73,7 @@ public class HW_Connection
                     System.out.println(">>HW_Conncetion: [" + clientIP + "] -> " + line); //mit küldött a kliens
 
                     // válasz a kliensnek
-                    out.println("OK, megkaptam: " + line); // Ez nem tudom mennyire lesz jó, mert a kliens nem fogja tudni kiírni ezt sehová sem
+                    out.println("OK, megkaptam: " + line);
                 }
 
             }

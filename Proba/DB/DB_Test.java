@@ -14,25 +14,46 @@ public class DB_Test {
 
         em.getTransaction().begin();
 
-        // Persist Teacher
-        Teacher teacher = new Teacher("John Doe", "john@example.com");
-        em.persist(teacher);
+        Teacher t1 = new Teacher("John Doe", "john@example.com");
+        Teacher t2 = new Teacher("Jane Smith", "jane@example.com");
+        Teacher t3 = new Teacher("Robert Brown", "robert@example.com");
+        em.persist(t1);
+        em.persist(t2);
+        em.persist(t3);
 
-        // Persist Student
-        Student student = new Student("Alice", "alice@example.com", "CS");
-        em.persist(student);
+        // --- Students ---
+        Student s1 = new Student("Alice", "CS", "alice@example.com");
+        Student s2 = new Student("Bob", "Math", "bob@example.com");
+        Student s3 = new Student("Clara", "Physics", "clara@example.com");
+        em.persist(s1);
+        em.persist(s2);
+        em.persist(s3);
 
-        // Persist Course
-        Course course = new Course(teacher.getId(), student.getId());
-        em.persist(course);
+        // --- Courses ---
+        Course c1 = new Course(t1.getId(), s1.getId());
+        Course c2 = new Course(t1.getId(), s2.getId());
+        Course c3 = new Course(t2.getId(), s3.getId());
+        em.persist(c1);
+        em.persist(c2);
+        em.persist(c3);
 
-        // Persist Card
-        Card card = new Card("CARD123", student);
-        em.persist(card);
+        // --- Cards ---
+        Card card1 = new Card("CARD123", s1);
+        Card card2 = new Card("CARD456", s2);
+        Card card3 = new Card("CARD789", s3);
+        em.persist(card1);
+        em.persist(card2);
+        em.persist(card3);
 
-        // Persist Checkin
-        Checkin checkin = new Checkin(card, course);
-        em.persist(checkin);
+        // --- Checkins ---
+        Checkin ch1 = new Checkin(card1, c1);
+        Checkin ch2 = new Checkin(card2, c1);
+        Checkin ch3 = new Checkin(card3, c2);
+        Checkin ch4 = new Checkin(card1, c2);
+        em.persist(ch1);
+        em.persist(ch2);
+        em.persist(ch3);
+        em.persist(ch4);
 
         em.getTransaction().commit();
         em.close();
