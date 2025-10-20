@@ -16,7 +16,7 @@
 #define SERVER_NAME "bence-Mint"
 #define SERVER_PORT 54321
 
-// Pheripehrias
+// Pheriferias
 #define SPI_SCK  4
 #define SPI_MISO 3
 #define SPI_MOSI 2
@@ -27,6 +27,11 @@
 #define LED_R 10
 #define LED_G 20
 #define LED_B 21
+
+// Mdns
+#define MDNS_PORT 5353
+#define MDNS_MULTICAST_IP IPAddress(224, 0, 0, 251)
+#define MDNS_TIMEOUT 2000  // ms
 
 
 // ------------ Globals -------------
@@ -43,7 +48,6 @@ void setup()
     {
         ;
     }
-    Serial.println("YY");
     SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI);
 
     uint64_t chipMac = ESP.getEfuseMac(); // ESP's factory MAC, 48 bits
@@ -78,6 +82,7 @@ void setup()
     Serial.print("Gateway IP:  "); Serial.println(Ethernet.gatewayIP());  // Gateway from DHCP
     
     mfrc.PCD_Init();
+
 }
 
 void loop()
@@ -89,6 +94,7 @@ void loop()
     }
 }
 
+// Card Reader
 String readUID()
 {
     // Check for new card 
