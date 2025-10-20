@@ -1,49 +1,17 @@
 package Software_Code.Database.Dao;
 
 import Software_Code.Database.Model.Teacher;
-import Software_Code.Backend_Server.DB_Connection.DB_Connection;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
-public class TeacherDao {
-    public void addTeacher(Teacher teacher) {
-        String sql = "INSERT INTO teacher (teacher_id, name, email) VALUES (?, ?, ?)";
+@Repository
+public interface TeacherDao extends JpaRepository<Teacher, Long> {
 
-        try (Connection conn = DB_Connection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    // Lekérdezés kártyaszám alapján
+    Optional<Teacher> findByKartyaszam(String kartyaszam);
 
-            stmt.setInt(1, teacher.getId());
-            stmt.setString(2, teacher.getName());
-            stmt.setString(3, teacher.getEmail());
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public List<Teacher> getAllTeachers() {
-        String sql = "SELECT * FROM teacher";
-        List<Teacher> teachers = new ArrayList<>();
-
-        try (Connection conn = DB_Connection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                teachers.add(new Teacher(
-                        rs.getInt("teacher_id"),
-                        rs.getString("name"),
-                        rs.getString("email")
-                ));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return teachers;
-    }
+    // Lekérdezés név alapján (ha több találat lehet)
+    Optional<Teacher> findByNev(String nev);
 }
