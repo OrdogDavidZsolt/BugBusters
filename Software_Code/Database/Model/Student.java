@@ -3,46 +3,50 @@ package Software_Code.Database.Model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "student")
+@Table(name = "hallgato_lu")
 public class Student {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int student_id;
+    @Column(name = "hallgato_id")
+    private Long id;
 
-    private String name;
-    private String major;
+    @Column(name = "kartyaszam", nullable = false, length = 100)
+    private String kartyaszam;
+
+    @Column(name = "nev", nullable = false, length = 100)
+    private String nev;
+
+    @Column(name = "szak", length = 100)
+    private String szak;
+
+    @Column(name = "email", length = 100)
     private String email;
 
-    public Student() {}
+    public Student() {
+    }
 
-    //Constructor for retrieving from DB (with id)
-    public Student(String name, String major, String email) {
-        this.name = name;
-        this.major = major;
+    public Student(String kartyaszam, String nev, String szak, String email) {
+        this.kartyaszam = kartyaszam;
+        this.nev = nev;
+        this.szak = szak;
         this.email = email;
     }
 
-    public int getId() { return student_id; }
+    // --- Getters & Setters ---
 
-    public String getName() { return name; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setName(String name) { this.name = name; }
+    public String getKartyaszam() {  return kartyaszam;  }
+    public void setKartyaszam(String kartyaszam) {  this.kartyaszam = kartyaszam;  }
 
-    public String getMajor() { return major; }
+    public String getNev() { return nev; }
+    public void setNev(String nev) { this.nev = nev; }
 
-    public void setMajor(String major) { this.major = major; }
+    public String getSzak() { return szak; }
+    public void setSzak(String szak) { this.szak = szak; }
 
     public String getEmail() { return email; }
-
     public void setEmail(String email) { this.email = email; }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "student_id=" + getId() +
-                ", name='" + name + '\'' +
-                ", major='" + major + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
 }
