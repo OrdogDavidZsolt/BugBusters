@@ -94,15 +94,17 @@ public class HW_Connection
 
                 if (readerID == Integer.MAX_VALUE) {
                     // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
-                    System.out.println(">>HW_Connection: [" + readerID + ", " + clientIP + "] konfigurálása elkezdődött!");
-                    out.writeInt(configureReader());    // konfigurált ID visszaküldése az olvasónak
+                    System.out.print(">>HW_Connection: [ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ");
+                    int newId = configureReader();
+                    out.writeInt(newId);    // konfigurált ID visszaküldése az olvasónak
+                    System.out.println(newId);
                 }
                 else {
                     /**
                      * Ez az olvasó már konfigurálva van, tovább kell értelmezni az adatot, amit küldött,
                      * mert az tartalmaz egy UID-t is
                      */
-                    System.out.println(">>HW_Connection: [" + readerID + ", " + clientIP + "] üzenetének feldolgozása elkezdődött!");
+                    System.out.println(">>HW_Connection: [ID=" + readerID + ", IP=" + clientIP + "] üzenetének feldolgozása elkezdődött!");
                     //Pl:
                     processUID(uidHex.toString());
                 }
