@@ -1,17 +1,4 @@
-/**
- * Ez a fájl indítja el a teljes backend szervert
- * A többi kódban csak metódusok (API-k) legyenek, main nem kell!
- * 
- * Fordítás:
- * ~/Szoftverfejlesztes$ javac ./Software_Code/Backend_Server/Controller/Controller.java
- * Futtatás:
- * ~/Szoftverfejlesztes$ sudo java Software_Code.Backend_Server.Controller.Controller 
- * 
- * A sudo azért kell, mert a tűzfalon átállítja a kód a 80-as port elérhetőségét
- */ 
-
-
-
+package Controller;
 
 // ------------- Importok -------------
 // UI_Conncetion szükségletek

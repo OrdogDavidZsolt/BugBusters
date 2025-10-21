@@ -95,7 +95,7 @@
             <version>3.3.5</version>
             <configuration>
                 <!-- Ez mondja meg, hogy a fő belépési pont a dummy launcher -->
-                <mainClass>Software_Code.Backend_Server.Controller.Controller</mainClass>
+                <mainClass>Controller.Controller</mainClass>
             </configuration>
         </plugin>
         </plugins>
