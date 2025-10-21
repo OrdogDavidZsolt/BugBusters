@@ -48,9 +48,9 @@ EthernetClient client;                  // Local client
 EthernetUDP Udp;                        // UDP client for mDNS resolve
 IPAddress serverIP;                     // The mDNS fills it in setup()
 MFRC522 mfrc(MFRC_CS, MFRC_RST);        // RFID Reader object
-int readerID;                           // Unique ID for the reader unit, gathered from the server
+int readerID = __INT_MAX__;             // Unique ID for the reader unit, gathered from the server
 byte uidBytes[UID_BYTE_SIZE] = { 0 };   // Global array for UID data, prefilled with 0s
-const char DATA_SEPARATOR[] = "-UID=";   // [ID]-UID=[UID] format
+const char DATA_SEPARATOR[] = "-UID=";  // [ID]-UID=[UID] format
 byte outputBuffer[sizeof(int) + sizeof(DATA_SEPARATOR) -1 + UID_BYTE_SIZE] = { 0 };  // Output buffer for uid sending
 
 // ------------ Functions -------------
@@ -63,9 +63,16 @@ bool sendUIDToServer(IPAddress serverIp, String uidStr);
 int encodeName(const char* hostname, uint8_t* buf, int bufSize);
 int skipName(const uint8_t* msg, int msgLen, int offset);
 bool resolveMDNS(const char* hostname, IPAddress& outIp, uint32_t timeoutMs, IPAddress mdnsMulticast);
+void setLEDs(bool red, bool green, bool blue);
 
 
 void setup() {
+
+  // Set up LED pins
+  pinMode(LED_R, OUTPUT);
+  pinMode(LED_G, OUTPUT);
+  pinMode(LED_B, OUTPUT);
+  setLEDs(true, false, false);
 
   // Start Serial connection
   Serial.begin(SERIAL_SPEED);
@@ -82,10 +89,11 @@ void setup() {
   mdnsResolve();
 
   // Get ID for reader unit from server
-  /*readerID = getReaderID();*/
+  readerID = getReaderID();
 
   // Initialize RFID reader
   mfrc.PCD_Init();
+  setLEDs(false, false, true);
 }
 
 void loop() {
@@ -373,4 +381,11 @@ bool resolveMDNS(const char* hostname, IPAddress& outIp, uint32_t timeoutMs = 30
   }  // timeout vége
 
   return false;  // timeout, nem talált A rekordot
+}
+
+// this method sets the led (R, G, B) to te given value
+void setLEDs(bool red, bool green, bool blue) {
+  digitalWrite(LED_R, red);
+  digitalWrite(LED_G, green);
+  digitalWrite(LED_B, blue);
 }
