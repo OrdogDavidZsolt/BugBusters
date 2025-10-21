@@ -75,11 +75,11 @@ void setup() {
   SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI);
 
   // Start and Setup Ethernet connection
-  /*setupMAC();
-  setupEthernet();*/
+  setupMAC();
+  setupEthernet();
 
   // Resolve the server name via mDNS
-  /*mdnsResolve();*/
+  mdnsResolve();
 
   // Get ID for reader unit from server
   /*readerID = getReaderID();*/
@@ -91,7 +91,7 @@ void setup() {
 void loop() {
   int result = readUID();
   if (result > 0) {
-    //sendUIDToServer(serverIP, uidStr);
+    sendUIDToServer(serverIP, uidBytes);
   }
   delay(10);
 }
@@ -180,6 +180,7 @@ int readUID() {
   }
 
   // Debug:
+  Serial.print("UDI = ");
   for (int i = 0; i < mfrc.uid.size; i++) {
     if (mfrc.uid.uidByte[i] < 0x10) Serial.print("0");
     Serial.print(mfrc.uid.uidByte[i], HEX);
