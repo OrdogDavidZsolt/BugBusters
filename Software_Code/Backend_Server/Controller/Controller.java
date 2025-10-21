@@ -18,7 +18,9 @@ package Software_Code.Backend_Server.Controller;
 import Software_Code.Backend_Server.HW_Connection.HW_Connection;
 import Software_Code.Backend_Server.UI_Connection.UI_Connection;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class Controller {
     
     public static void main(String[] args) {
