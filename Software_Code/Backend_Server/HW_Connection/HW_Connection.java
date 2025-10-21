@@ -69,31 +69,30 @@ public class HW_Connection
             // utána annak a változónak lesz egy .read() metódusa, ami bináris oldasásra ad lehetőséget.
             // A bemenet formátuma a következő: [ID]-UID=[uid]. Ebben az ID egy 4 byte-os int, majd 5 karakter, majd 10 byte UID
             // példásul: 12-UID=045C3CEA537680000000, csak binárisan jelenik meg. A 10 byte minden esetben ki van töltve (0-kal) 
-            try(InputStream in = socket.getInputStream())
+            try (InputStream in = socket.getInputStream();
+                                // bejövő adatok a klienstől
+
+                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true))
+                                                //kimenő adatok
             {
-                //                ^ ezek a bejövő adatok a klienstől
 
-                byte[] buffer = new byte[TOTAL_RECORD_SIZE]; // 10 byte-os rekord
-                int bytesRead = in.read(buffer); // beolvas 10 byte-ot, ha elérhető
+                byte[] buffer = new byte[TOTAL_RECORD_SIZE]; // teljes adategység 10 byte
 
-
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                // ^ kimenő adatok a kliensnek   ^ azonnal elküldi a kliensnek
-                String line;
-
-                while((line = in.readLine()) != null) //beolvassa soronként, amit a kliens küld
+                while (true)
                 {
-                    System.out.println(">>HW_Conncetion: [" + clientIP + "] -> " + line); //mit küldött a kliens
+                    int bytesRead = in.read(buffer); //bináris olvasás
+                    if (bytesRead == -1)
+                    {
+                        System.out.println(">>HW_Connection: A kliens bontotta a kapcsolatot: " + clientIP);
+                        break;
+                    }
 
-                    // válasz a kliensnek
-                    out.println("OK, megkaptam: " + line);
-                }
 
+
+            } catch (IOException e) {
+                System.out.println(">>HW_Connection: A kliens bontotta a kapcsolatot: " + clientIP);
             }
-            catch (IOException e)
-            {
-                System.out.println(">>HW_Conncetion: A kliens bontotta a kapcsolatot: " + clientIP);
-            }
+
             finally
             {
                 try
