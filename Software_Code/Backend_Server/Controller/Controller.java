@@ -10,13 +10,13 @@
  * A sudo azért kell, mert a tűzfalon átállítja a kód a 80-as port elérhetőségét
  */ 
 
-package Software_Code.Backend_Server.Controller;
+
 
 
 // ------------- Importok -------------
 // UI_Conncetion szükségletek
-import Software_Code.Backend_Server.HW_Connection.HW_Connection;
-import Software_Code.Backend_Server.UI_Connection.UI_Connection;
+import HW_Connection.HW_Connection;
+import UI_Connection.UI_Connection;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

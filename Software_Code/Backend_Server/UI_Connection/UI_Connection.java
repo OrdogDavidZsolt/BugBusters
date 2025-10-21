@@ -5,7 +5,7 @@
  * illetve a HTML oldalak betöltéséért felel
  */
 
-package Software_Code.Backend_Server.UI_Connection;
+package UI_Connection;
 
 // ------------- Importok -------------
 import com.sun.net.httpserver.HttpServer;
