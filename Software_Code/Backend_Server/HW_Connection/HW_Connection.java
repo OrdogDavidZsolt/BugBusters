@@ -14,6 +14,8 @@ public class HW_Connection
     private static final int PORT = 54321; //ezen a porton hallgat a szerver
     private static final int THREAD_POOL_SIZE = 50; // egyszerre max. 50 kliens
 
+    private static final int TOTAL_RECORD_SIZE = 10;
+
     public static void start_HW_Server() {
     
         //külön listener szál az accept() blokkoló tulajdonsága miatt --> így most megy a program a fő szálon
@@ -67,8 +69,13 @@ public class HW_Connection
             // utána annak a változónak lesz egy .read() metódusa, ami bináris oldasásra ad lehetőséget.
             // A bemenet formátuma a következő: [ID]-UID=[uid]. Ebben az ID egy 4 byte-os int, majd 5 karakter, majd 10 byte UID
             // példásul: 12-UID=045C3CEA537680000000, csak binárisan jelenik meg. A 10 byte minden esetben ki van töltve (0-kal) 
-            try(BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-                // ^  karakteresen olvassuk               ^ soronként tudjuk olvasni     ^ ezek a bejövő adatok a klienstől
+            try(InputStream in = socket.getInputStream())
+            {
+                //                ^ ezek a bejövő adatok a klienstől
+
+                byte[] buffer = new byte[TOTAL_RECORD_SIZE]; // 10 byte-os rekord
+                int bytesRead = in.read(buffer); // beolvas 10 byte-ot, ha elérhető
+
 
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 // ^ kimenő adatok a kliensnek   ^ azonnal elküldi a kliensnek
