@@ -1,10 +1,8 @@
 package HW_Connection;
 
-import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +13,7 @@ public class HW_Connection
     private static final int PORT = 54321; //ezen a porton hallgat a szerver
     private static final int THREAD_POOL_SIZE = 50; // egyszerre max. 50 kliens
 
-    private static final int TOTAL_RECORD_SIZE = 10;
+    private static final int TOTAL_RECORD_SIZE = 19;    // egy fix bájtszám, amit a szerver olvas
 
     public static void start_HW_Server() {
     
@@ -52,7 +50,6 @@ public class HW_Connection
     {
         private Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
 
-
         public ClientHandler(Socket socket) //konstruktor
         {
             this.socket = socket;
@@ -64,30 +61,50 @@ public class HW_Connection
             String clientIP = socket.getInetAddress().getHostAddress(); //kiolvassa kliens IP címét
             System.out.println(">>HW_Connection: Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
 
-            // Ezt az egész beolvasós részt át kellene alakítani. Itt most string alapon megy a dolog a buffered readerrel,
-            // de át kellene írni binárisra. Ezt az InputStream segítségével tudod megtenni. A létrehozott socket objektumnak
-            // van egy socket.getInputStream() metódusa, ez adja vissza a bináris InputStreamet. Ezt elmented egy  változóba,
-            // utána annak a változónak lesz egy .read() metódusa, ami bináris oldasásra ad lehetőséget.
-            // A bemenet formátuma a következő: [ID]-UID=[uid]. Ebben az ID egy 4 byte-os int, majd 5 karakter, majd 10 byte UID
-            // példásul: 12-UID=045C3CEA537680000000, csak binárisan jelenik meg. A 10 byte minden esetben ki van töltve (0-kal) 
             try (InputStream in = socket.getInputStream();
                                 // bejövő adatok a klienstől
-
-                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true))
+                 DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
                                                 //kimenő adatok
             {
 
                 byte[] buffer = new byte[TOTAL_RECORD_SIZE]; // teljes adategység 10 byte
+                int bytesReadTotal = 0;
 
-                while (true)
-                {
-                    int bytesRead = in.read(buffer); //bináris olvasás
-                    if (bytesRead == -1)
-                    {
-                        System.out.println(">>HW_Connection: A kliens bontotta a kapcsolatot: " + clientIP);
-                        break;
+                // blokkoló olvasás a teljes 19 bájtra
+                while (bytesReadTotal < TOTAL_RECORD_SIZE) {
+                    int bytesRead = in.read(buffer, bytesReadTotal, TOTAL_RECORD_SIZE - bytesReadTotal);  // bináris olvasás
+                    if (bytesRead == -1) {
+                        System.out.println(">>HW_Connection: A kliens bontotta a kapcsolat: " + clientIP);
+                        return; // kilépés
                     }
+                    bytesReadTotal += bytesRead;
+                }
+                int readerID =  (buffer[3] & 0xFF) << 24 |
+                                (buffer[2] & 0xFF) << 16 |
+                                (buffer[1] & 0xFF) << 8  |
+                                (buffer[0] & 0xFF); // kártyaolvasó ID-jának olvasása, little-endian szerint
 
+                int uidOffset = 9; // "=" utáni első bájt
+                int uidLength = 10; // 10 bájtos UID
+                // UID sztring előállítása stringbuilderrel
+                StringBuilder uidHex = new StringBuilder();
+                for (int i = 0; i < uidLength; i++) {
+                    uidHex.append(String.format("%02X", buffer[uidOffset + i]));
+                }
+
+                if (readerID == Integer.MAX_VALUE) {
+                    // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
+                    System.out.println(">>HW_Connection: [" + readerID + ", " + clientIP + "] konfigurálása elkezdődött!");
+                    out.writeInt(configureReader());    // konfigurált ID visszaküldése az olvasónak
+                }
+                else {
+                    /**
+                     * Ez az olvasó már konfigurálva van, tovább kell értelmezni az adatot, amit küldött,
+                     * mert az tartalmaz egy UID-t is
+                     */
+                    System.out.println(">>HW_Connection: [" + readerID + ", " + clientIP + "] üzenetének feldolgozása elkezdődött!");
+                    //Pl:
+                    processUID(uidHex.toString());
                 }
 
             } catch (IOException e) {
@@ -106,6 +123,30 @@ public class HW_Connection
                 }
 
             }
+        }
+
+        private int configureReader()
+        {
+            // Ez végzi el a kértyaolvasók listázását és az ID-k kiosztását
+            /**
+             * A kártyaolvasókat javaslom nyilvántartani egy HashMap<Integer, String> szótárban, ahol:
+             * Integer --> a konfigurált ID, egyedi kell legyen a hashmap-ben, mehet 1-től pl
+             * String ---> a kártyaolvasó IP címe, mivel később szükség lehet rá, illetve a UI-ba is ki kell tenni
+             * 
+             * A HashMap-et javaslom a HW_Conncetion osztályba tenni (külső osztály), és osztály attribútum kellene, hogy legyen.
+             * Láthatósága lehet privát, különböző lekérdező metódusokat készíteni lehet hozzá.
+             * 
+             * Ennek a metódusnak (configureReader()) a feladata, hogy ebben a HashMap-be betegye az új olvasó adatát,
+             * majd a kapott sorszámot, mint ID visszaadja return-ben. A sorszám nyilvántartása szintén lehet a külső osztály privát
+             * statikus attribútuma
+             */
+            return 123; // dummy adat, ide kell a generált ID
+        }
+
+        private void processUID(String uid)
+        {
+            // DEBUG
+            System.out.println(">>DEBUG: Feldolgozandó üzenet: " + uid);
         }
     }
 }

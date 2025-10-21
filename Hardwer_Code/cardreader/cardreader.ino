@@ -89,8 +89,11 @@ void setup() {
   mdnsResolve();
 
   // Get ID for reader unit from server
-  //readerID = getReaderID();
-
+  do {
+    readerID = getReaderID(serverIP);
+    delay(500);
+  } while (readerID == __INT_MAX__);
+  Serial.print("ID Gathered: "); Serial.println(readerID);
   // Initialize RFID reader
   mfrc.PCD_Init();
   setLEDs(false, false, true);
@@ -159,8 +162,52 @@ void mdnsResolve() {
 
 // Get unique ID for the reader unit from the server
 // TODO: Complete implementation
-int getReaderID() {
-  return 0;
+int getReaderID(IPAddress serverIp) {
+  // Debug
+  Serial.print("Connecting to: ");
+  Serial.print(serverIp);
+  Serial.print(":");
+  Serial.println(SERVER_PORT);
+
+  // Connect to server
+  if (!client.connect(serverIp, SERVER_PORT)) {
+    Serial.println("Server connection failed");
+    return __INT_MAX__;
+  }
+
+  // Data format: "[ID]-UID=[uid] like '12-UID=12345678'"
+  // Creating output format
+  int offset = 0;
+  memcpy(outputBuffer + offset, &readerID, sizeof(int));
+  offset += sizeof(int);
+  memcpy(outputBuffer + offset, DATA_SEPARATOR, sizeof(DATA_SEPARATOR) - 1);
+  offset += sizeof(DATA_SEPARATOR) - 1;
+  memcpy(outputBuffer + offset, uidBytes, UID_BYTE_SIZE);
+  offset += UID_BYTE_SIZE;
+
+  size_t written = client.write(outputBuffer, sizeof(outputBuffer));
+  // Check if full data has been sent to server
+  if (written != offset) {
+    Serial.println("Failed to send full data");
+    client.stop();
+    return __INT_MAX__;
+  }
+
+  uint8_t bytes[4];
+  int received = 0;
+  while (received < 4) {
+    if (client.available()) {
+      bytes[received++] = client.read();
+    } else {
+      delay(1); // rövid várakozás
+    }
+  }
+
+  // big-endian -> little-endian
+  int receivedID = ((int)bytes[0] << 24) | ((int)bytes[1] << 16) | ((int)bytes[2] << 8) | (int)bytes[3];
+  
+  client.stop();
+  return receivedID;
 }
 
 // Card Reader
