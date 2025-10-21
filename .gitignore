@@ -8,10 +8,12 @@ target/
 build/
 bin/
 
+
 # ------------ IntelliJ IDEA ------------
 .idea/
 *.iml
 out/
+src/
 
 # ------------ VS Code ------------
 .vscode/

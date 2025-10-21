@@ -1,4 +1,4 @@
-package Software_Code.Backend_Server.HW_Connection;
+package HW_Connection;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,6 +61,12 @@ public class HW_Connection
             String clientIP = socket.getInetAddress().getHostAddress(); //kiolvassa kliens IP címét
             System.out.println(">>HW_Connection: Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
 
+            // Ezt az egész beolvasós részt át kellene alakítani. Itt most string alapon megy a dolog a buffered readerrel,
+            // de át kellene írni binárisra. Ezt az InputStream segítségével tudod megtenni. A létrehozott socket objektumnak
+            // van egy socket.getInputStream() metódusa, ez adja vissza a bináris InputStreamet. Ezt elmented egy  változóba,
+            // utána annak a változónak lesz egy .read() metódusa, ami bináris oldasásra ad lehetőséget.
+            // A bemenet formátuma a következő: [ID]-UID=[uid]. Ebben az ID egy 4 byte-os int, majd 5 karakter, majd 10 byte UID
+            // példásul: 12-UID=045C3CEA537680000000, csak binárisan jelenik meg. A 10 byte minden esetben ki van töltve (0-kal) 
             try(BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
                 // ^  karakteresen olvassuk               ^ soronként tudjuk olvasni     ^ ezek a bejövő adatok a klienstől
 
