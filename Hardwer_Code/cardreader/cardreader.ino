@@ -89,7 +89,7 @@ void setup() {
   mdnsResolve();
 
   // Get ID for reader unit from server
-  readerID = getReaderID();
+  //readerID = getReaderID();
 
   // Initialize RFID reader
   mfrc.PCD_Init();
@@ -217,8 +217,8 @@ bool sendUIDToServer(IPAddress serverIp, byte uid[UID_BYTE_SIZE]) {
   // Data format: "[ID]-UID=[uid] like '12-UID=12345678'"
   // Creating output format
   int offset = 0;
-  memcpy(outputBuffer + offset, &readerID, sizeof(readerID));
-  offset += sizeof(readerID);
+  memcpy(outputBuffer + offset, &readerID, sizeof(int));
+  offset += sizeof(int);
   memcpy(outputBuffer + offset, DATA_SEPARATOR, sizeof(DATA_SEPARATOR) - 1);
   offset += sizeof(DATA_SEPARATOR) - 1;
   memcpy(outputBuffer + offset, uidBytes, UID_BYTE_SIZE);

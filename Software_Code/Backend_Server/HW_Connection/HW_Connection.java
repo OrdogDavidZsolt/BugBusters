@@ -2,6 +2,7 @@ package HW_Connection;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -87,7 +88,7 @@ public class HW_Connection
                         break;
                     }
 
-
+                }
 
             } catch (IOException e) {
                 System.out.println(">>HW_Connection: A kliens bontotta a kapcsolatot: " + clientIP);
