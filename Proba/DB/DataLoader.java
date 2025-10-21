@@ -3,12 +3,10 @@ package DB;
 import Software_Code.Database.Model.*;
 import Software_Code.Database.Dao.*;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@SpringBootApplication(scanBasePackages = "Software_Code.Database.Dao")
 public class DataLoader {
 
     @Bean
