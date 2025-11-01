@@ -206,16 +206,17 @@ public class UI_Connection
                 String message = "";
 
                 /* példa, majd adatbázisból jön */
-                if (body.contains("\"username\":\"admin\"") && body.contains("\"password\":\"admin\"")) {
+                if (body.contains("\"username\":\"admin\"") && body.contains("\"password\":\"admin\"") && body.contains("\"mode\":\"admin\"")) {
                     success = true;
                     message = "Login successful!";
-                } else if (body.contains("\"username\":\"teacher1\"") && body.contains("\"password\":\"1234\"")) {
+                } else if (body.contains("\"username\":\"teacher1\"") && body.contains("\"password\":\"1234\"") && body.contains("\"mode\":\"teacher\"")) {
                     success = true;
                     message = "Login successful!";
                 } else {
                     success = false;
-                    message = "Invalid username or password!";
+                    message = "Invalid username, password or login mode (teacher / admin)!";
                 }
+                /* Idáig kell az adatbázisból lekérdezni */
 
                 String jsonResponse = String.format(
                     "{\"success\": %b, \"message\": \"%s\"}",

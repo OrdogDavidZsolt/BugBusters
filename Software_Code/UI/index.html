@@ -559,8 +559,8 @@
         <form id="loginForm">
             <div class="form-group mode-select" aria-label="Bejelentkezés típusa">
                 <div class="segmented" role="tablist" aria-label="Bejelentkezési mód">
-                    <input type="radio" id="modeUser" name="loginMode" value="user" checked>
-                    <label for="modeUser" role="tab" aria-selected="true">Normal</label>
+                    <input type="radio" id="modeUser" name="loginMode" value="teacher" checked>
+                    <label for="modeUser" role="tab" aria-selected="true">Teacher</label>
 
                     <input type="radio" id="modeAdmin" name="loginMode" value="admin">
                     <label for="modeAdmin" role="tab" aria-selected="false">Admin</label>
@@ -785,7 +785,7 @@
             }
 
             // frissítjük az aria-selected attribútumokat (jobb accessibility)
-            modeUserRadio.nextElementSibling.setAttribute('aria-selected', selected === 'user');
+            modeUserRadio.nextElementSibling.setAttribute('aria-selected', selected === 'teacher');
             modeAdminRadio.nextElementSibling.setAttribute('aria-selected', selected === 'admin');
         }
 
