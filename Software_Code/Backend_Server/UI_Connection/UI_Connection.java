@@ -46,6 +46,7 @@ public class UI_Connection
              *      ez az osztály tartalmaz egy 'public void handle(HttpExchange exchange)' metódust
              */
             server.createContext("/", new StaticFileHandler("Software_Code/UI"));
+            server.createContext("/data", new DataHandler());
             /**
              * setExecutor: a HttpServer külön szálakon képes kéréseket kezelni
              * az executor határozza meg a szálakat
@@ -199,9 +200,31 @@ public class UI_Connection
                 // Debug infó
                 System.out.println(">>UI_Connection: Received data: " + body);
 
+
+                // Egyszerű JSON parse - ha nincs külső lib, akkor manuálisan:
+                boolean success = false;
+                String message = "";
+
+                /* példa, majd adatbázisból jön */
+                if (body.contains("\"username\":\"admin\"") && body.contains("\"password\":\"admin\"")) {
+                    success = true;
+                    message = "Login successful!";
+                } else if (body.contains("\"username\":\"teacher1\"") && body.contains("\"password\":\"1234\"")) {
+                    success = true;
+                    message = "Login successful!";
+                } else {
+                    success = false;
+                    message = "Invalid username or password!";
+                }
+
+                String jsonResponse = String.format(
+                    "{\"success\": %b, \"message\": \"%s\"}",
+                    success, message
+                );
+
                 // Kötelező HTTP válasz - 200-as kóddal
                 // a válasz majd az adatbázisból fog visszajönni
-                this.response = "Data received, checking in database...";
+                this.response = jsonResponse;
                 this.responseCode = 200;
             }
             else // Nem POST kérések
@@ -209,7 +232,8 @@ public class UI_Connection
                 this.response = "Method Not Allowed";
                 this.responseCode = 405;
             }
-
+            
+            exchange.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");
             exchange.sendResponseHeaders(this.responseCode, this.response.length());
             try (OutputStream os = exchange.getResponseBody())
             {

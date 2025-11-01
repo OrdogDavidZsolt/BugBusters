@@ -649,9 +649,48 @@
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
             const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
             const mode = document.querySelector('input[name="loginMode"]:checked').value;
-            alert('Login submitted!\nUsername: ' + username + '\nMode: ' + (mode === 'admin' ? 'Admin' : 'Normal'));
+
+            // JSON objektum
+            const data = {
+                username: username,
+                password: password,
+                mode: mode
+            };
+
+            // Fetch POST kérés a szerver felé
+            fetch('/data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Szerver válasza:', result);
+                console.log("Result.success: ", result.success);
+                if (result.success) {
+                    if (mode === 'admin')
+                    {
+                        // Sikeres bejelentkezés → irány az admin oldalra
+                        window.location.href = 'Admin_Page/index.html';    
+                    } else {
+                        // Sikeres bejelentkezés → irány a tanári oldalra
+                        window.location.href = 'Teachers_Page/index.html'; 
+                    }
+                } else {
+                    // Hibás login → hibaüzenet
+                    alert(result.message || 'Hibás felhasználónév vagy jelszó!');
+                }
+            })
+            .catch(error => {
+                console.error('Hiba történt:', error);
+            });
+            //alert('Login submitted!\nUsername: ' + username + '\nMode: ' + (mode === 'admin' ? 'Admin' : 'Normal'));
         });
     </script>
 
