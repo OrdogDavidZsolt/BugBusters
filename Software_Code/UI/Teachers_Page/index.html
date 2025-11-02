@@ -76,6 +76,66 @@
             z-index: 1000;
         }
 
+        .teacher-info-card {
+            background: white;
+            border-radius: 50px;
+            padding: 12px 20px;
+            box-shadow: 0 18px 60px rgba(2,6,23,0.28);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        body.light-mode .teacher-info-card {
+            box-shadow: 0 22px 80px rgba(2,6,23,0.20);
+        }
+
+        .teacher-name-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a202c;
+            white-space: nowrap;
+        }
+
+        body.light-mode .teacher-name-label {
+            color: #2563eb;
+        }
+
+        .teacher-logout-btn {
+            display: inline-grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, rgba(102,126,234,0.10), rgba(118,75,162,0.06));
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            padding: 0;
+            box-shadow: 0 10px 30px rgba(2,6,23,0.18);
+            flex-shrink: 0;
+        }
+
+        .teacher-logout-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .teacher-logout-btn:active {
+            transform: scale(0.98);
+        }
+
+        .teacher-logout-btn svg {
+            width: 18px;
+            height: 18px;
+            display: block;
+        }
+
+        body.light-mode .teacher-logout-btn {
+            background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(59,130,246,0.03));
+            box-shadow: 0 12px 36px rgba(37,99,235,0.14);
+        }
+
         .control-card {
             background: white;
             border-radius: 50px;
@@ -401,7 +461,7 @@
 
         .student-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 50px;
             padding: 12px 16px;
             margin-bottom: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
@@ -771,6 +831,25 @@
                 align-items: flex-end;
             }
 
+            .teacher-info-card {
+                flex-direction: row;
+                padding: 10px 16px;
+            }
+
+            .teacher-name-label {
+                font-size: 13px;
+            }
+
+            .teacher-logout-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .teacher-logout-btn svg {
+                width: 16px;
+                height: 16px;
+            }
+
             .content-wrapper {
                 gap: 20px;
             }
@@ -789,12 +868,13 @@
 </head>
 <body class="light-mode">
     <div class="controls-left" role="region" aria-label="Left controls">
-        <div class="control-item">
-            <button id="logoutBtn" class="logout-btn" aria-label="Logout" title="Logout">
+        <div class="teacher-info-card">
+            <button id="logoutBtn" class="teacher-logout-btn" aria-label="Logout" title="Logout">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="#1e293b"/>
                 </svg>
             </button>
+            <span class="teacher-name-label" id="teacherNameDisplay">Dr. János Kovács</span>
         </div>
     </div>
 
