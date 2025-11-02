@@ -209,10 +209,11 @@
             border-radius: 50px;
             box-shadow: 0 30px 100px rgba(0, 0, 0, 0.45);
             padding: 48px;
-            width: 85%;
+            width: 70%;
             max-width: 1600px;
             animation: fadeIn 0.5s ease-in;
             transition: box-shadow 0.5s ease, border 0.3s ease;
+            position: relative;
         }
 
         body.light-mode .main-card {
@@ -225,12 +226,80 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        .timer-badge {
+            position: absolute;
+            top: 48px;
+            right: 48px;
+            background: white;
+            border-radius: 20px;
+            padding: 16px 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .timer-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timer-value {
+            font-size: 28px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.3s ease;
+            color: #10b981;
+        }
+
+        .timer-badge.warning .timer-value {
+            color: #f59e0b;
+        }
+
+        .timer-badge.danger .timer-value {
+            color: #ef4444;
+        }
+
+        .timer-badge.critical {
+            animation: timerPulse 1s ease-in-out infinite;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        }
+
+        .timer-badge.critical .timer-value {
+            color: #dc2626;
+            animation: timerShake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3);
+            }
+            50% { 
+                transform: scale(1.05); 
+                box-shadow: 0 12px 32px rgba(239, 68, 68, 0.5);
+            }
+        }
+
+        @keyframes timerShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
         .main-title {
             color: #1a202c;
             font-size: 32px;
             font-weight: 700;
             margin-bottom: 32px;
             transition: color 0.5s ease;
+            padding-right: 140px;
         }
 
         body.light-mode .main-title {
@@ -326,12 +395,16 @@
 
         .student-card {
             background: white;
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
         }
 
         .student-card:hover {
@@ -346,23 +419,21 @@
         }
 
         .student-name {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: #1a202c;
-            margin-bottom: 6px;
-        }
-
-        .student-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            color: #4a5568;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .student-code {
             font-weight: 600;
             color: var(--accent-1);
+            font-size: 14px;
+            flex: 0 0 auto;
         }
 
         body.light-mode .student-code {
@@ -372,6 +443,9 @@
         .student-time {
             color: #718096;
             font-size: 13px;
+            font-weight: 600;
+            flex: 0 0 auto;
+            font-variant-numeric: tabular-nums;
         }
 
         .info-section {
@@ -592,7 +666,17 @@
             color: #64748b;
         }
 
+        @media (max-width: 1400px) {
+            .main-card {
+                width: 80%;
+            }
+        }
+
         @media (max-width: 1200px) {
+            .main-card {
+                width: 85%;
+            }
+
             .content-wrapper {
                 flex-direction: column;
             }
@@ -600,6 +684,18 @@
             .attendance-section,
             .info-section {
                 flex: 1 1 100%;
+            }
+
+            .timer-badge {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 24px;
+                align-self: flex-end;
+            }
+
+            .main-title {
+                padding-right: 0;
             }
         }
 
@@ -616,6 +712,24 @@
 
             .sort-buttons {
                 flex-wrap: wrap;
+            }
+
+            .student-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .student-name {
+                width: 100%;
+            }
+
+            .timer-badge {
+                padding: 12px 20px;
+            }
+
+            .timer-value {
+                font-size: 24px;
             }
         }
 
@@ -643,6 +757,11 @@
             .attendance-section,
             .info-card {
                 padding: 16px;
+            }
+
+            .timer-badge {
+                top: 24px;
+                right: 16px;
             }
         }
     </style>
@@ -677,6 +796,11 @@
     </div>
 
     <div class="main-card">
+        <div class="timer-badge" id="timerBadge">
+            <div class="timer-label">Time Remaining</div>
+            <div class="timer-value" id="timerValue">20:00</div>
+        </div>
+
         <h1 class="main-title">Class Attendance</h1>
 
         <div class="content-wrapper">
@@ -788,6 +912,42 @@
 
         let currentSort = { field: 'name', order: 'asc' };
 
+        // Timer functionality
+        let timeRemaining = 60; // 20 minutes in seconds
+        const timerBadge = document.getElementById('timerBadge');
+        const timerValue = document.getElementById('timerValue');
+
+        function updateTimer() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerValue.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            // Remove all classes first
+            timerBadge.classList.remove('warning', 'danger', 'critical');
+
+            // Add appropriate class based on time remaining
+            if (timeRemaining <= 10) {
+                // Last minute - critical with animations
+                timerBadge.classList.add('critical');
+            } else if (timeRemaining <= 20) {
+                // Under 5 minutes - danger (red)
+                timerBadge.classList.add('danger');
+            } else if (timeRemaining <= 30) {
+                // Under 10 minutes - warning (orange)
+                timerBadge.classList.add('warning');
+            }
+
+            if (timeRemaining > 0) {
+                timeRemaining--;
+            } else {
+                clearInterval(timerInterval);
+                timerValue.textContent = '00:00';
+            }
+        }
+
+        const timerInterval = setInterval(updateTimer, 1000);
+        updateTimer(); // Initial call
+
         // Mode toggle functionality
         const modeToggle = document.getElementById('modeToggle');
         const body = document.body;
@@ -868,10 +1028,8 @@
                 card.className = 'student-card';
                 card.innerHTML = `
                     <div class="student-name">${student.name}</div>
-                    <div class="student-info">
-                        <span class="student-code">${student.code}</span>
-                        <span class="student-time">${student.time}</span>
-                    </div>
+                    <div class="student-code">${student.code}</div>
+                    <div class="student-time">${student.time}</div>
                 `;
                 attendanceList.appendChild(card);
             });
