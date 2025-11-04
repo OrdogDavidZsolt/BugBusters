@@ -1,20 +1,24 @@
 package Software_Code.Database.Dao;
 
+import Software_Code.Database.JPAUtil;
 import Software_Code.Database.Model.Course;
-import Software_Code.Database.Model.Teacher;
+import Software_Code.Database.Model.User;
+import jakarta.persistence.EntityManager;
 import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface CourseDao extends JpaRepository<Course, Long> {
+public interface CourseDAO {
 
-    // Lekérdezés név alapján
-    List<Course> findByNevContainingIgnoreCase(String nev);
+    EntityManager em = JPAUtil.getEntityManager();
 
-    // Lekérdezés tanár alapján
-    List<Course> findByTanar(Teacher tanar);
+    void saveCourse(Course course);
 
-    // Lekérdezés tanár ID alapján
-    List<Course> findByTanar_Id(Long tanarId);
+    Course getCourseById(Long id);
+
+    List<Course> getCoursesByTeacher(User teacher);
+
+    List<Course> getAllCourses();
+
+    void updateCourse(Course course);
+
+    void deleteCourse(Course course);
 }
