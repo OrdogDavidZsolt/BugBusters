@@ -1,37 +1,44 @@
 package DB;
 
+import Software_Code.Database.Dao.AttendanceDAO;
+import Software_Code.Database.Dao.CourseDAO;
+import Software_Code.Database.Dao.CourseSessionDAO;
+import Software_Code.Database.Dao.UserDAO;
+import Software_Code.Database.JPAEntityDAO.JPAAttendanceDAO;
+import Software_Code.Database.JPAEntityDAO.JPACourseDAO;
+import Software_Code.Database.JPAEntityDAO.JPACourseSessionDAO;
+import Software_Code.Database.JPAEntityDAO.JPAUserDAO;
+import Software_Code.Database.Manager.AttendanceManager;
+import Software_Code.Database.Manager.CourseManager;
+import Software_Code.Database.Manager.CourseSessionManager;
+import Software_Code.Database.Manager.UserManager;
 import org.h2.tools.Server;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import java.sql.SQLException;
 
-@SpringBootApplication(scanBasePackages = {
-        "DB",
-        "Software_Code.Database"
-})
 @EnableJpaRepositories(basePackages = "Software_Code.Database.Dao")
 @EntityScan(basePackages = "Software_Code.Database.Model")
 public class DB_Test {
 
-    public static void main(String[] args) {
-        try {
-            startDatabase();
-            SpringApplication.run(DB_Test.class, args);
-            System.out.println("Application started successfully!");
-            System.out.println("H2 Console: http://localhost:8080/h2-console?url=jdbc:h2:mem:testdb&user=sa");
-        } catch (Exception e) {
-            System.err.println("Failed to start the H2 server or Spring Boot application.");
-        }
+    public static void main(String[] args) throws SQLException {
+        startDatabase();
+        UserDAO userDAO = new JPAUserDAO();
+        CourseDAO courseDAO = new JPACourseDAO();
+        CourseSessionDAO courseSessionDAO = new JPACourseSessionDAO();
+        AttendanceDAO attendanceDAO = new JPAAttendanceDAO();
+
+        UserManager userManager = new UserManager(userDAO);
+        userManager.manage();
+        CourseManager courseManager = new CourseManager(courseDAO);
+        courseManager.manage();
+        CourseSessionManager courseSessionManager = new CourseSessionManager(courseSessionDAO);
+        courseSessionManager.manage();
+        AttendanceManager attendanceManager = new AttendanceManager(attendanceDAO);
+        attendanceManager.manage();
     }
 
-    private static void startDatabase() {
-        try {
-            Server.createTcpServer("-tcpAllowOthers", "-tcpPort", "9092", "-ifNotExists").start();
-            Server.createWebServer("-webAllowOthers", "-ifNotExists").start();
-            System.out.println("H2 TCP and Web servers started successfully.");
-        } catch (Exception e) {
-            System.err.println("Could not start H2 server: " + e.getMessage());
-        }
+    private static void startDatabase() throws SQLException {
+        new Server().runTool("-tcp", "-web", "-ifNotExists");
     }
 }
