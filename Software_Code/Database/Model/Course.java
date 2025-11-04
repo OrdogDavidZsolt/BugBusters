@@ -1,39 +1,50 @@
 package Software_Code.Database.Model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "tantargy_lu")
+@Table(name = "courses")
 public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tantargy_id")
     private Long id;
 
-    @Column(name = "nev", nullable = false, length = 100)
-    private String nev;
+    @Column(nullable = false)
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "tanar_id", referencedColumnName = "tanar_id")
-    private Teacher tanar;
+    // A tanár, aki a tárgyat tartja
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id", nullable = false)
+    private User teacher;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseSession> sessions = new ArrayList<>();
 
     public Course() {
     }
 
-    public Course(String nev, Teacher tanar) {
-        this.nev = nev;
-        this.tanar = tanar;
+    public Course(String name, User teacher) {
+        this.name = name;
+        this.teacher = teacher;
     }
 
-    // --- Getters & Setters ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public User getTeacher() { return teacher; }
+    public void setTeacher(User teacher) { this.teacher = teacher; }
+    public List<CourseSession> getSessions() { return sessions; }
+    public void setSessions(List<CourseSession> sessions) { this.sessions = sessions; }
 
-    public String getNev() { return nev; }
-    public void setNev(String nev) { this.nev = nev; }
-
-    public Teacher getTanar() { return tanar; }
-    public void setTanar(Teacher tanar) { this.tanar = tanar; }
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", teacherId=" + (teacher != null ? teacher.getCardId() : null) +
+                '}';
+    }
 }
 
