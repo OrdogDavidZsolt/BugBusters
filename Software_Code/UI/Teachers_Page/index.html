@@ -295,8 +295,8 @@
             right: 48px;
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
+            align-items: center;
+            gap: 0px;
             z-index: 10;
         }
 
@@ -313,20 +313,22 @@
             font-weight: 800;
             font-variant-numeric: tabular-nums;
             transition: color 0.3s ease;
-            color: #10b981;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .timer-badge.warning .timer-value {
+            background: none;
+            -webkit-text-fill-color: #f59e0b;
             color: #f59e0b;
         }
 
         .timer-badge.danger .timer-value {
+            background: none;
+            -webkit-text-fill-color: #ef4444;
             color: #ef4444;
-        }
-
-        .timer-badge.critical .timer-value {
-            color: #dc2626;
-            animation: timerShake 0.5s ease-in-out infinite;
         }
 
         @keyframes timerShake {
@@ -1207,16 +1209,13 @@
             timerValue.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
             // Remove all classes first
-            timerBadge.classList.remove('warning', 'danger', 'critical');
+            timerBadge.classList.remove('warning', 'danger');
 
             // Add appropriate class based on time remaining
             if (timeRemaining <= 60) {
-                // Last minute - critical with animations
-                timerBadge.classList.add('critical');
-            } else if (timeRemaining <= 300) {
                 // Under 5 minutes - danger (red)
                 timerBadge.classList.add('danger');
-            } else if (timeRemaining <= 600) {
+            } else if (timeRemaining <= 300) {
                 // Under 10 minutes - warning (orange)
                 timerBadge.classList.add('warning');
             }
