@@ -27,6 +27,7 @@
 #define LED_R 10
 #define LED_G 20
 #define LED_B 21
+#define LED_DELAY 1000
 
 // Server
 #define SERVER_PORT 54321
@@ -73,6 +74,19 @@ void setup() {
   pinMode(LED_G, OUTPUT);
   pinMode(LED_B, OUTPUT);
   setLEDs(true, false, false);
+  delay(LED_DELAY);
+  setLEDs(false, true, false);
+  delay(LED_DELAY);
+  setLEDs(false, false, true);
+  delay(LED_DELAY);
+  setLEDs(false, true, true);
+  delay(LED_DELAY);
+  setLEDs(true, true, true);
+  delay(LED_DELAY);
+  setLEDs(true, true, false);
+  delay(LED_DELAY);
+  setLEDs(true, false, false);
+  delay(LED_DELAY);
 
   // Start Serial connection
   Serial.begin(SERIAL_SPEED);
