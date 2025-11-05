@@ -1,9 +1,9 @@
-package Software_Code.Database.Dao;
+package Dao;
 
-import Software_Code.Database.JPAUtil;
-import Software_Code.Database.Model.CourseSession;
-import Software_Code.Database.Model.Attendance;
-import Software_Code.Database.Model.User;
+import JPAUtil.JPAUtil;
+import Model.CourseSession;
+import Model.Attendance;
+import Model.User;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 

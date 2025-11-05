@@ -1,4 +1,4 @@
-package Software_Code.Database;
+package JPAUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

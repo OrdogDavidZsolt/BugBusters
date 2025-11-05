@@ -85,20 +85,41 @@
     </dependencies>
 
     <build>
-
+        <!-- Az alap forrásmappa -->
         <sourceDirectory>Software_Code/Backend_Server</sourceDirectory>
 
         <plugins>
+            <!-- Hozzáadjuk a második source mappát -->
             <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>3.3.5</version>
-            <configuration>
-                <!-- Ez mondja meg, hogy a fő belépési pont a dummy launcher -->
-                <mainClass>Controller.Controller</mainClass>
-            </configuration>
-        </plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>add-database-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>Software_Code/Database</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Spring Boot plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.3.5</version>
+                <configuration>
+                    <mainClass>Controller.Controller</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
-    </build>
+        </build>
 
 </project>

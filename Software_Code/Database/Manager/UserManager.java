@@ -1,8 +1,8 @@
-package Software_Code.Database.Manager;
+package Manager;
 
-import Software_Code.Database.Dao.UserDAO;
-import Software_Code.Database.JPAEntityDAO.JPAUserDAO;
-import Software_Code.Database.Model.User;
+import Dao.UserDAO;
+import JPAEntityDAO.JPAUserDAO;
+import Model.User;
 
 public class UserManager {
     UserDAO userDAO = new JPAUserDAO();

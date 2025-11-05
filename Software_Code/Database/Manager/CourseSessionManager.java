@@ -1,10 +1,9 @@
-package Software_Code.Database.Manager;
+package Manager;
 
-import Software_Code.Database.Dao.CourseSessionDAO;
-import Software_Code.Database.JPAEntityDAO.JPACourseSessionDAO;
-import Software_Code.Database.Model.Course;
-import Software_Code.Database.Model.CourseSession;
-import Software_Code.Database.Model.User;
+import Dao.CourseSessionDAO;
+import JPAEntityDAO.JPACourseSessionDAO;
+import Model.Course;
+import Model.CourseSession;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

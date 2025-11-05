@@ -1,4 +1,4 @@
-package Software_Code.Database.Model;
+package Model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

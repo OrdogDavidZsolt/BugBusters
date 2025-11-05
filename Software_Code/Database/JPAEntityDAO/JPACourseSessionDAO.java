@@ -1,9 +1,9 @@
-package Software_Code.Database.JPAEntityDAO;
+package JPAEntityDAO;
 
-import Software_Code.Database.Dao.CourseSessionDAO;
-import Software_Code.Database.JPAUtil;
-import Software_Code.Database.Model.Course;
-import Software_Code.Database.Model.CourseSession;
+import Dao.CourseSessionDAO;
+import JPAUtil.JPAUtil;
+import Model.Course;
+import Model.CourseSession;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;

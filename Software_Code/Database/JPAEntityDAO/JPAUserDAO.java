@@ -1,8 +1,8 @@
-package Software_Code.Database.JPAEntityDAO;
+package JPAEntityDAO;
 
-import Software_Code.Database.Dao.UserDAO;
-import Software_Code.Database.JPAUtil;
-import Software_Code.Database.Model.User;
+import Dao.UserDAO;
+import JPAUtil.JPAUtil;
+import Model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;

@@ -1,11 +1,11 @@
-package Software_Code.Database.Manager;
+package Manager;
 
-import Software_Code.Database.Dao.AttendanceDAO;
-import Software_Code.Database.JPAEntityDAO.JPAAttendanceDAO;
-import Software_Code.Database.Model.Attendance;
-import Software_Code.Database.Model.Attendance.AttendanceStatus;
-import Software_Code.Database.Model.CourseSession;
-import Software_Code.Database.Model.User;
+import Dao.AttendanceDAO;
+import JPAEntityDAO.JPAAttendanceDAO;
+import Model.Attendance;
+import Model.Attendance.AttendanceStatus;
+import Model.CourseSession;
+import Model.User;
 import jakarta.persistence.EntityManager;
 import java.time.Duration;
 import java.time.LocalDateTime;

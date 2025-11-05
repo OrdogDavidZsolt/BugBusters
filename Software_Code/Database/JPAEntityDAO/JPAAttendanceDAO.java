@@ -1,10 +1,10 @@
-package Software_Code.Database.JPAEntityDAO;
+package JPAEntityDAO;
 
-import Software_Code.Database.Dao.AttendanceDAO;
-import Software_Code.Database.JPAUtil;
-import Software_Code.Database.Model.Attendance;
-import Software_Code.Database.Model.CourseSession;
-import Software_Code.Database.Model.User;
+import Dao.AttendanceDAO;
+import JPAUtil.JPAUtil;
+import Model.Attendance;
+import Model.CourseSession;
+import Model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;

@@ -1,8 +1,8 @@
-package Software_Code.Database.Dao;
+package Dao;
 
-import Software_Code.Database.JPAUtil;
-import Software_Code.Database.Model.Course;
-import Software_Code.Database.Model.CourseSession;
+import JPAUtil.JPAUtil;
+import Model.Course;
+import Model.CourseSession;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

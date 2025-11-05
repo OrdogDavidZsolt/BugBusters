@@ -1,9 +1,9 @@
-package Software_Code.Database.Manager;
+package Manager;
 
-import Software_Code.Database.Dao.CourseDAO;
-import Software_Code.Database.JPAEntityDAO.JPACourseDAO;
-import Software_Code.Database.Model.Course;
-import Software_Code.Database.Model.User;
+import Dao.CourseDAO;
+import JPAEntityDAO.JPACourseDAO;
+import Model.Course;
+import Model.User;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
