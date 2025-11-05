@@ -13,16 +13,25 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Controller {
     
     public static void main(String[] args) {
-        SpringApplication.run(Controller.class, args);
+        
+        // Spring ApplicationContext elindítása
+        var context = SpringApplication.run(Controller.class, args);
+
+        // Spring-ből lekérjük a DB_Connection példányt
+        DB_Connection dbConnection = context.getBean(DB_Connection.class);
+
+        try {
+            dbConnection.startDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(">>SQL Exception");
+        }
+
+        // Saját szerverek indítása
         UI_Connection.start_UI_Server();  // UI szerver elindítása
         System.out.println(">>Controller: Starting UI Server on port " + UI_Connection.getPort());
         HW_Connection.start_HW_Server();  // HW szerver elindítása
         System.out.println(">>Controller: Starting HW Server on port " + HW_Connection.getPort());
-        try {
-            DB_Connection.startDatabase();
-        } catch (Exception e) {
-            System.out.println(">>SQL Exception");
-        }
     }
 }
 

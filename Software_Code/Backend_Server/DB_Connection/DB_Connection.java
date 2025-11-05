@@ -1,42 +1,43 @@
 package DB_Connection;
 
 import Dao.*;
-import JPAEntityDAO.*;
 import Manager.*;
+import org.h2.tools.Server;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.h2.tools.Server;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-@EnableJpaRepositories(basePackages = "Dao")
-@EntityScan(basePackages = "Model")
+@Component
 public class DB_Connection {
-    private static final String URL = "jdbc:mysql://localhost:3306/example"; //online adatbázis linkje és belépési infók átírása
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
 
-    public static void startDatabase() throws SQLException {
+    @Autowired
+    private UserDAO userDAO;
+
+    @Autowired
+    private CourseDAO courseDAO;
+
+    @Autowired
+    private CourseSessionDAO courseSessionDAO;
+
+    @Autowired
+    private AttendanceDAO attendanceDAO;
+
+    public void startDatabase() throws SQLException {
+        // H2 adatbázis indítása
         new Server().runTool("-tcp", "-web", "-ifNotExists");
-        UserDAO userDAO = new JPAUserDAO();
-        CourseDAO courseDAO = new JPACourseDAO();
-        CourseSessionDAO courseSessionDAO = new JPACourseSessionDAO();
-        AttendanceDAO attendanceDAO = new JPAAttendanceDAO();
 
+        // DAO-k automatikusan injektálva vannak a Spring által
         UserManager userManager = new UserManager(userDAO);
         userManager.manage();
+
         CourseManager courseManager = new CourseManager(courseDAO);
         courseManager.manage();
+
         CourseSessionManager courseSessionManager = new CourseSessionManager(courseSessionDAO);
         courseSessionManager.manage();
+
         AttendanceManager attendanceManager = new AttendanceManager(attendanceDAO);
         attendanceManager.manage();
-    }
-
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }
