@@ -6,6 +6,8 @@ import Model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -16,10 +18,9 @@ public class JPACourseDAO implements CourseDAO {
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public void saveCourse(Course course) {
-        entityManager.getTransaction().begin();
         entityManager.persist(course);
-        entityManager.getTransaction().commit();
     }
 
     @Override

@@ -6,6 +6,8 @@ import Model.CourseSession;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,10 +20,9 @@ public class JPACourseSessionDAO implements CourseSessionDAO {
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public void saveSession(CourseSession session) {
-        entityManager.getTransaction().begin();
         entityManager.persist(session);
-        entityManager.getTransaction().commit();
     }
 
     @Override

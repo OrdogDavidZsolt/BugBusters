@@ -5,6 +5,8 @@ import Model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -15,10 +17,9 @@ public class JPAUserDAO implements UserDAO {
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public void saveUser(User user) {
-        entityManager.getTransaction().begin();
         entityManager.persist(user);
-        entityManager.getTransaction().commit();
     }
 
     @Override
