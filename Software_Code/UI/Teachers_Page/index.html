@@ -510,12 +510,16 @@
             font-variant-numeric: tabular-nums;
         }
 
+        .student-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .student-note {
             font-size: 13px;
             color: #4a5568;
             font-style: italic;
-            padding-left: 0;
-            min-height: 18px;
         }
 
         .student-note.empty {
@@ -523,9 +527,6 @@
         }
 
         .edit-btn {
-            position: absolute;
-            top: 12px;
-            right: 52px;
             width: 32px;
             height: 32px;
             border-radius: 8px;
@@ -568,9 +569,6 @@
         }
 
         .delete-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
             width: 32px;
             height: 32px;
             border-radius: 8px;
@@ -1189,6 +1187,11 @@
             { name: "Németh Dóra", code: "QRS345", time: "14:06:38", note: "" }
         ];
 
+        // Assign unique IDs to students
+        studentsData.forEach((student, i) => {
+            student.id = i;
+        });
+
         let currentSort = { field: 'name', order: 'asc' };
         let editingCard = null;
         let deleteTarget = null;
@@ -1304,33 +1307,35 @@
             const attendanceList = document.getElementById('attendanceList');
             attendanceList.innerHTML = '';
 
-            students.forEach((student, index) => {
+            students.forEach((student) => {
                 const card = document.createElement('div');
                 card.className = 'student-card';
-                card.dataset.index = index;
+                card.dataset.id = student.id;
                 
                 const noteText = student.note || 'No notes yet';
                 const noteClass = student.note ? '' : ' empty';
                 
                 card.innerHTML = `
-                    <button class="edit-btn" onclick="editStudent(${index})">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                        </svg>
-                    </button>
-                    <button class="delete-btn" onclick="deleteStudent(${index})">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
-                        </svg>
-                    </button>
                     <div class="student-card-header">
                         <div class="student-info">
                             <div class="student-name">${student.name}</div>
                             <div class="student-code">${student.code}</div>
+                            <div class="student-note${noteClass}">${noteText}</div>
                         </div>
-                        <div class="student-time">${student.time}</div>
+                        <div class="student-actions">
+                            <button class="edit-btn" onclick="editStudent(${student.id})">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                            <button class="delete-btn" onclick="deleteStudent(${student.id})">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                            <div class="student-time">${student.time}</div>
+                        </div>
                     </div>
-                    <div class="student-note${noteClass}">${noteText}</div>
                 `;
                 attendanceList.appendChild(card);
             });
@@ -1340,55 +1345,65 @@
         }
 
         // Edit student function
-        function editStudent(index) {
+        function editStudent(id) {
             // Prevent editing if already editing another card
             if (editingCard !== null) {
                 return;
             }
 
+            const index = studentsData.findIndex(s => s.id === id);
+            if (index === -1) return;
+
             const student = studentsData[index];
             const cards = document.querySelectorAll('.student-card');
-            const card = cards[index];
+            const card = Array.from(cards).find(c => parseInt(c.dataset.id) === id);
+            if (!card) return;
             
-            editingCard = index;
+            editingCard = id;
             card.classList.add('editing');
             
             const currentNote = student.note || '';
             
             card.innerHTML = `
-                <button class="edit-btn" style="opacity: 0.5; cursor: not-allowed;">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                    </svg>
-                </button>
-                <button class="delete-btn" style="opacity: 0.5; cursor: not-allowed;">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
-                    </svg>
-                </button>
                 <div class="student-card-header">
                     <div class="student-info">
                         <div class="student-name">${student.name}</div>
                         <div class="student-code">${student.code}</div>
                     </div>
-                    <div class="student-time">${student.time}</div>
+                    <div class="student-actions">
+                        <button class="edit-btn" style="opacity: 0.5; cursor: not-allowed;">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                        <button class="delete-btn" style="opacity: 0.5; cursor: not-allowed;">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                        <div class="student-time">${student.time}</div>
+                    </div>
                 </div>
                 <textarea class="note-edit-field" placeholder="Enter notes for this student...">${currentNote}</textarea>
                 <div class="edit-actions">
-                    <button class="save-btn" onclick="saveNote(${index})">Save</button>
-                    <button class="cancel-btn" onclick="cancelEdit(${index})">Cancel</button>
+                    <button class="save-btn" onclick="saveNote(${id})">Save</button>
+                    <button class="cancel-btn" onclick="cancelEdit(${id})">Cancel</button>
                 </div>
             `;
         }
 
         // Save note function
-        function saveNote(index) {
+        function saveNote(id) {
             const cards = document.querySelectorAll('.student-card');
-            const card = cards[index];
+            const card = Array.from(cards).find(c => parseInt(c.dataset.id) === id);
+            if (!card) return;
             const textarea = card.querySelector('.note-edit-field');
             const newNote = textarea.value.trim();
             
-            studentsData[index].note = newNote;
+            const index = studentsData.findIndex(s => s.id === id);
+            if (index !== -1) {
+                studentsData[index].note = newNote;
+            }
             editingCard = null;
             
             // Re-render with current sort
@@ -1396,16 +1411,18 @@
         }
 
         // Cancel edit function
-        function cancelEdit(index) {
+        function cancelEdit(id) {
             editingCard = null;
             // Re-render with current sort
             sortStudents(currentSort.field, currentSort.order);
         }
 
         // Delete student function
-        function deleteStudent(index) {
+        function deleteStudent(id) {
+            const index = studentsData.findIndex(s => s.id === id);
+            if (index === -1) return;
             const student = studentsData[index];
-            deleteTarget = index;
+            deleteTarget = id;
             
             const deleteModal = document.getElementById('deleteModal');
             const deleteMessage = document.getElementById('deleteMessage');
@@ -1529,7 +1546,10 @@
 
         deleteConfirm.addEventListener('click', function() {
             if (deleteTarget !== null) {
-                studentsData.splice(deleteTarget, 1);
+                const index = studentsData.findIndex(s => s.id === deleteTarget);
+                if (index !== -1) {
+                    studentsData.splice(index, 1);
+                }
                 deleteTarget = null;
                 deleteModal.classList.remove('active');
                 sortStudents(currentSort.field, currentSort.order);
@@ -1544,7 +1564,7 @@
         });
 
         // Initialize
-        renderStudents(studentsData);
+        sortStudents(currentSort.field, currentSort.order);
     </script>
 </body>
 </html>
