@@ -1,14 +1,11 @@
 package Dao;
 
-import JPAUtil.JPAUtil;
 import Model.Course;
 import Model.User;
-import jakarta.persistence.EntityManager;
 import java.util.List;
 
 public interface CourseDAO {
 
-    EntityManager em = JPAUtil.getEntityManager();
 
     void saveCourse(Course course);
 

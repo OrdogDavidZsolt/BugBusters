@@ -1,9 +1,9 @@
 package JPAEntityDAO;
 
 import Dao.UserDAO;
-import JPAUtil.JPAUtil;
 import Model.User;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -11,7 +11,8 @@ import java.util.List;
 @Repository
 public class JPAUserDAO implements UserDAO {
 
-    private final EntityManager entityManager = JPAUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void saveUser(User user) {

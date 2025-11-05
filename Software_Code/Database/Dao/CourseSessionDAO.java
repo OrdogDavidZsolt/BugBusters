@@ -1,16 +1,12 @@
 package Dao;
 
-import JPAUtil.JPAUtil;
 import Model.Course;
 import Model.CourseSession;
-import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CourseSessionDAO {
-
-    EntityManager em = JPAUtil.getEntityManager();
 
     void saveSession(CourseSession session);
 

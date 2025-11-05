@@ -1,27 +1,28 @@
 package JPAEntityDAO;
 
 import Dao.AttendanceDAO;
-import JPAUtil.JPAUtil;
 import Model.Attendance;
 import Model.CourseSession;
 import Model.User;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
 public class JPAAttendanceDAO implements AttendanceDAO {
 
-    private final EntityManager entityManager = JPAUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
+    @Transactional
     public void saveAttendance(Attendance attendance) {
-        em.getTransaction().begin();
-        attendance.setStudent(em.merge(attendance.getStudent()));
-        attendance.setSession(em.merge(attendance.getSession()));
-        em.persist(attendance);
-        em.getTransaction().commit();
+        attendance.setStudent(entityManager.merge(attendance.getStudent()));
+        attendance.setSession(entityManager.merge(attendance.getSession()));
+        entityManager.persist(attendance);
     }
 
     @Override
@@ -65,20 +66,14 @@ public class JPAAttendanceDAO implements AttendanceDAO {
     }
 
     @Override
+    @Transactional
     public void updateAttendance(Attendance attendance) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(attendance);
-        entityManager.getTransaction().commit();
+        entityManager.merge(attendance);
     }
 
     @Override
+    @Transactional
     public void deleteAttendance(Attendance attendance) {
-        entityManager.getTransaction().begin();
-        entityManager.remove(attendance);
-        entityManager.getTransaction().commit();
-    }
-
-    public EntityManager getEntityManager() {
-        return entityManager;
+        entityManager.remove(entityManager.contains(attendance) ? attendance : entityManager.merge(attendance));
     }
 }

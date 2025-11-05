@@ -1,15 +1,16 @@
 package JPAUtil;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JPAUtil {
-    private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("br.com.fredericci.pu");
 
-    public static EntityManager getEntityManager() {
-        return emf.createEntityManager();
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }
-

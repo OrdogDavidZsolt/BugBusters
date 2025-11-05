@@ -1,13 +1,9 @@
 package Dao;
 
-import JPAUtil.JPAUtil;
 import Model.User;
-import jakarta.persistence.EntityManager;
 import java.util.List;
 
 public interface UserDAO {
-
-    EntityManager em = JPAUtil.getEntityManager();
 
     void saveUser(User user);
 

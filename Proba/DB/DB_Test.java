@@ -42,18 +42,5 @@ public class DB_Test {
 
     private static void startDatabase() throws SQLException {
         new Server().runTool("-tcp", "-web", "-ifNotExists");
-        UserDAO userDAO = new JPAUserDAO();
-        CourseDAO courseDAO = new JPACourseDAO();
-        CourseSessionDAO courseSessionDAO = new JPACourseSessionDAO();
-        AttendanceDAO attendanceDAO = new JPAAttendanceDAO();
-
-        UserManager userManager = new UserManager(userDAO);
-        userManager.manage();
-        CourseManager courseManager = new CourseManager(courseDAO);
-        courseManager.manage();
-        CourseSessionManager courseSessionManager = new CourseSessionManager(courseSessionDAO);
-        courseSessionManager.manage();
-        AttendanceManager attendanceManager = new AttendanceManager(attendanceDAO);
-        attendanceManager.manage();
     }
 }

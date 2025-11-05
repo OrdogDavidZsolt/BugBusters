@@ -1,10 +1,10 @@
 package JPAEntityDAO;
 
 import Dao.CourseDAO;
-import JPAUtil.JPAUtil;
 import Model.Course;
 import Model.User;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -12,7 +12,8 @@ import java.util.List;
 @Repository
 public class JPACourseDAO implements CourseDAO {
 
-    private final EntityManager entityManager = JPAUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void saveCourse(Course course) {

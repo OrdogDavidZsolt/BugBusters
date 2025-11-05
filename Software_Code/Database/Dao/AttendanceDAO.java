@@ -1,16 +1,11 @@
 package Dao;
 
-import JPAUtil.JPAUtil;
 import Model.CourseSession;
 import Model.Attendance;
 import Model.User;
-import jakarta.persistence.EntityManager;
 import java.util.List;
 
 public interface AttendanceDAO {
-    EntityManager em = JPAUtil.getEntityManager();
-
-    EntityManager getEntityManager();
 
     void saveAttendance(Attendance attendance);
 
