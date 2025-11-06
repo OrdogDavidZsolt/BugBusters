@@ -390,25 +390,42 @@
             margin-bottom: 32px;
             opacity: 1;
             transform: translateY(0);
-            transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease;
-            max-height: 200px;
-            overflow: hidden;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        .class-selector-wrapper.hidden {
-            opacity: 0;
-            transform: translateY(-10px);
-            max-height: 0;
-            margin-bottom: 0;
+        .class-selector-wrapper.compact {
+            margin-bottom: 24px;
         }
 
         .class-selector-label {
             font-size: 14px;
             font-weight: 600;
             color: #4a5568;
-            margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .class-selector-label.hidden {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
+        .class-selector-container {
+            flex: 1;
+            max-width: 100%;
+            transition: max-width 0.4s ease;
+        }
+
+        .class-selector-wrapper.compact .class-selector-container {
+            max-width: 50%;
         }
 
         .class-selector {
@@ -1085,6 +1102,10 @@
             .main-title {
                 padding-right: 0;
             }
+
+            .class-selector-wrapper.compact .class-selector-container {
+                max-width: 100%;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1119,6 +1140,15 @@
 
             .timer-value {
                 font-size: 24px;
+            }
+
+            .class-selector-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .class-selector-wrapper.compact .class-selector-container {
+                max-width: 100%;
             }
         }
 
@@ -1213,15 +1243,17 @@
         <h1 class="main-title">Class Attendance</h1>
 
         <div class="class-selector-wrapper" id="classSelectorWrapper">
-            <div class="class-selector-label">Select Your Class</div>
-            <select class="class-selector" id="classSelector">
-                <option value="">Choose a class...</option>
-                <option value="class1">Advanced Programming - IK-105 - Monday 14:00</option>
-                <option value="class2">Database Systems - IK-207 - Tuesday 10:00</option>
-                <option value="class3">Web Development - IK-312 - Wednesday 16:00</option>
-                <option value="class4">Algorithm Design - IK-105 - Thursday 14:00</option>
-                <option value="class5">Software Engineering - IK-401 - Friday 12:00</option>
-            </select>
+            <div class="class-selector-label" id="classSelectorLabel">Select Your Class</div>
+            <div class="class-selector-container">
+                <select class="class-selector" id="classSelector">
+                    <option value="">Choose a class...</option>
+                    <option value="class1">Advanced Programming - IK-105 - Monday 14:00</option>
+                    <option value="class2">Database Systems - IK-207 - Tuesday 10:00</option>
+                    <option value="class3">Web Development - IK-312 - Wednesday 16:00</option>
+                    <option value="class4">Algorithm Design - IK-105 - Thursday 14:00</option>
+                    <option value="class5">Software Engineering - IK-401 - Friday 12:00</option>
+                </select>
+            </div>
         </div>
 
         <div class="content-wrapper" id="contentWrapper">
@@ -1423,6 +1455,7 @@
         let deleteTarget = null;
         let timerInterval = null;
         let timeRemaining = 1200;
+        let isClassSelected = false;
 
         // Timer functionality
         const timerBadge = document.getElementById('timerBadge');
@@ -1531,6 +1564,7 @@
         // Class selector functionality
         const classSelector = document.getElementById('classSelector');
         const classSelectorWrapper = document.getElementById('classSelectorWrapper');
+        const classSelectorLabel = document.getElementById('classSelectorLabel');
         const contentWrapper = document.getElementById('contentWrapper');
         const mainCard = document.querySelector('.main-card');
 
@@ -1551,19 +1585,32 @@
                     id: i
                 }));
                 
-                // Hide selector with animation
-                setTimeout(() => {
-                    classSelectorWrapper.classList.add('hidden');
-                }, 100);
-                
-                // Show content after selector is hidden
-                setTimeout(() => {
-                    contentWrapper.classList.add('visible');
-                    timerBadge.classList.add('visible');
-                    mainCard.classList.add('expanded');
+                if (!isClassSelected) {
+                    // First time selecting a class
+                    isClassSelected = true;
+                    
+                    // Change label to "Change Class"
+                    classSelectorLabel.textContent = 'Change Class';
+                    
+                    // Make wrapper compact
+                    classSelectorWrapper.classList.add('compact');
+                    
+                    // Show content
+                    setTimeout(() => {
+                        contentWrapper.classList.add('visible');
+                        timerBadge.classList.add('visible');
+                        mainCard.classList.add('expanded');
+                        startTimer();
+                        sortStudents(currentSort.field, currentSort.order);
+                    }, 100);
+                } else {
+                    // Changing to a different class
+                    // Reset timer
                     startTimer();
+                    
+                    // Re-render students with current sort
                     sortStudents(currentSort.field, currentSort.order);
-                }, 500);
+                }
             }
         });
 
