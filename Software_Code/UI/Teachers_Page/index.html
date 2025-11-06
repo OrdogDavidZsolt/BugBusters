@@ -271,12 +271,16 @@
             padding: 48px;
             width: 70%;
             max-width: 1600px;
-            height: 750px;
+            min-height: 400px;
             animation: fadeIn 0.5s ease-in;
-            transition: box-shadow 0.5s ease, border 0.3s ease;
+            transition: box-shadow 0.5s ease, border 0.3s ease, height 0.6s ease;
             position: relative;
             display: flex;
             flex-direction: column;
+        }
+
+        .main-card.expanded {
+            height: 750px;
         }
 
         body.light-mode .main-card {
@@ -289,6 +293,30 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes slideDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px);
+                max-height: 0;
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+                max-height: 1000px;
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         .timer-badge {
             position: absolute;
             top: 48px;
@@ -298,6 +326,14 @@
             align-items: center;
             gap: 4px;
             z-index: 10;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.4s ease 0.2s, transform 0.4s ease 0.2s;
+        }
+
+        .timer-badge.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .timer-label {
@@ -350,12 +386,95 @@
             color: #2563eb;
         }
 
+        .class-selector-wrapper {
+            margin-bottom: 32px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease;
+            max-height: 200px;
+            overflow: hidden;
+        }
+
+        .class-selector-wrapper.hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+            max-height: 0;
+            margin-bottom: 0;
+        }
+
+        .class-selector-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .class-selector {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a202c;
+            background: #f7fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M7 10l5 5 5-5' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 48px;
+        }
+
+        .class-selector:hover {
+            border-color: var(--accent-1);
+            background: white;
+            box-shadow: 0 4px 12px var(--accent-shadow);
+        }
+
+        .class-selector:focus {
+            outline: none;
+            border-color: var(--accent-1);
+            background: white;
+            box-shadow: 0 0 0 4px var(--accent-shadow);
+        }
+
+        .class-selector option {
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        body.light-mode .class-selector {
+            background: #f8fafc;
+        }
+
+        body.light-mode .class-selector:hover,
+        body.light-mode .class-selector:focus {
+            border-color: #2563eb;
+        }
+
         .content-wrapper {
             display: flex;
             gap: 32px;
             align-items: stretch;
             flex: 1;
             overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+            max-height: 0;
+        }
+
+        .content-wrapper.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+            max-height: 1000px;
+            animation: slideDown 0.6s ease forwards;
         }
 
         .attendance-section {
@@ -452,7 +571,32 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideInLeft 0.4s ease forwards;
         }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .student-card:nth-child(1) { animation-delay: 0.05s; }
+        .student-card:nth-child(2) { animation-delay: 0.1s; }
+        .student-card:nth-child(3) { animation-delay: 0.15s; }
+        .student-card:nth-child(4) { animation-delay: 0.2s; }
+        .student-card:nth-child(5) { animation-delay: 0.25s; }
+        .student-card:nth-child(6) { animation-delay: 0.3s; }
+        .student-card:nth-child(7) { animation-delay: 0.35s; }
+        .student-card:nth-child(8) { animation-delay: 0.4s; }
+        .student-card:nth-child(9) { animation-delay: 0.45s; }
+        .student-card:nth-child(10) { animation-delay: 0.5s; }
 
         .student-card:hover {
             transform: translateX(4px);
@@ -914,8 +1058,11 @@
         @media (max-width: 1200px) {
             .main-card {
                 width: 85%;
-                height: auto;
                 min-height: 750px;
+            }
+
+            .main-card.expanded {
+                height: auto;
             }
 
             .content-wrapper {
@@ -1065,7 +1212,19 @@
 
         <h1 class="main-title">Class Attendance</h1>
 
-        <div class="content-wrapper">
+        <div class="class-selector-wrapper" id="classSelectorWrapper">
+            <div class="class-selector-label">Select Your Class</div>
+            <select class="class-selector" id="classSelector">
+                <option value="">Choose a class...</option>
+                <option value="class1">Advanced Programming - IK-105 - Monday 14:00</option>
+                <option value="class2">Database Systems - IK-207 - Tuesday 10:00</option>
+                <option value="class3">Web Development - IK-312 - Wednesday 16:00</option>
+                <option value="class4">Algorithm Design - IK-105 - Thursday 14:00</option>
+                <option value="class5">Software Engineering - IK-401 - Friday 12:00</option>
+            </select>
+        </div>
+
+        <div class="content-wrapper" id="contentWrapper">
             <div class="attendance-section">
                 <div class="sort-buttons">
                     <button class="sort-btn active" data-sort="name" data-order="asc">
@@ -1170,36 +1329,102 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Sample student data with notes
-        const studentsData = [
-            { name: "Kiss Anna", code: "ABC123", time: "14:02:15", note: "" },
-            { name: "Nagy Péter", code: "DEF456", time: "14:03:42", note: "" },
-            { name: "Szabó Márta", code: "GHI789", time: "14:01:28", note: "" },
-            { name: "Horváth László", code: "JKL012", time: "14:05:19", note: "" },
-            { name: "Tóth Eszter", code: "MNO345", time: "14:00:53", note: "" },
-            { name: "Molnár Gábor", code: "PQR678", time: "14:04:37", note: "" },
-            { name: "Varga Júlia", code: "STU901", time: "14:06:14", note: "" },
-            { name: "Kovács Tamás", code: "VWX234", time: "14:02:48", note: "" },
-            { name: "Balogh Emma", code: "YZA567", time: "14:07:22", note: "" },
-            { name: "Simon Ferenc", code: "BCD890", time: "14:03:05", note: "" },
-            { name: "Farkas Viktória", code: "EFG123", time: "14:08:41", note: "" },
-            { name: "Papp Zoltán", code: "HIJ456", time: "14:01:59", note: "" },
-            { name: "Lakatos Réka", code: "KLM789", time: "14:04:17", note: "" },
-            { name: "Juhász Bence", code: "NOP012", time: "14:05:52", note: "" },
-            { name: "Németh Dóra", code: "QRS345", time: "14:06:38", note: "" }
-        ];
+        // Class data with different students and info for each class
+        const classesData = {
+            class1: {
+                name: "Advanced Programming",
+                location: "IK-105",
+                dateTime: "2025-11-04 14:00",
+                teacher: "Dr. János Kovács",
+                students: [
+                    { name: "Kiss Anna", code: "ABC123", time: "14:02:15", note: "" },
+                    { name: "Nagy Péter", code: "DEF456", time: "14:03:42", note: "" },
+                    { name: "Szabó Márta", code: "GHI789", time: "14:01:28", note: "" },
+                    { name: "Horváth László", code: "JKL012", time: "14:05:19", note: "" },
+                    { name: "Tóth Eszter", code: "MNO345", time: "14:00:53", note: "" },
+                    { name: "Molnár Gábor", code: "PQR678", time: "14:04:37", note: "" },
+                    { name: "Varga Júlia", code: "STU901", time: "14:06:14", note: "" },
+                    { name: "Kovács Tamás", code: "VWX234", time: "14:02:48", note: "" },
+                    { name: "Balogh Emma", code: "YZA567", time: "14:07:22", note: "" },
+                    { name: "Simon Ferenc", code: "BCD890", time: "14:03:05", note: "" }
+                ]
+            },
+            class2: {
+                name: "Database Systems",
+                location: "IK-207",
+                dateTime: "2025-11-05 10:00",
+                teacher: "Dr. János Kovács",
+                students: [
+                    { name: "Farkas Viktória", code: "EFG123", time: "10:01:41", note: "" },
+                    { name: "Papp Zoltán", code: "HIJ456", time: "10:00:59", note: "" },
+                    { name: "Lakatos Réka", code: "KLM789", time: "10:03:17", note: "" },
+                    { name: "Juhász Bence", code: "NOP012", time: "10:02:52", note: "" },
+                    { name: "Németh Dóra", code: "QRS345", time: "10:04:38", note: "" },
+                    { name: "Szilágyi Márk", code: "TUV678", time: "10:05:21", note: "" },
+                    { name: "Rácz Adrienn", code: "WXY901", time: "10:01:15", note: "" },
+                    { name: "Fekete Balázs", code: "ZAB234", time: "10:06:44", note: "" }
+                ]
+            },
+            class3: {
+                name: "Web Development",
+                location: "IK-312",
+                dateTime: "2025-11-06 16:00",
+                teacher: "Dr. János Kovács",
+                students: [
+                    { name: "Oláh Kristóf", code: "CDE567", time: "16:02:33", note: "" },
+                    { name: "Pintér Laura", code: "FGH890", time: "16:01:18", note: "" },
+                    { name: "Mészáros Dániel", code: "IJK123", time: "16:03:55", note: "" },
+                    { name: "Antal Zsófia", code: "LMN456", time: "16:00:42", note: "" },
+                    { name: "Bodnár Máté", code: "OPQ789", time: "16:04:27", note: "" },
+                    { name: "Sipos Nikolett", code: "RST012", time: "16:02:09", note: "" },
+                    { name: "Hegedűs Ádám", code: "UVW345", time: "16:05:51", note: "" },
+                    { name: "Máté Vivien", code: "XYZ678", time: "16:01:36", note: "" },
+                    { name: "Vas Olivér", code: "ABC901", time: "16:06:13", note: "" },
+                    { name: "Szűcs Hanna", code: "DEF234", time: "16:03:28", note: "" },
+                    { name: "Boros Levente", code: "GHI567", time: "16:07:05", note: "" }
+                ]
+            },
+            class4: {
+                name: "Algorithm Design",
+                location: "IK-105",
+                dateTime: "2025-11-07 14:00",
+                teacher: "Dr. János Kovács",
+                students: [
+                    { name: "Katona Norbert", code: "JKL890", time: "14:01:24", note: "" },
+                    { name: "Lengyel Petra", code: "MNO123", time: "14:02:57", note: "" },
+                    { name: "Orbán Richárd", code: "PQR456", time: "14:00:38", note: "" },
+                    { name: "Vass Eszter", code: "STU789", time: "14:04:16", note: "" },
+                    { name: "Gál Kornél", code: "VWX012", time: "14:03:43", note: "" },
+                    { name: "Fábián Lili", code: "YZA345", time: "14:05:29", note: "" }
+                ]
+            },
+            class5: {
+                name: "Software Engineering",
+                location: "IK-401",
+                dateTime: "2025-11-08 12:00",
+                teacher: "Dr. János Kovács",
+                students: [
+                    { name: "Kis Áron", code: "BCD678", time: "12:01:52", note: "" },
+                    { name: "Kocsis Luca", code: "EFG901", time: "12:00:37", note: "" },
+                    { name: "Pál Dominik", code: "HIJ234", time: "12:03:18", note: "" },
+                    { name: "Takács Fanni", code: "KLM567", time: "12:02:45", note: "" },
+                    { name: "Váradi Bálint", code: "NOP890", time: "12:04:21", note: "" },
+                    { name: "Vincze Kitti", code: "QRS123", time: "12:01:09", note: "" },
+                    { name: "Balog Erik", code: "TUV456", time: "12:05:54", note: "" },
+                    { name: "Csiki Nóra", code: "WXY789", time: "12:03:31", note: "" },
+                    { name: "Kelemen Csaba", code: "ZAB012", time: "12:06:47", note: "" }
+                ]
+            }
+        };
 
-        // Assign unique IDs to students
-        studentsData.forEach((student, i) => {
-            student.id = i;
-        });
-
+        let currentClassStudents = [];
         let currentSort = { field: 'name', order: 'asc' };
         let editingCard = null;
         let deleteTarget = null;
+        let timerInterval = null;
+        let timeRemaining = 1200;
 
         // Timer functionality
-        let timeRemaining = 1200; // 20 minutes in seconds
         const timerBadge = document.getElementById('timerBadge');
         const timerValue = document.getElementById('timerValue');
 
@@ -1208,15 +1433,11 @@
             const seconds = timeRemaining % 60;
             timerValue.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
-            // Remove all classes first
             timerBadge.classList.remove('warning', 'danger');
 
-            // Add appropriate class based on time remaining
             if (timeRemaining <= 60) {
-                // Under 5 minutes - danger (red)
                 timerBadge.classList.add('danger');
             } else if (timeRemaining <= 300) {
-                // Under 10 minutes - warning (orange)
                 timerBadge.classList.add('warning');
             }
 
@@ -1228,8 +1449,14 @@
             }
         }
 
-        const timerInterval = setInterval(updateTimer, 1000);
-        updateTimer(); // Initial call
+        function startTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            timeRemaining = 1200;
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
 
         // Mode toggle functionality
         const modeToggle = document.getElementById('modeToggle');
@@ -1301,6 +1528,45 @@
         fullscreenBtn.addEventListener('click', toggleFullscreen);
         document.addEventListener('fullscreenchange', updateFullscreenIcon);
 
+        // Class selector functionality
+        const classSelector = document.getElementById('classSelector');
+        const classSelectorWrapper = document.getElementById('classSelectorWrapper');
+        const contentWrapper = document.getElementById('contentWrapper');
+        const mainCard = document.querySelector('.main-card');
+
+        classSelector.addEventListener('change', function() {
+            const selectedClass = this.value;
+            
+            if (selectedClass && classesData[selectedClass]) {
+                const classData = classesData[selectedClass];
+                
+                // Update class info
+                document.getElementById('classDateTime').textContent = classData.dateTime;
+                document.getElementById('classLocation').textContent = classData.location;
+                document.getElementById('teacherName').textContent = classData.teacher;
+                
+                // Prepare students data
+                currentClassStudents = classData.students.map((student, i) => ({
+                    ...student,
+                    id: i
+                }));
+                
+                // Hide selector with animation
+                setTimeout(() => {
+                    classSelectorWrapper.classList.add('hidden');
+                }, 100);
+                
+                // Show content after selector is hidden
+                setTimeout(() => {
+                    contentWrapper.classList.add('visible');
+                    timerBadge.classList.add('visible');
+                    mainCard.classList.add('expanded');
+                    startTimer();
+                    sortStudents(currentSort.field, currentSort.order);
+                }, 500);
+            }
+        });
+
         // Render student cards
         function renderStudents(students) {
             const attendanceList = document.getElementById('attendanceList');
@@ -1350,10 +1616,10 @@
                 return;
             }
 
-            const index = studentsData.findIndex(s => s.id === id);
+            const index = currentClassStudents.findIndex(s => s.id === id);
             if (index === -1) return;
 
-            const student = studentsData[index];
+            const student = currentClassStudents[index];
             const cards = document.querySelectorAll('.student-card');
             const card = Array.from(cards).find(c => parseInt(c.dataset.id) === id);
             if (!card) return;
@@ -1399,9 +1665,9 @@
             const textarea = card.querySelector('.note-edit-field');
             const newNote = textarea.value.trim();
             
-            const index = studentsData.findIndex(s => s.id === id);
+            const index = currentClassStudents.findIndex(s => s.id === id);
             if (index !== -1) {
-                studentsData[index].note = newNote;
+                currentClassStudents[index].note = newNote;
             }
             editingCard = null;
             
@@ -1418,9 +1684,9 @@
 
         // Delete student function
         function deleteStudent(id) {
-            const index = studentsData.findIndex(s => s.id === id);
+            const index = currentClassStudents.findIndex(s => s.id === id);
             if (index === -1) return;
-            const student = studentsData[index];
+            const student = currentClassStudents[index];
             deleteTarget = id;
             
             const deleteModal = document.getElementById('deleteModal');
@@ -1431,7 +1697,7 @@
 
         // Sort functionality
         function sortStudents(field, order) {
-            const sorted = [...studentsData].sort((a, b) => {
+            const sorted = [...currentClassStudents].sort((a, b) => {
                 let aVal = a[field];
                 let bVal = b[field];
 
@@ -1545,9 +1811,9 @@
 
         deleteConfirm.addEventListener('click', function() {
             if (deleteTarget !== null) {
-                const index = studentsData.findIndex(s => s.id === deleteTarget);
+                const index = currentClassStudents.findIndex(s => s.id === deleteTarget);
                 if (index !== -1) {
-                    studentsData.splice(index, 1);
+                    currentClassStudents.splice(index, 1);
                 }
                 deleteTarget = null;
                 deleteModal.classList.remove('active');
@@ -1561,9 +1827,6 @@
                 deleteTarget = null;
             }
         });
-
-        // Initialize
-        sortStudents(currentSort.field, currentSort.order);
     </script>
 </body>
 </html>
