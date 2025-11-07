@@ -1281,11 +1281,11 @@ background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             <div class="class-selector-container">
                 <select class="class-selector" id="classSelector">
                     <option value="">Choose a class...</option>
-                    <option value="class1">Advanced Programming - IK-105 - Monday 14:00</option>
-                    <option value="class2">Database Systems - IK-207 - Tuesday 10:00</option>
-                    <option value="class3">Web Development - IK-312 - Wednesday 16:00</option>
-                    <option value="class4">Algorithm Design - IK-105 - Thursday 14:00</option>
-                    <option value="class5">Software Engineering - IK-401 - Friday 12:00</option>
+                    <option value="class1">Advanced Programming - Monday 14:00</option>
+                    <option value="class2">Database Systems - Tuesday 10:00</option>
+                    <option value="class3">Web Development - Wednesday 16:00</option>
+                    <option value="class4">Algorithm Design - Thursday 14:00</option>
+                    <option value="class5">Software Engineering - Friday 12:00</option>
                 </select>
             </div>
         </div>
@@ -1627,6 +1627,11 @@ background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             const selectedClass = this.value;
             
             if (selectedClass && classesData[selectedClass]) {
+                const placeholderOption = this.querySelector('option[value=""]');
+                if (placeholderOption) {
+                    placeholderOption.remove();
+                }
+                
                 const classData = classesData[selectedClass];
                 
                 // Update class info
