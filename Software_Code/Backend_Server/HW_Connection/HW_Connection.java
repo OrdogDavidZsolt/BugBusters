@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 public class HW_Connection
 {
     private static final Map<Integer, String> readers = new HashMap<>();
+    private static int nextReaderId = 1; // az első kiosztott ID 1 lesz, amit a configureReader fog hasznalni
 
     private static final int PORT = 54321; //ezen a porton hallgat a szerver
     private static final int THREAD_POOL_SIZE = 50; // egyszerre max. 50 kliens
