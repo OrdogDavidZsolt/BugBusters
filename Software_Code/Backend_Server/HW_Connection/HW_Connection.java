@@ -150,6 +150,7 @@ public class HW_Connection
              */
             int newId = nextReaderId;
 
+            readers.put(newId, socket.getInetAddress().getHostAddress()); // beletesszuk az uj olvasot
 
             return newId;
         }
