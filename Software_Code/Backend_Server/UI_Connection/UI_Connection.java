@@ -152,37 +152,39 @@ public class UI_Connection
         }
 
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            String requestedPath = exchange.getRequestURI().getPath();
-            System.out.println(">>UI_Connection: Request: " + requestedPath);
-            // Ha csak "/"-t kér, legyen index.html
-            if (requestedPath.equals("/")) {
-                requestedPath = "/index.html";
-            }
-
-            Path filePath = rootDir.resolve("." + requestedPath).normalize();
-            if (!Files.exists(filePath) || !filePath.startsWith(rootDir)) {
-                String notFound = "404 Not Found";
-                exchange.sendResponseHeaders(404, notFound.length());
-                try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(notFound.getBytes());
-                }
-                return;
-            }
-
-            // Kiterjesztés alapján MIME-típus
-            String ext = "";
-            int dot = filePath.toString().lastIndexOf('.');
-            if (dot >= 0) ext = filePath.toString().substring(dot + 1).toLowerCase();
-            String mimeType = mimeTypes.getOrDefault(ext, "application/octet-stream");
-
-            // Válasz küldése
-            byte[] bytes = Files.readAllBytes(filePath);
-            exchange.getResponseHeaders().set("Content-Type", mimeType + "; charset=UTF-8");
-            exchange.sendResponseHeaders(200, bytes.length);
-
+        public void handle(HttpExchange exchange) {
             try (OutputStream os = exchange.getResponseBody()) {
+                String requestedPath = exchange.getRequestURI().getPath();
+                System.out.println(">> UI_Connection: Request: " + requestedPath);
+                // Ha csak "/"-t kér, legyen index.html
+                if (requestedPath.equals("/")) {
+                    requestedPath = "/index.html";
+                }
+
+                Path filePath = rootDir.resolve("." + requestedPath).normalize();
+                if (!Files.exists(filePath) || !filePath.startsWith(rootDir)) {
+                    String notFound = "404 Not Found";
+                    exchange.sendResponseHeaders(404, notFound.length());
+                    os.write(notFound.getBytes());
+                    return;
+                }
+
+                // Kiterjesztés alapján MIME-típus
+                String ext = "";
+                int dot = filePath.toString().lastIndexOf('.');
+                if (dot >= 0) ext = filePath.toString().substring(dot + 1).toLowerCase();
+                String mimeType = mimeTypes.getOrDefault(ext, "application/octet-stream");
+
+                // Válasz küldése
+                byte[] bytes = Files.readAllBytes(filePath);
+                exchange.getResponseHeaders().set("Content-Type", mimeType + "; charset=UTF-8");
+                exchange.sendResponseHeaders(200, bytes.length);
+
                 os.write(bytes);
+            }
+            catch (IOException e)
+            {
+                System.out.println(">> UI_Connection: IO Exception raised when handling content request: " + e.getMessage());
             }
         }
     }
@@ -192,57 +194,61 @@ public class UI_Connection
         private int responseCode;
 
         @Override
-        public void handle(HttpExchange exchange) throws IOException
+        public void handle(HttpExchange exchange)
         {
-            // Csak POST kérésekre fókuszál
-            if ("POST".equalsIgnoreCase(exchange.getRequestMethod()))
-            {
-                // Body kiolvasása a kérelemből
-                byte[] data = exchange.getRequestBody().readAllBytes();
-                String body = new String(data, "UTF-8");
+            try (OutputStream os = exchange.getResponseBody()) {
+                // Csak POST kérésekre fókuszál
+                if ("POST".equalsIgnoreCase(exchange.getRequestMethod()))
+                {
+                    // Body kiolvasása a kérelemből
+                    byte[] data = exchange.getRequestBody().readAllBytes();
+                    String body = new String(data, "UTF-8");
 
-                // Debug infó
-                System.out.println(">>UI_Connection: Received data: " + body);
+                    // Debug infó
+                    System.out.println(">>UI_Connection: Received data: " + body);
 
 
-                // Egyszerű JSON parse - ha nincs külső lib, akkor manuálisan:
-                boolean success = false;
-                String message = "";
+                    // Egyszerű JSON parse - ha nincs külső lib, akkor manuálisan:
+                    boolean success = false;
+                    String message = "";
 
-                /* példa, majd adatbázisból jön */
-                if (body.contains("\"username\":\"admin\"") && body.contains("\"password\":\"admin\"") && body.contains("\"mode\":\"admin\"")) {
-                    success = true;
-                    message = "Login successful!";
-                } else if (body.contains("\"username\":\"teacher1\"") && body.contains("\"password\":\"1234\"") && body.contains("\"mode\":\"teacher\"")) {
-                    success = true;
-                    message = "Login successful!";
-                } else {
-                    success = false;
-                    message = "Invalid username, password or login mode (teacher / admin)!";
+                    /* példa, majd adatbázisból jön */
+                    if (body.contains("\"username\":\"admin\"") && body.contains("\"password\":\"admin\"") && body.contains("\"mode\":\"admin\"")) {
+                        success = true;
+                        message = "Login successful!";
+                    } else if (body.contains("\"username\":\"teacher1\"") && body.contains("\"password\":\"1234\"") && body.contains("\"mode\":\"teacher\"")) {
+                        success = true;
+                        message = "Login successful!";
+                    } else {
+                        success = false;
+                        message = "Invalid username, password or login mode (teacher / admin)!";
+                    }
+                    /* Idáig kell az adatbázisból lekérdezni */
+
+                    String jsonResponse = String.format(
+                        "{\"success\": %b, \"message\": \"%s\"}",
+                        success, message
+                    );
+
+                    // Kötelező HTTP válasz - 200-as kóddal
+                    // a válasz majd az adatbázisból fog visszajönni
+                    this.response = jsonResponse;
+                    this.responseCode = 200;
                 }
-                /* Idáig kell az adatbázisból lekérdezni */
-
-                String jsonResponse = String.format(
-                    "{\"success\": %b, \"message\": \"%s\"}",
-                    success, message
-                );
-
-                // Kötelező HTTP válasz - 200-as kóddal
-                // a válasz majd az adatbázisból fog visszajönni
-                this.response = jsonResponse;
-                this.responseCode = 200;
-            }
-            else // Nem POST kérések
-            {
-                this.response = "Method Not Allowed";
-                this.responseCode = 405;
-            }
+                else // Nem POST kérések
+                {
+                    this.response = "Method Not Allowed";
+                    this.responseCode = 405;
+                }
+                
+                exchange.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");
+                exchange.sendResponseHeaders(this.responseCode, this.response.length());
             
-            exchange.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");
-            exchange.sendResponseHeaders(this.responseCode, this.response.length());
-            try (OutputStream os = exchange.getResponseBody())
-            {
                 os.write(this.response.getBytes());
+            }
+            catch (IOException e)
+            {
+                System.out.println(">> UI_Connection: IO Exception raised: " + e.getMessage());
             }
         }
     }
@@ -252,57 +258,61 @@ public class UI_Connection
         private int responseCode;
 
         @Override
-        public void handle(HttpExchange exchange) throws IOException
+        public void handle(HttpExchange exchange)
         {
-            // Csak POST kérésekre fókuszál
-            if ("POST".equalsIgnoreCase(exchange.getRequestMethod()))
-            {
-                // Body kiolvasása a kérelemből
-                byte[] data = exchange.getRequestBody().readAllBytes();
-                String body = new String(data, "UTF-8");
+            try (OutputStream os = exchange.getResponseBody()) {
+                // Csak POST kérésekre fókuszál
+                if ("POST".equalsIgnoreCase(exchange.getRequestMethod()))
+                {
+                    // Body kiolvasása a kérelemből
+                    byte[] data = exchange.getRequestBody().readAllBytes();
+                    String body = new String(data, "UTF-8");
 
-                // Debug infó
-                System.out.println(">>UI_Connection: Received data: " + body);
+                    // Debug infó
+                    System.out.println(">> UI_Connection: Received data: " + body);
 
 
-                // Egyszerű JSON parse - ha nincs külső lib, akkor manuálisan:
-                boolean success = false;
-                String message = "";
+                    // Egyszerű JSON parse - ha nincs külső lib, akkor manuálisan:
+                    boolean success = false;
+                    String message = "";
 
-                /* példa, majd adatbázisból jön */
-                if (body.contains("\"username\":\"admin\"") && body.contains("\"password\":\"admin\"") && body.contains("\"mode\":\"admin\"")) {
-                    success = true;
-                    message = "Login successful!";
-                } else if (body.contains("\"username\":\"teacher1\"") && body.contains("\"password\":\"1234\"") && body.contains("\"mode\":\"teacher\"")) {
-                    success = true;
-                    message = "Login successful!";
-                } else {
-                    success = false;
-                    message = "Invalid username, password or login mode (teacher / admin)!";
+                    /* példa, majd adatbázisból jön */
+                    if (body.contains("\"username\":\"admin\"") && body.contains("\"password\":\"admin\"") && body.contains("\"mode\":\"admin\"")) {
+                        success = true;
+                        message = "Login successful!";
+                    } else if (body.contains("\"username\":\"teacher1\"") && body.contains("\"password\":\"1234\"") && body.contains("\"mode\":\"teacher\"")) {
+                        success = true;
+                        message = "Login successful!";
+                    } else {
+                        success = false;
+                        message = "Invalid username, password or login mode (teacher / admin)!";
+                    }
+                    /* Idáig kell az adatbázisból lekérdezni */
+
+                    String jsonResponse = String.format(
+                        "{\"success\": %b, \"message\": \"%s\"}",
+                        success, message
+                    );
+
+                    // Kötelező HTTP válasz - 200-as kóddal
+                    // a válasz majd az adatbázisból fog visszajönni
+                    this.response = jsonResponse;
+                    this.responseCode = 200;
                 }
-                /* Idáig kell az adatbázisból lekérdezni */
-
-                String jsonResponse = String.format(
-                    "{\"success\": %b, \"message\": \"%s\"}",
-                    success, message
-                );
-
-                // Kötelező HTTP válasz - 200-as kóddal
-                // a válasz majd az adatbázisból fog visszajönni
-                this.response = jsonResponse;
-                this.responseCode = 200;
-            }
-            else // Nem POST kérések
-            {
-                this.response = "Method Not Allowed";
-                this.responseCode = 405;
-            }
+                else // Nem POST kérések
+                {
+                    this.response = "Method Not Allowed";
+                    this.responseCode = 405;
+                }
+                
+                exchange.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");
+                exchange.sendResponseHeaders(this.responseCode, this.response.length());
             
-            exchange.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");
-            exchange.sendResponseHeaders(this.responseCode, this.response.length());
-            try (OutputStream os = exchange.getResponseBody())
-            {
                 os.write(this.response.getBytes());
+            }
+            catch (IOException e)
+            {
+                System.out.println(">> UI_Connection: IO Exception raised: " + e.getMessage());
             }
         }
         
@@ -311,7 +321,7 @@ public class UI_Connection
     static public class AdminDataHandler implements HttpHandler {
 
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
+        public void handle(HttpExchange exchange) {
             // TODO Auto-generated method stub
             throw new UnsupportedOperationException("Unimplemented method 'handle'");
         }
@@ -321,7 +331,7 @@ public class UI_Connection
     static public class StudentDataHandler implements HttpHandler {
 
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
+        public void handle(HttpExchange exchange) {
             // TODO Auto-generated method stub
             throw new UnsupportedOperationException("Unimplemented method 'handle'");
         }
