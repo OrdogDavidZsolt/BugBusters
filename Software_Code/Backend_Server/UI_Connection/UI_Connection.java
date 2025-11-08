@@ -10,6 +10,7 @@ package UI_Connection;
 // ------------- Importok -------------
 import com.sun.net.httpserver.HttpServer;
 
+import DB_Connection.DB_Connection;
 import HW_Connection.HW_Connection;
 
 import com.sun.net.httpserver.HttpHandler;
@@ -27,7 +28,10 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
+@Component
 public class UI_Connection
 {
     private static final String RESET  = "\u001B[0m";
@@ -41,7 +45,8 @@ public class UI_Connection
     private static final String PREFIX = GREEN + ">> UI_Connection: " + RESET;
 
 
-    private static final int PORT = 80; // tipikus HTTP port
+    private static final int PORT = 80;
+
     
     public static void start_UI_Server()
     {
@@ -89,6 +94,23 @@ public class UI_Connection
     public static int getPort()
     {
         return UI_Connection.PORT;
+    }
+
+    private static String fetchDBLink()
+    {
+        
+        return "http://localhost:8080/h2-console";  // Itt nem jó tárolni, később át kell írni lekérhetővé
+    }
+
+    private static String fetchReaderMap()
+    {
+        // Ez a metódus visszaadja egy handler kérésére a hardverek listáját
+        // Válasz előállítása Json formátumban
+        Map<Integer, String> readerData = HW_Connection.getReaders();
+        // JSON válasz készítése a Map adatszerkezetből
+        Gson gson_obj = new Gson();
+        String data = gson_obj.toJson(readerData);
+        return data;
     }
 
     /** ----------- Handler Osztályok -----------
@@ -349,20 +371,15 @@ public class UI_Connection
 
                     if (body.contains("database")) {
                         System.out.println(PREFIX + "Database link request");
-                        jsonResponse = "/h2-console";
+                        jsonResponse = fetchDBLink();
                         System.out.println(PREFIX + "Response: " + jsonResponse);
                     }
                     if (body.contains("readers")) {
                         System.out.println(PREFIX + "Reader data request");
-                        // Válasz előállítása Json formátumban
-                        Map<Integer, String> readerData = HW_Connection.getReaders();
-                        // JSON válasz készítése a Map adatszerkezetből
-                        Gson gson_obj = new Gson();
-                        jsonResponse = gson_obj.toJson(readerData);
+                        jsonResponse = fetchReaderMap();
                         System.out.println(PREFIX + "Response: " + jsonResponse);
                     }
                     
-
                     // Kötelező HTTP válasz - 200-as kóddal
                     this.response = jsonResponse;
                     this.responseCode = 200;
