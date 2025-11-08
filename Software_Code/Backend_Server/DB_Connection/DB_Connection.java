@@ -23,10 +23,14 @@ public class DB_Connection {
     @Autowired
     private AttendanceDAO attendanceDAO;
 
-    public void startDatabase() throws SQLException {
+    public void startDatabase() {
         // H2 adatbázis indítása
-        new Server().runTool("-tcp", "-web", "-ifNotExists");
-
+        try {
+            new Server().runTool("-tcp", "-web", "-ifNotExists");
+        } catch (SQLException e) {
+            System.out.println(">> DB_Connection: SQL Exception raised: " + e.getMessage());
+        }
+        
         // DAO-k automatikusan injektálva vannak a Spring által
         UserManager userManager = new UserManager(userDAO);
         userManager.manage();
@@ -39,5 +43,7 @@ public class DB_Connection {
 
         AttendanceManager attendanceManager = new AttendanceManager(attendanceDAO);
         attendanceManager.manage();
+        
+        System.out.println(">> DB_Connection: Database running");
     }
 }
