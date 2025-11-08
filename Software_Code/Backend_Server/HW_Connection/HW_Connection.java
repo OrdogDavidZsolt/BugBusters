@@ -52,6 +52,11 @@ public class HW_Connection
         return HW_Connection.PORT;
     }
 
+    public static Map<Integer, String> getReaders() {
+        return readers;
+    }
+
+
     public static class ClientHandler implements Runnable  //futtatható szál legyen
     {
         private Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
