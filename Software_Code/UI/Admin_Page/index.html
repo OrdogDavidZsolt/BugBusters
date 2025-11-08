@@ -912,9 +912,34 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
+
+        window.onload = fetchReaderData;
+
         const modeToggle = document.getElementById('modeToggle');
         const body = document.body;
         const modeLabel = document.querySelector('.mode-label');
+
+        async function fetchReaderData()
+        {
+            // Readerek listájának olvasása, válasz JSON lesz
+            try {
+                const response = await fetch('/admin', {
+                    method: 'POST', // POST kérést küld
+                    headers: {
+                        'Content-Type': 'application/json' // JSON-ként kezeljük
+                    }
+                    });
+                if (!response.ok) {
+                    throw new Error("Hálózati hiba: " + response.status);
+                }
+
+                const result = await response.json();
+                console.log("Szerver válasz:", result);
+                // Itt kellene feldolgozni a választ és frissíteni a UI elemeket! ----------------------
+            } catch (error) {
+                console.error("Hiba történt a fetchelésnél:", error);
+            }
+        }
 
         function setFavicon(isLight) {
             let link = document.getElementById('faviconLink') || document.querySelector("link[rel~='icon']");
