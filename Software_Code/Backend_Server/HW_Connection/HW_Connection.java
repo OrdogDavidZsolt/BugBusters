@@ -5,11 +5,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 public class HW_Connection
 {
+    private static final Map<Integer, String> readers = new HashMap<>();
+
     private static final int PORT = 54321; //ezen a porton hallgat a szerver
     private static final int THREAD_POOL_SIZE = 50; // egyszerre max. 50 kliens
 
@@ -142,6 +147,8 @@ public class HW_Connection
              * majd a kapott sorszámot, mint ID visszaadja return-ben. A sorszám nyilvántartása szintén lehet a külső osztály privát
              * statikus attribútuma
              */
+
+
 
             return (int)(Math.random()*1000)+1; // dummy adat, ide kell a generált ID
         }
