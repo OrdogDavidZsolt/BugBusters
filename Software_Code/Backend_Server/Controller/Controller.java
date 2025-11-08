@@ -31,6 +31,8 @@ public class Controller {
         // Spring-ből lekérjük a DB_Connection példányt
         DB_Connection dbConnection = context.getBean(DB_Connection.class);
 
+        System.out.println(">> Controller: Starting h2 Database");
+        dbConnection.startDatabase();     // DB indítása a spring segítségével 
         
         // Saját szerverek indítása
         System.out.println(">> Controller: Starting UI Server on port " + UI_Connection.getPort());
@@ -39,8 +41,6 @@ public class Controller {
         System.out.println(">> Controller: Starting HW Server on port " + HW_Connection.getPort());
         HW_Connection.start_HW_Server();  // HW szerver elindítása
         
-        System.out.println(">> Controller: Starting h2 Database");
-        dbConnection.startDatabase();     // DB indítása a spring segítségével 
     }
 }
 

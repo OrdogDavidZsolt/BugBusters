@@ -46,7 +46,7 @@ public class UI_Connection
              *      ez az osztály tartalmaz egy 'public void handle(HttpExchange exchange)' metódust
              */
             server.createContext("/", new StaticFileHandler("Software_Code/UI"));
-            server.createContext("/login", new LoginDataHandler());
+            server.createContext("/data", new LoginDataHandler());
             server.createContext("/admin", new AdminDataHandler());
             server.createContext("/student-data", new StudentDataHandler());
             /**
@@ -78,12 +78,17 @@ public class UI_Connection
 
     /* ----------- Handler Osztályok ----------- */
     /**
-     * Jelenleg használt handler(ek):
+     * Tartalomhoz használt handler(ek):
      *      StaticFileHandler (tartalom kiszolgáló)
-     * Kommunikációhoz használt handler:
+     * 
+     * Kommunikációhoz használt handler(ek):
      *      LoginDataHandler (fetch POST kiszolgáló)
      *      AdminDataHandler (fetch POST kiszolgáló)
      *      StudentDataHandler (fetch POST kiszolgáló)
+     * 
+     * Nem használt dummy/példa handler(ek):
+     *      FileHandler (tartalom kiszolgáló)
+     *      DataHandler (fetch POST kiszolgáló)
      */
     static public class FileHandler implements HttpHandler {
         private final String filePath;
@@ -133,6 +138,12 @@ public class UI_Connection
     }
 
     static class StaticFileHandler implements HttpHandler {
+        /**
+         * Ez a kiszolgáló egy statikus tartalomkiszolgáló
+         *  A webfelület gyökérmappája megadásra kerül a konstruktorban,
+         *  innentől kezdve a kiszolgáló tudja, hogy a kérésre melyik fájlt kell elküldje
+         */
+
         private final Path rootDir;
         private final Map<String, String> mimeTypes = new HashMap<>();
 
@@ -205,34 +216,10 @@ public class UI_Connection
                     String body = new String(data, "UTF-8");
 
                     // Debug infó
-                    System.out.println(">>UI_Connection: Received data: " + body);
-
-
-                    // Egyszerű JSON parse - ha nincs külső lib, akkor manuálisan:
-                    boolean success = false;
-                    String message = "";
-
-                    /* példa, majd adatbázisból jön */
-                    if (body.contains("\"username\":\"admin\"") && body.contains("\"password\":\"admin\"") && body.contains("\"mode\":\"admin\"")) {
-                        success = true;
-                        message = "Login successful!";
-                    } else if (body.contains("\"username\":\"teacher1\"") && body.contains("\"password\":\"1234\"") && body.contains("\"mode\":\"teacher\"")) {
-                        success = true;
-                        message = "Login successful!";
-                    } else {
-                        success = false;
-                        message = "Invalid username, password or login mode (teacher / admin)!";
-                    }
-                    /* Idáig kell az adatbázisból lekérdezni */
-
-                    String jsonResponse = String.format(
-                        "{\"success\": %b, \"message\": \"%s\"}",
-                        success, message
-                    );
+                    System.out.println(">> UI_Connection: Received data: " + body);
 
                     // Kötelező HTTP válasz - 200-as kóddal
-                    // a válasz majd az adatbázisból fog visszajönni
-                    this.response = jsonResponse;
+                    this.response = "Data received";
                     this.responseCode = 200;
                 }
                 else // Nem POST kérések
@@ -241,7 +228,6 @@ public class UI_Connection
                     this.responseCode = 405;
                 }
                 
-                exchange.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");
                 exchange.sendResponseHeaders(this.responseCode, this.response.length());
             
                 os.write(this.response.getBytes());
@@ -254,6 +240,10 @@ public class UI_Connection
     }
 
     static public class LoginDataHandler implements HttpHandler {
+        /**
+         * Ez a kiszolgáló kezeli a bejelentkezési adatokat
+         *  Lekérdezi helyességüket az adatbázisból, majd visszaküld egy választ az elfogadás értelmében
+         */
         private String response;
         private int responseCode;
 
@@ -319,11 +309,48 @@ public class UI_Connection
     }
 
     static public class AdminDataHandler implements HttpHandler {
+        /**
+         * Ez a kiszolgáló kezeli az admin felületről beérkező kéréseket
+         *  Feladatok közé tartozik:
+         *      Betöltéskor a csatlakoztatott kártyaolvasók listájának elküldése
+         *      Frissítés esetén a csatlakoztatott kártyaolvasók listájának elküldése
+         *      
+         */
+        private String response;
+        private int responseCode;
+
 
         @Override
         public void handle(HttpExchange exchange) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'handle'");
+            try (OutputStream os = exchange.getResponseBody()) {
+                // Csak POST kérésekre fókuszál
+                if ("POST".equalsIgnoreCase(exchange.getRequestMethod()))
+                {
+                    // Body kiolvasása a kérelemből
+                    byte[] data = exchange.getRequestBody().readAllBytes();
+                    String body = new String(data, "UTF-8");
+
+                    // Debug infó
+                    System.out.println(">> UI_Connection: Received data: " + body);
+
+                    // Kötelező HTTP válasz - 200-as kóddal
+                    this.response = "Data received";
+                    this.responseCode = 200;
+                }
+                else // Nem POST kérések
+                {
+                    this.response = "Method Not Allowed";
+                    this.responseCode = 405;
+                }
+                
+                exchange.sendResponseHeaders(this.responseCode, this.response.length());
+            
+                os.write(this.response.getBytes());
+            }
+            catch (IOException e)
+            {
+                System.out.println(">> UI_Connection: IO Exception raised: " + e.getMessage());
+            }
         }
 
     }
