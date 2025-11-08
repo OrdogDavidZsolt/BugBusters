@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 
 public class HW_Connection
 {
-    private static final String PREFIX = ">> HW_Connection: ";
     private static final String RESET  = "\u001B[0m";
     private static final String RED    = "\u001B[31m";
     private static final String GREEN  = "\u001B[32m";
@@ -22,6 +21,7 @@ public class HW_Connection
     private static final String PURPLE = "\u001B[35m";
     private static final String CYAN   = "\u001B[36m";
     private static final String WHITE  = "\u001B[37m";
+    private static final String PREFIX = CYAN + ">> HW_Connection: " + RESET;
 
 
     private static final Map<Integer, String> readers = new HashMap<>();
@@ -43,7 +43,7 @@ public class HW_Connection
             //^ ez egy szál kezelő szolgáltatás, létrehoz egy olyan szál poolt,
             // ami legfeljebb 50 kliens kezelését engedi
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-                System.out.println(CYAN + PREFIX + RESET + "HW Szerver elindult a " + PORT + " porton...");
+                System.out.println(PREFIX + "HW Szerver elindult a " + PORT + " porton...");
 
                 while (true) // a szerver folyamatosan figyeli a klienseket
                 {
@@ -53,7 +53,7 @@ public class HW_Connection
                     pool.execute(new ClientHandler(clientSocket));
                 }
             } catch (IOException e) {
-                System.out.println(CYAN + PREFIX + RED + "IOException: " + RESET + e.getMessage());  // ha hiba van kiirjuk mi a baj
+                System.out.println(PREFIX + RED + "IOException: " + RESET + e.getMessage());  // ha hiba van kiirjuk mi a baj
             }
         }).start();
     }
@@ -81,7 +81,7 @@ public class HW_Connection
         public void run()
         {
             String clientIP = socket.getInetAddress().getHostAddress(); //kiolvassa kliens IP címét
-            System.out.println(CYAN + PREFIX + RESET + "Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
+            System.out.println(PREFIX + "Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
 
             try (InputStream in = socket.getInputStream();
                                 // bejövő adatok a klienstől
@@ -96,7 +96,7 @@ public class HW_Connection
                 while (bytesReadTotal < TOTAL_RECORD_SIZE) {
                     int bytesRead = in.read(buffer, bytesReadTotal, TOTAL_RECORD_SIZE - bytesReadTotal);  // bináris olvasás
                     if (bytesRead == -1) {
-                        System.out.println(CYAN + PREFIX + RESET + "A kliens bontotta a kapcsolat: " + clientIP);
+                        System.out.println(PREFIX + "A kliens bontotta a kapcsolat: " + clientIP);
                         return; // kilépés
                     }
                     bytesReadTotal += bytesRead;
@@ -116,7 +116,7 @@ public class HW_Connection
 
                 if (readerID == Integer.MAX_VALUE) {
                     // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
-                    System.out.print(CYAN + PREFIX + RESET + "[ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ");
+                    System.out.print(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ");
                     int newId = configureReader();
                     out.writeInt(newId);    // konfigurált ID visszaküldése az olvasónak
                     System.out.println(newId);
@@ -126,13 +126,13 @@ public class HW_Connection
                      * Ez az olvasó már konfigurálva van, tovább kell értelmezni az adatot, amit küldött,
                      * mert az tartalmaz egy UID-t is
                      */
-                    System.out.println(CYAN + PREFIX + RESET + "[ID=" + readerID + ", IP=" + clientIP + "] üzenetének feldolgozása elkezdődött!");
+                    System.out.println(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] üzenetének feldolgozása elkezdődött!");
                     //Pl:
                     processUID(uidHex.toString());
                 }
 
             } catch (IOException e) {
-                System.out.println(CYAN + PREFIX + RESET + "A kliens bontotta a kapcsolatot: " + clientIP);
+                System.out.println(PREFIX + "A kliens bontotta a kapcsolatot: " + clientIP);
             }
 
             finally
@@ -175,7 +175,7 @@ public class HW_Connection
         private void processUID(String uid)
         {
             // DEBUG
-            System.out.println(CYAN + PREFIX + RESET + "Feldolgozandó üzenet: " + uid);
+            System.out.println(PREFIX + "Feldolgozandó üzenet: " + uid);
         }
     }
 }

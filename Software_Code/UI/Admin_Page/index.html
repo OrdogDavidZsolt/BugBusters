@@ -913,21 +913,61 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
 
-        window.onload = fetchReaderData;
+        window.onload = function() {
+            fetchDatabaseLink();
+            fetchReaderData();
+        };
 
         const modeToggle = document.getElementById('modeToggle');
         const body = document.body;
         const modeLabel = document.querySelector('.mode-label');
 
-        async function fetchReaderData()
+        async function fetchDatabaseLink()
         {
             // Readerek listájának olvasása, válasz JSON lesz
             try {
+                // JSON objektum
+                const data = {
+                    context: "database"
+                };
+
+                // Fetch POST kérés a szerver felé
                 const response = await fetch('/admin', {
                     method: 'POST', // POST kérést küld
                     headers: {
                         'Content-Type': 'application/json' // JSON-ként kezeljük
-                    }
+                    },
+                    body: JSON.stringify(data)
+                    });
+                if (!response.ok) {
+                    throw new Error("Hálózati hiba: " + response.status);
+                }
+
+                const result = await response.json();
+                console.log("Szerver válasz:", result);
+
+                // Itt kellene feldolgozni a választ és elmenteni az adatbázis linkjét a gombhoz ----------------------
+            } catch (error) {
+                console.error("Hiba történt a fetchelésnél:", error);
+            }
+        }
+
+        async function fetchReaderData()
+        {
+            // Readerek listájának olvasása, válasz JSON lesz
+            try {
+                // JSON objektum
+                const data = {
+                    context: "readers"
+                };
+
+                // Fetch POST kérés a szerver felé
+                const response = await fetch('/admin', {
+                    method: 'POST', // POST kérést küld
+                    headers: {
+                        'Content-Type': 'application/json' // JSON-ként kezeljük
+                    },
+                    body: JSON.stringify(data)
                     });
                 if (!response.ok) {
                     throw new Error("Hálózati hiba: " + response.status);

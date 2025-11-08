@@ -11,7 +11,6 @@ import java.sql.SQLException;
 @Component
 public class DB_Connection {
 
-    private static final String PREFIX = ">> DB_Connection: ";
     private static final String RESET  = "\u001B[0m";
     private static final String RED    = "\u001B[31m";
     private static final String GREEN  = "\u001B[32m";
@@ -20,6 +19,7 @@ public class DB_Connection {
     private static final String PURPLE = "\u001B[35m";
     private static final String CYAN   = "\u001B[36m";
     private static final String WHITE  = "\u001B[37m";
+    private static final String PREFIX = PURPLE + ">> DB_Connection: " + RESET;
 
 
     @Autowired
@@ -39,7 +39,7 @@ public class DB_Connection {
         try {
             new Server().runTool("-tcp", "-web", "-ifNotExists");
         } catch (SQLException e) {
-            System.out.println(PURPLE + PREFIX + RED + "SQL Exception raised: " + RESET + e.getMessage());
+            System.out.println(PREFIX + RED + "SQL Exception raised: " + RESET + e.getMessage());
         }
         
         // DAO-k automatikusan injektálva vannak a Spring által
@@ -55,6 +55,6 @@ public class DB_Connection {
         AttendanceManager attendanceManager = new AttendanceManager(attendanceDAO);
         attendanceManager.manage();
         
-        System.out.println(PURPLE + PREFIX + RESET + "Database running");
+        System.out.println(PREFIX + "Database running");
     }
 }

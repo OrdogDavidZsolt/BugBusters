@@ -30,7 +30,6 @@ import java.util.Map;
 
 public class UI_Connection
 {
-    private static final String PREFIX = ">> UI_Connection: ";
     private static final String RESET  = "\u001B[0m";
     private static final String RED    = "\u001B[31m";
     private static final String GREEN  = "\u001B[32m";
@@ -39,6 +38,7 @@ public class UI_Connection
     private static final String PURPLE = "\u001B[35m";
     private static final String CYAN   = "\u001B[36m";
     private static final String WHITE  = "\u001B[37m";
+    private static final String PREFIX = GREEN + ">> UI_Connection: " + RESET;
 
 
     private static final int PORT = 80; // tipikus HTTP port
@@ -78,11 +78,11 @@ public class UI_Connection
              */
             server.start();
 
-            System.out.println(GREEN + PREFIX + RESET + "UI_Server started on port " + PORT + "!");
+            System.out.println(PREFIX + "UI_Server started on port " + PORT + "!");
         }
         catch (IOException e)
         {
-            System.out.println(GREEN + PREFIX + RED + "IO exception upon UI_Server start: " + RESET + e.getMessage());
+            System.out.println(PREFIX + RED + "IO exception upon UI_Server start: " + RESET + e.getMessage());
         }
     }
 
@@ -120,7 +120,7 @@ public class UI_Connection
              * Ez a metódus fut le minden egyes alkalommal, amikor egy kliens, pl böngésző kérést küld a szerverre
              * Ez a metódus fog választ adni a kérésre, egy magadott file-ból
              */
-            System.out.println(GREEN + PREFIX + RESET + "New UI req.:" + filePath);
+            System.out.println(PREFIX + "New UI req.:" + filePath);
             try
             {
                 File file = new File(filePath);
@@ -144,9 +144,9 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(GREEN + PREFIX + RED + "IO Exception when handling response: " + RESET + e.getMessage());
+                System.out.println(PREFIX + RED + "IO Exception when handling response: " + RESET + e.getMessage());
             }
-            System.out.println(GREEN + PREFIX + RESET + "Done:" + filePath);
+            System.out.println(PREFIX + "Done:" + filePath);
         }
         
     }
@@ -180,7 +180,7 @@ public class UI_Connection
         public void handle(HttpExchange exchange) {
             try (OutputStream os = exchange.getResponseBody()) {
                 String requestedPath = exchange.getRequestURI().getPath();
-                System.out.println(GREEN + PREFIX + RESET + "Request: " + requestedPath);
+                System.out.println(PREFIX + "Request: " + requestedPath);
                 // Ha csak "/"-t kér, legyen index.html
                 if (requestedPath.equals("/")) {
                     requestedPath = "/index.html";
@@ -209,7 +209,7 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(GREEN + PREFIX + RED + "IO Exception raised when handling content request: " + RESET + e.getMessage());
+                System.out.println(PREFIX + RED + "IO Exception raised when handling content request: " + RESET + e.getMessage());
             }
         }
     }
@@ -230,7 +230,7 @@ public class UI_Connection
                     String body = new String(data, "UTF-8");
 
                     // Debug infó
-                    System.out.println(GREEN + PREFIX + RESET + "Received data: " + body);
+                    System.out.println(PREFIX + "Received data: " + body);
 
                     // Kötelező HTTP válasz - 200-as kóddal
                     this.response = "Data received";
@@ -248,7 +248,7 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(GREEN + PREFIX + RED + "IO Exception raised: " + RESET + e.getMessage());
+                System.out.println(PREFIX + RED + "IO Exception raised: " + RESET + e.getMessage());
             }
         }
     }
@@ -273,7 +273,7 @@ public class UI_Connection
                     String body = new String(data, "UTF-8");
 
                     // Debug infó
-                    System.out.println(GREEN + PREFIX + RESET + "Received data: " + body);
+                    System.out.println(PREFIX + "Received data: " + body);
 
 
                     // Egyszerű JSON parse - ha nincs külső lib, akkor manuálisan:
@@ -316,7 +316,7 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(GREEN + PREFIX + RED + "IO Exception raised: " + RESET + e.getMessage());
+                System.out.println(PREFIX + RED + "IO Exception raised: " + RESET + e.getMessage());
             }
         }
         
@@ -344,15 +344,24 @@ public class UI_Connection
                     String body = new String(data, "UTF-8");
 
                     // Debug infó
-                    System.out.println(GREEN + PREFIX + RESET + "Received data: " + body);
+                    System.out.println(PREFIX + "Received data: " + body);
+                    String jsonResponse = "";
 
-                    // Válasz előállítása Json formátumban
-                    Map<Integer, String> readerData = HW_Connection.getReaders();
-                    System.out.println(GREEN + PREFIX + RESET + "Admin site data fetch");
-                    // JSON válasz készítése a Map adatszerkezetből
-                    Gson gson_obj = new Gson();
-                    String jsonResponse = gson_obj.toJson(readerData);
-                    System.out.println(jsonResponse);
+                    if (body.contains("database")) {
+                        System.out.println(PREFIX + "Database link request");
+                        jsonResponse = "/h2-console";
+                        System.out.println(PREFIX + "Response: " + jsonResponse);
+                    }
+                    if (body.contains("readers")) {
+                        System.out.println(PREFIX + "Reader data request");
+                        // Válasz előállítása Json formátumban
+                        Map<Integer, String> readerData = HW_Connection.getReaders();
+                        // JSON válasz készítése a Map adatszerkezetből
+                        Gson gson_obj = new Gson();
+                        jsonResponse = gson_obj.toJson(readerData);
+                        System.out.println(PREFIX + "Response: " + jsonResponse);
+                    }
+                    
 
                     // Kötelező HTTP válasz - 200-as kóddal
                     this.response = jsonResponse;
@@ -370,7 +379,7 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(GREEN + PREFIX + RED + "IO Exception raised: " + RESET + e.getMessage());
+                System.out.println(PREFIX + "IO Exception raised: " + RESET + e.getMessage());
             }
         }
 
