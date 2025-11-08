@@ -142,7 +142,8 @@ public class HW_Connection
              * majd a kapott sorszámot, mint ID visszaadja return-ben. A sorszám nyilvántartása szintén lehet a külső osztály privát
              * statikus attribútuma
              */
-            return 123; // dummy adat, ide kell a generált ID
+
+            return (int)(Math.random()*1000)+1; // dummy adat, ide kell a generált ID
         }
 
         private void processUID(String uid)
