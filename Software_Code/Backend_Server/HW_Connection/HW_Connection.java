@@ -148,10 +148,10 @@ public class HW_Connection
              * majd a kapott sorszámot, mint ID visszaadja return-ben. A sorszám nyilvántartása szintén lehet a külső osztály privát
              * statikus attribútuma
              */
+            int newId = nextReaderId;
 
 
-
-            return (int)(Math.random()*1000)+1; // dummy adat, ide kell a generált ID
+            return newId;
         }
 
         private void processUID(String uid)
