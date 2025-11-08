@@ -339,10 +339,11 @@ public class UI_Connection
                     // Válasz előállítása Json formátumban
                     Map<Integer, String> readerData = HW_Connection.getReaders();
                     System.out.println(">> DEBUG-UI_Conneciton: Admin site data fetch");
-
+                    // JSON válasz készítése a Map adatszerkezetből
                     Gson gson_obj = new Gson();
                     String jsonResponse = gson_obj.toJson(readerData);
                     System.out.println(jsonResponse);
+
                     // Kötelező HTTP válasz - 200-as kóddal
                     this.response = jsonResponse;
                     this.responseCode = 200;
