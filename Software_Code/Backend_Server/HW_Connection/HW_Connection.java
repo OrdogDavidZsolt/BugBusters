@@ -53,7 +53,7 @@ public class HW_Connection
                     pool.execute(new ClientHandler(clientSocket));
                 }
             } catch (IOException e) {
-                System.out.println(CYAN + PREFIX + RED + "IOException: " + RED + e.getMessage());  // ha hiba van kiirjuk mi a baj
+                System.out.println(CYAN + PREFIX + RED + "IOException: " + RESET + e.getMessage());  // ha hiba van kiirjuk mi a baj
             }
         }).start();
     }

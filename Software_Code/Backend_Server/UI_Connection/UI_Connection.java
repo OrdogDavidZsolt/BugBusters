@@ -82,7 +82,7 @@ public class UI_Connection
         }
         catch (IOException e)
         {
-            System.out.println(GREEN + PREFIX + RESET + "IO exception upon UI_Server start: " + e.getMessage());
+            System.out.println(GREEN + PREFIX + RED + "IO exception upon UI_Server start: " + RESET + e.getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(GREEN + PREFIX + RESET + "IO Exception when handling response: " + e.getMessage());
+                System.out.println(GREEN + PREFIX + RED + "IO Exception when handling response: " + RESET + e.getMessage());
             }
             System.out.println(GREEN + PREFIX + RESET + "Done:" + filePath);
         }
@@ -209,7 +209,7 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(GREEN + PREFIX + RESET + "IO Exception raised when handling content request: " + e.getMessage());
+                System.out.println(GREEN + PREFIX + RED + "IO Exception raised when handling content request: " + RESET + e.getMessage());
             }
         }
     }
@@ -248,7 +248,7 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(GREEN + PREFIX + RESET + "IO Exception raised: " + e.getMessage());
+                System.out.println(GREEN + PREFIX + RED + "IO Exception raised: " + RESET + e.getMessage());
             }
         }
     }
@@ -316,7 +316,7 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(GREEN + PREFIX + RESET + "IO Exception raised: " + e.getMessage());
+                System.out.println(GREEN + PREFIX + RED + "IO Exception raised: " + RESET + e.getMessage());
             }
         }
         
