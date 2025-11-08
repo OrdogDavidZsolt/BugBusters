@@ -76,8 +76,8 @@ public class UI_Connection
 
     /* ----------- Handler Osztályok ----------- */
     /**
-     * Jelenleg használt handler(ek): StaticFileHandler
-     * Kommunikációhoz használt handler: DataHandler
+     * Jelenleg használt handler(ek): StaticFileHandler (tartalom kiszolgáló)
+     * Kommunikációhoz használt handler: DataHandler (fetch POST kiszolgáló)
      */
     static public class FileHandler implements HttpHandler
     {
