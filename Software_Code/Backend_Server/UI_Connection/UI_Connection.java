@@ -9,8 +9,13 @@ package UI_Connection;
 
 // ------------- Importok -------------
 import com.sun.net.httpserver.HttpServer;
+
+import HW_Connection.HW_Connection;
+
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
+
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +51,7 @@ public class UI_Connection
              *      ez az osztály tartalmaz egy 'public void handle(HttpExchange exchange)' metódust
              */
             server.createContext("/", new StaticFileHandler("Software_Code/UI"));
-            server.createContext("/data", new LoginDataHandler());
+            server.createContext("/login", new LoginDataHandler());
             server.createContext("/admin", new AdminDataHandler());
             server.createContext("/student-data", new StudentDataHandler());
             /**
@@ -76,8 +81,7 @@ public class UI_Connection
         return UI_Connection.PORT;
     }
 
-    /* ----------- Handler Osztályok ----------- */
-    /**
+    /** ----------- Handler Osztályok -----------
      * Tartalomhoz használt handler(ek):
      *      StaticFileHandler (tartalom kiszolgáló)
      * 
@@ -309,7 +313,7 @@ public class UI_Connection
     }
 
     static public class AdminDataHandler implements HttpHandler {
-        /**
+        /** Dokumentáció 
          * Ez a kiszolgáló kezeli az admin felületről beérkező kéréseket
          *  Feladatok közé tartozik:
          *      Betöltéskor a csatlakoztatott kártyaolvasók listájának elküldése
@@ -318,7 +322,6 @@ public class UI_Connection
          */
         private String response;
         private int responseCode;
-
 
         @Override
         public void handle(HttpExchange exchange) {
@@ -333,8 +336,15 @@ public class UI_Connection
                     // Debug infó
                     System.out.println(">> UI_Connection: Received data: " + body);
 
+                    // Válasz előállítása Json formátumban
+                    Map<Integer, String> readerData = HW_Connection.getReaders();
+                    System.out.println(">> DEBUG-UI_Conneciton: Admin site data fetch");
+
+                    Gson gson_obj = new Gson();
+                    String jsonResponse = gson_obj.toJson(readerData);
+                    System.out.println(jsonResponse);
                     // Kötelező HTTP válasz - 200-as kóddal
-                    this.response = "Data received";
+                    this.response = jsonResponse;
                     this.responseCode = 200;
                 }
                 else // Nem POST kérések
