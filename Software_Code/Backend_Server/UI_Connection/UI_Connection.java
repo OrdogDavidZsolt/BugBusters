@@ -61,11 +61,11 @@ public class UI_Connection
              */
             server.start();
 
-            System.out.println(">>UI_Connection: UI_Server started on port " + PORT + "!");
+            System.out.println(">> UI_Connection: UI_Server started on port " + PORT + "!");
         }
         catch (IOException e)
         {
-            System.out.println(">>UI_Connection: IO exception upon UI_Server start: " + e.getMessage());
+            System.out.println(">> UI_Connection: IO exception upon UI_Server start: " + e.getMessage());
         }
     }
 
@@ -96,7 +96,7 @@ public class UI_Connection
              * Ez a metódus fut le minden egyes alkalommal, amikor egy kliens, pl böngésző kérést küld a szerverre
              * Ez a metódus fog választ adni a kérésre, egy magadott file-ból
              */
-            System.out.println(">>UI_Connection: New UI req.:" + filePath);
+            System.out.println(">> UI_Connection: New UI req.:" + filePath);
             try
             {
                 File file = new File(filePath);
@@ -120,9 +120,9 @@ public class UI_Connection
             }
             catch (IOException e)
             {
-                System.out.println(">>UI_Connection: IO Exception when handling response: " + e.getMessage());
+                System.out.println(">> UI_Connection: IO Exception when handling response: " + e.getMessage());
             }
-            System.out.println(">>UI_Connection: Done:" + filePath);
+            System.out.println(">> UI_Connection: Done:" + filePath);
         }
         
     }

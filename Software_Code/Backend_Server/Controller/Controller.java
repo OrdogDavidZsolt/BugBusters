@@ -33,10 +33,10 @@ public class Controller {
 
         
         // Saját szerverek indítása
-        System.out.println(">>Controller: Starting UI Server on port " + UI_Connection.getPort());
+        System.out.println(">> Controller: Starting UI Server on port " + UI_Connection.getPort());
         UI_Connection.start_UI_Server();  // UI szerver elindítása
         
-        System.out.println(">>Controller: Starting HW Server on port " + HW_Connection.getPort());
+        System.out.println(">> Controller: Starting HW Server on port " + HW_Connection.getPort());
         HW_Connection.start_HW_Server();  // HW szerver elindítása
         
         System.out.println(">> Controller: Starting h2 Database");
