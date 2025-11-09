@@ -192,6 +192,8 @@ public class HW_Connection
 public static void sendCommandToReader(String readerId, HW_Command command)
 {
     //érték alapján keresünk kulcsot
+    //keresd meg azt az IP-címet, amihez a megadott olvasó ID tartozik
+    //ha nincs ilyen, akkor térj vissza null-al
     String targetIp = readers.entrySet().stream()
             .filter(entry -> entry.getValue().equals(readerId))
             .map(Map.Entry::getKey)
