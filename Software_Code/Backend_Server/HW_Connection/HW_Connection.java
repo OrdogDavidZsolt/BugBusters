@@ -191,7 +191,9 @@ public class HW_Connection
 // hasznalat: HW_Connection.sendCommandToReader("DEV-003", HW_Command.RED_LED_ON);
 public static void sendCommandToReader(String readerId, HW_Command command)
 {
-    String targtetip = readers.entrySet().stream()
+    //érték alapján keresünk kulcsot
+    String targtetIp = readers.entrySet().stream()
+            .filter(entry -> entry.getValue().equals(readerId))
 
     if (ip == null)
     {
