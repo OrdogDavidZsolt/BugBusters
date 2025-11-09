@@ -118,6 +118,7 @@ public class HW_Connection
 
 
                 //UID feldolgozása
+                //a 10 bájtos UID a 9.bájttól kezdődik
                 int uidOffset = 9; // "=" utáni első bájt
                 int uidLength = 10; // 10 bájtos UID
                 // UID sztring előállítása stringbuilderrel
@@ -125,6 +126,7 @@ public class HW_Connection
                 for (int i = 0; i < uidLength; i++) {
                     uidHex.append(String.format("%02X", buffer[uidOffset + i]));
                 }
+
 
                 if (readerID == Integer.MAX_VALUE) {
                     // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
@@ -194,6 +196,7 @@ public class HW_Connection
             return newId;
         }
 
+        //később bővíteni kell
         private void processUID(String uid)
         {
             // DEBUG
@@ -218,6 +221,7 @@ public static void sendCommandToReader(String readerId, HW_Command command)
         return;
     }
 
+    //felépít egy új TCP kapcsolatot a megadott olvasó IP-címére, azon a porton, amin a harvder figyel
     try(Socket socket = new Socket(targetIp, PORT);
         DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
     {
