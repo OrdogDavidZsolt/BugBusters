@@ -168,7 +168,7 @@ public class HW_Connection
 
             if (readers.containsKey(ip))
             {
-
+                String existingId = readers.get(ip);
             }
 
             String newId = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
