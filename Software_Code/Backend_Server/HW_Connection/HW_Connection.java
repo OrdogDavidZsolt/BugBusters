@@ -175,8 +175,6 @@ public class HW_Connection
 
             String newId = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
             readers.put(ip, newId);
-
-            readers.put(newId, socket.getInetAddress().getHostAddress()); // beletesszuk az uj olvasot
             nextReaderId++;
 
             return newId;
