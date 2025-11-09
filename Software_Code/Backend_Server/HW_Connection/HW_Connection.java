@@ -200,7 +200,7 @@ public static void sendCommandToReader(String readerId, HW_Command command)
     }
     catch (IOException e)
     {
-        System.out.println(">>HW_Connection: Hiba az üzenet küldésekor: " + e.getMessage());
+        System.out.println(PREFIX + ">>HW_Connection: Hiba az üzenet küldésekor: " + e.getMessage());
     }
 }
 
