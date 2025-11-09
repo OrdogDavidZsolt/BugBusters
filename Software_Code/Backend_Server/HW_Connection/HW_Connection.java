@@ -195,6 +195,7 @@ public static void sendCommandToReader(String readerId, HW_Command command)
     String targtetIp = readers.entrySet().stream()
             .filter(entry -> entry.getValue().equals(readerId))
             .map(Map.Entry::getKey)
+            .findFirst()
 
     if (ip == null)
     {
