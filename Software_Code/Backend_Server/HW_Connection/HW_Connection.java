@@ -180,7 +180,7 @@ public class HW_Connection
             System.out.println(PREFIX + "Feldolgozandó üzenet: " + uid);
         }
     }
-
+// hasznalat: HW_Connection.sendCommandToReader(1, HW_Command.RED_LED_ON);
 public static void sendCommandToReader(int readerId, HW_Command command)
 {
     String ip = readers.get(readerId);
