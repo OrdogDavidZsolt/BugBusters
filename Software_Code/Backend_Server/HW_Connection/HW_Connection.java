@@ -179,7 +179,7 @@ public class HW_Connection
         }
     }
 // hasznalat: HW_Connection.sendCommandToReader(1, HW_Command.RED_LED_ON);
-public static void sendCommandToReader(int readerId, HW_Command command)
+public static void sendCommandToReader(String readerId, HW_Command command)
 {
     String ip = readers.get(readerId);
 
