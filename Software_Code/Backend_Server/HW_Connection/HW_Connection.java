@@ -186,6 +186,10 @@ public class HW_Connection
         GREEN_LED_OFF(4),
         BLUE_LED_ON(5),
         BLUE_LED_OFF(6);
+
+        HW_Command(int code) {
+            this.code = code;
+        }
     }
 }
 
