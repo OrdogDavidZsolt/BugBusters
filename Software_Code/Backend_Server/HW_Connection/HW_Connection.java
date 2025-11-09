@@ -63,6 +63,7 @@ public class HW_Connection
         RED_LED_OFF(2),
         GREEN_LED_ON(3),
         GREEN_LED_OFF(4),
+        BLUE_LED_ON(5),
     }
 
     public static int getPort()
