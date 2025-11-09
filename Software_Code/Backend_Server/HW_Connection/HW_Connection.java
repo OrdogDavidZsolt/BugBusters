@@ -24,7 +24,7 @@ public class HW_Connection
     private static final String PREFIX = CYAN + ">> HW_Connection: " + RESET;
 
     //olvasók nyilvántartása
-    private static final Map<String, String> readers = new HashMap<>();
+    private static final Map<String, String> readers = new HashMap<>(); // key -> IP, value-> "DEV-001"
     private static int nextReaderId = 1; // az első kiosztott ID 1 lesz, amit a configureReader fog hasznalni
 
     private static final int PORT = 54321; //ezen a porton hallgat a szerver
@@ -42,6 +42,9 @@ public class HW_Connection
             ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
             //^ ez egy szál kezelő szolgáltatás, létrehoz egy olyan szál poolt,
             // ami legfeljebb 50 kliens kezelését engedi
+
+            //a szerver elindul egy porton (PORT változó) és klie4nsre vár,
+            // amikor jön egy kliens, akkor elindít neki egy külön szálat (CLientHandler)
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
                 System.out.println(PREFIX + "HW Szerver elindult a " + PORT + " porton...");
 
