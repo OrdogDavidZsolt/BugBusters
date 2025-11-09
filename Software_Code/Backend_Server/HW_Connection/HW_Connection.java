@@ -110,12 +110,14 @@ public class HW_Connection
                     bytesReadTotal += bytesRead;
                 }
 
-
+                //az első 4 bájt tartalmazza az olvasó azonosítóját (little-edian)
                 int readerID =  (buffer[3] & 0xFF) << 24 |
                                 (buffer[2] & 0xFF) << 16 |
                                 (buffer[1] & 0xFF) << 8  |
                                 (buffer[0] & 0xFF); // kártyaolvasó ID-jának olvasása, little-endian szerint
 
+
+                //UID feldolgozása
                 int uidOffset = 9; // "=" utáni első bájt
                 int uidLength = 10; // 10 bájtos UID
                 // UID sztring előállítása stringbuilderrel
