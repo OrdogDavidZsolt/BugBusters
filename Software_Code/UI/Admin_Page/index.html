@@ -1054,7 +1054,6 @@
                 <input type="text" class="editable-field" value="${deviceId}" placeholder="Device ID">
                 <input type="text" class="editable-field" value="${devicePosition}" placeholder="Position">
                 <input type="text" class="editable-field" value="${deviceType}" placeholder="Device Type">
-                <div class="device-info" style="margin-top: 12px; margin-bottom: 8px;"><strong>Status:</strong> ${isOnline ? 'Online' : 'Offline'}</div>
                 <span class="status-badge ${isOnline ? 'status-online' : 'status-offline'}" style="pointer-events: none;">● ${isOnline ? 'Online' : 'Offline'}</span>
                 <div class="edit-actions">
                     <button class="save-btn" onclick="saveDevice(this)">Save</button>
