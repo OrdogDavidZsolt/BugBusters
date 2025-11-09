@@ -181,6 +181,8 @@ public class HW_Connection
 
 public static void sendCommandToReader(int readerId, HW_Command command)
 {
+    String ip = readers.get(readerId);
+
     if (ip == null)
     {
         System.out.println(">>HW_Connection: Nincs ilyen olvasó ID: " + readerId);
