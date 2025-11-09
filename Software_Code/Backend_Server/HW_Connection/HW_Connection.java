@@ -194,6 +194,7 @@ public static void sendCommandToReader(int readerId, HW_Command command)
     {
 
         out.writeInt(command.getCode()); // egy 4 bájtos egész számot kuld a hálozaton keresztul a kliens fele
+        out.flush(); //puffer uritese --> az adatgófolyamot azonnal kuld el
     }
     catch (IOException e)
     {
