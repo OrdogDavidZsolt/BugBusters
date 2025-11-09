@@ -179,9 +179,13 @@ public class HW_Connection
         }
     }
 
-public static void sendCommandToReader(int ReaderId, HW_Command command)
+public static void sendCommandToReader(int readerId, HW_Command command)
 {
-
+    if (ip == null)
+    {
+        System.out.println(">>HW_Connection: Nincs ilyen olvasó ID: " + readerId);
+        return;
+    }
 }
 
     //vezérlő parqancsok
