@@ -58,6 +58,10 @@ public class HW_Connection
         }).start();
     }
 
+    public enum HW_Command{
+
+    }
+
     public static int getPort()
     {
         return HW_Connection.PORT;
