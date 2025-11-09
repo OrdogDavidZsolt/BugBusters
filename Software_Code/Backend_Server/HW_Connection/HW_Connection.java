@@ -192,6 +192,11 @@ public class HW_Connection
         HW_Command(int code) {
             this.code = code;
         }
+
+
+        public int getCode() {
+            return code;
+        }
     }
 }
 
