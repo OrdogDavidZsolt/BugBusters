@@ -187,7 +187,7 @@ public class HW_Connection
         BLUE_LED_ON(5),
         BLUE_LED_OFF(6);
 
-        private int code;
+        private final int code;
 
         HW_Command(int code) {
             this.code = code;
