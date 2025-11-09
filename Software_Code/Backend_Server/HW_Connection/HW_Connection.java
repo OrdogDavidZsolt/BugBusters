@@ -169,6 +169,7 @@ public class HW_Connection
             if (readers.containsKey(ip))
             {
                 String existingId = readers.get(ip);
+                System.out.println(PREFIX  + ">>HW_Connection: Ismert olvasó újra csatlakozott: " + existingId + " (" + ip + ")" + RESET);
             }
 
             String newId = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
