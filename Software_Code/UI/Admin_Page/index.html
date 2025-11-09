@@ -349,7 +349,7 @@
         .edit-btn {
             position: absolute;
             top: 12px;
-            right: 52px;
+            right: 12px;
             width: 32px;
             height: 32px;
             border-radius: 8px;
@@ -1021,67 +1021,6 @@
             document.getElementById('totalDevices').textContent = total;
             document.getElementById('onlineDevices').textContent = online;
             document.getElementById('offlineDevices').textContent = offline;
-        }
-
-        function deleteDevice(button) {
-            const col = button.closest('.col-12');
-            const deviceName = col.querySelector('.device-name').textContent;
-            
-            showConfirmModal(
-                'Delete Device',
-                `Are you sure you want to delete "${deviceName}"? This action cannot be undone.`,
-                'warning',
-                function() {
-                    col.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                    col.style.opacity = '0';
-                    col.style.transform = 'scale(0.8)';
-                    
-                    setTimeout(() => {
-                        col.remove();
-                        updateDeviceCounts();
-                    }, 300);
-                }
-            );
-        }
-
-        function addNewDevice() {
-            const devicesGrid = document.getElementById('devicesGrid');
-            const addDeviceCol = document.getElementById('addDeviceCol');
-            
-            const newCol = document.createElement('div');
-            newCol.className = 'col-12 col-md-6 col-lg-4';
-            newCol.style.opacity = '0';
-            newCol.style.transform = 'scale(0.8)';
-            
-            newCol.innerHTML = `
-                <div class="device-card">
-                    <button class="edit-btn" onclick="editDevice(this)">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                        </svg>
-                    </button>
-                    <button class="delete-btn" onclick="deleteDevice(this)">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
-                        </svg>
-                    </button>
-                    <div class="device-name">New Device</div>
-                    <div class="device-info"><strong>ID:</strong> DEV-XXX</div>
-                    <div class="device-info"><strong>Position:</strong> To be assigned</div>
-                    <div class="device-info"><strong>Type:</strong> Pending configuration</div>
-                    <span class="status-badge status-offline">● Offline</span>
-                </div>
-            `;
-            
-            devicesGrid.insertBefore(newCol, addDeviceCol);
-            
-            setTimeout(() => {
-                newCol.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                newCol.style.opacity = '1';
-                newCol.style.transform = 'scale(1)';
-            }, 10);
-            
-            updateDeviceCounts();
         }
 
         // Edit device function
