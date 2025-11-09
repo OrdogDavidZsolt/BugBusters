@@ -185,7 +185,7 @@ public static void sendCommandToReader(String readerId, HW_Command command)
 
     if (ip == null)
     {
-        System.out.println(">>HW_Connection: Nincs ilyen olvasó ID: " + readerId);
+        System.out.println(PREFIX + ">>HW_Connection: Nincs ilyen olvasó ID: " + readerId);
         return;
     }
 
