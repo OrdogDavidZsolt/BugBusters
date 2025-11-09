@@ -196,7 +196,7 @@ public static void sendCommandToReader(String readerId, HW_Command command)
         out.writeInt(command.getCode()); // egy 4 bájtos egész számot kuld a hálozaton keresztul a kliens fele
         out.flush(); //puffer uritese --> az adatfolyamot azonnal kuld el
 
-        System.out.println(">>HW_Connection: Parancs elküldve [" + command + "] a(z) " + ip + " címre.");
+        System.out.println(PREFIX + ">>HW_Connection: Parancs elküldve [" + command + "] a(z) " + ip + " címre.");
     }
     catch (IOException e)
     {
