@@ -188,6 +188,15 @@ public static void sendCommandToReader(int readerId, HW_Command command)
         System.out.println(">>HW_Connection: Nincs ilyen olvasó ID: " + readerId);
         return;
     }
+
+    try()
+    {
+
+    }
+    catch ()
+    {
+
+    }
 }
 
     //vezérlő parqancsok
