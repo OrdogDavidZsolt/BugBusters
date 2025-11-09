@@ -61,6 +61,7 @@ public class HW_Connection
     public enum HW_Command{
         RED_LED_ON(1),
         RED_LED_OFF(2),
+        GREEN_LED_ON(3),
 
     }
 
