@@ -194,6 +194,7 @@ public static void sendCommandToReader(String readerId, HW_Command command)
     //érték alapján keresünk kulcsot
     String targtetIp = readers.entrySet().stream()
             .filter(entry -> entry.getValue().equals(readerId))
+            .map(Map.Entry::getKey)
 
     if (ip == null)
     {
