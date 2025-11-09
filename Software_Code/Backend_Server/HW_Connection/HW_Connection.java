@@ -177,6 +177,8 @@ public class HW_Connection
             readers.put(ip, newId);
             nextReaderId++;
 
+            System.out.println(PREFIX + ">>HW_Connection: Új olvasó regisztrálva: ID=" + newId + ", IP=" + ip + RESET);
+
             return newId;
         }
 
