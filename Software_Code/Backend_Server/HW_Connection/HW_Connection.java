@@ -196,6 +196,7 @@ public static void sendCommandToReader(String readerId, HW_Command command)
             .filter(entry -> entry.getValue().equals(readerId))
             .map(Map.Entry::getKey)
             .findFirst()
+            .orElse(null);
 
     if (ip == null)
     {
