@@ -190,7 +190,7 @@ public static void sendCommandToReader(int readerId, HW_Command command)
     }
 
     try(Socket socket = new Socket(ip, PORT);
-
+        DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
     {
 
     }
