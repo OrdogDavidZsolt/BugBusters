@@ -83,9 +83,14 @@ public class HW_Connection
         @Override
         public void run()
         {
+            //lekéri az adott kliens IP címét
             String clientIP = socket.getInetAddress().getHostAddress(); //kiolvassa kliens IP címét
             System.out.println(PREFIX + "Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
 
+
+            //beállít két adatfolyamot
+            //in: a kliens küld nekünk adatot
+            //out: mi küldünk adatot a szervernek
             try (InputStream in = socket.getInputStream();
                                 // bejövő adatok a klienstől
                  DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
@@ -104,6 +109,8 @@ public class HW_Connection
                     }
                     bytesReadTotal += bytesRead;
                 }
+
+
                 int readerID =  (buffer[3] & 0xFF) << 24 |
                                 (buffer[2] & 0xFF) << 16 |
                                 (buffer[1] & 0xFF) << 8  |
