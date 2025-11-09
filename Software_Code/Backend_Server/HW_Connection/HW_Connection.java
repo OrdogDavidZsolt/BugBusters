@@ -63,7 +63,7 @@ public class HW_Connection
         return HW_Connection.PORT;
     }
 
-    public static Map<Integer, String> getReaders() {
+    public static Map<String, String> getReaders() {
         return readers;
     }
 
