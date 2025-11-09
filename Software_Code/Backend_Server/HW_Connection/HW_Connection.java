@@ -204,7 +204,7 @@ public static void sendCommandToReader(String readerId, HW_Command command)
         return;
     }
 
-    try(Socket socket = new Socket(ip, PORT);
+    try(Socket socket = new Socket(targetIp, PORT);
         DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
     {
 
