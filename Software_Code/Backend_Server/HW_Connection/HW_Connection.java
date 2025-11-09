@@ -117,7 +117,7 @@ public class HW_Connection
                 if (readerID == Integer.MAX_VALUE) {
                     // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
                     System.out.print(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ");
-                    int newId = configureReader();
+                    String newId = configureReader();
                     out.writeInt(newId);    // konfigurált ID visszaküldése az olvasónak
                     System.out.println(newId);
                 }
@@ -164,7 +164,7 @@ public class HW_Connection
              * majd a kapott sorszámot, mint ID visszaadja return-ben. A sorszám nyilvántartása szintén lehet a külső osztály privát
              * statikus attribútuma
              */
-            String newId = String.format("DEV-%03d", nextReaderId);
+            String newId = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
 
             readers.put(newId, socket.getInetAddress().getHostAddress()); // beletesszuk az uj olvasot
             nextReaderId++;
