@@ -1054,17 +1054,8 @@
                 <input type="text" class="editable-field" value="${deviceId}" placeholder="Device ID">
                 <input type="text" class="editable-field" value="${devicePosition}" placeholder="Position">
                 <input type="text" class="editable-field" value="${deviceType}" placeholder="Device Type">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                    <label style="font-size: 14px; color: #4a5568; font-weight: 600;">Status:</label>
-                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                        <input type="radio" name="status-${timestamp}" value="online" ${isOnline ? 'checked' : ''}>
-                        <span style="font-size: 14px; color: #047857;">Online</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                        <input type="radio" name="status-${timestamp}" value="offline" ${!isOnline ? 'checked' : ''}>
-                        <span style="font-size: 14px; color: #dc2626;">Offline</span>
-                    </label>
-                </div>
+                <div class="device-info" style="margin-top: 12px; margin-bottom: 8px;"><strong>Status:</strong> ${isOnline ? 'Online' : 'Offline'}</div>
+                <span class="status-badge ${isOnline ? 'status-online' : 'status-offline'}" style="pointer-events: none;">● ${isOnline ? 'Online' : 'Offline'}</span>
                 <div class="edit-actions">
                     <button class="save-btn" onclick="saveDevice(this)">Save</button>
                     <button class="cancel-btn" onclick="cancelEdit(this, '${deviceName.replace(/'/g, "\\'")}', '${deviceId.replace(/'/g, "\\'")}', '${devicePosition.replace(/'/g, "\\'")}', '${deviceType.replace(/'/g, "\\'")}', ${isOnline})">Cancel</button>
@@ -1079,8 +1070,8 @@
             const idInput = inputs[1].value.trim();
             const positionInput = inputs[2].value.trim();
             const typeInput = inputs[3].value.trim();
-            const statusRadio = card.querySelector('input[type="radio"]:checked');
-            const isOnline = statusRadio.value === 'online';
+            const statusBadge = card.querySelector('.status-badge');
+            const isOnline = statusBadge.classList.contains('status-online');
             
             if (!nameInput || !idInput || !positionInput || !typeInput) {
                 alert('Please fill in all fields');
