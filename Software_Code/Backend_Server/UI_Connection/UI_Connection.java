@@ -105,7 +105,7 @@ public class UI_Connection
     {
         // Ez a metódus visszaadja egy handler kérésére a hardverek listáját
         // Válasz előállítása Json formátumban
-        Map<Integer, String> readerData = HW_Connection.getReaders();
+        Map<String, String> readerData = HW_Connection.getReaders();
         // JSON válasz készítése a Map adatszerkezetből
         Gson gson_obj = new Gson();
         String data = gson_obj.toJson(readerData);
