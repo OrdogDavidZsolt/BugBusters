@@ -179,6 +179,12 @@ public class HW_Connection
         }
     }
 
+public static void sendCommandToReader(int ReaderId, HW_Command command)
+{
+
+}
+
+    //vezérlő parqancsok
     public enum HW_Command{
         RED_LED_ON(1),
         RED_LED_OFF(2),
@@ -195,7 +201,7 @@ public class HW_Connection
 
 
         public int getCode() {
-            return code;
+            return code;  //lekérdezhető vele az integer érték, amit a mikrokontroller el fog várni
         }
     }
 }
