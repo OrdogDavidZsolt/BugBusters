@@ -149,7 +149,7 @@ public class HW_Connection
             }
         }
 
-        private int configureReader()
+        private String configureReader()
         {
             // Ez végzi el a kértyaolvasók listázását és az ID-k kiosztását
             /**
