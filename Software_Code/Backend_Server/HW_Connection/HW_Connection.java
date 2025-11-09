@@ -192,13 +192,13 @@ public class HW_Connection
 public static void sendCommandToReader(String readerId, HW_Command command)
 {
     //érték alapján keresünk kulcsot
-    String targtetIp = readers.entrySet().stream()
+    String targetIp = readers.entrySet().stream()
             .filter(entry -> entry.getValue().equals(readerId))
             .map(Map.Entry::getKey)
             .findFirst()
             .orElse(null);
 
-    if (ip == null)
+    if (targetIp == null)
     {
         System.out.println(PREFIX + ">>HW_Connection: Nincs ilyen olvasó ID: " + readerId);
         return;
