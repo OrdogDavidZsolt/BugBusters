@@ -166,6 +166,11 @@ public class HW_Connection
              */
             String ip = socket.getInetAddress().getHostAddress();
 
+            if (readers.containsKey(ip))
+            {
+
+            }
+
             String newId = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
 
             readers.put(newId, socket.getInetAddress().getHostAddress()); // beletesszuk az uj olvasot
