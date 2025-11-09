@@ -164,6 +164,8 @@ public class HW_Connection
              * majd a kapott sorszámot, mint ID visszaadja return-ben. A sorszám nyilvántartása szintén lehet a külső osztály privát
              * statikus attribútuma
              */
+            String ip = socket.getInetAddress().getHostAddress();
+
             String newId = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
 
             readers.put(newId, socket.getInetAddress().getHostAddress()); // beletesszuk az uj olvasot
