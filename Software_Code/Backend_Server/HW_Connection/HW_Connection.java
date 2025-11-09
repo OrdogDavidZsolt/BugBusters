@@ -117,7 +117,7 @@ public class HW_Connection
                 if (readerID == Integer.MAX_VALUE) {
                     // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
                     System.out.print(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ");
-                    String newId = configureReader();
+                    String newId = configureReader(); //ASCII string küldése
                     out.write(newId.getBytes());    // konfigurált ID visszaküldése az olvasónak
                     System.out.println(newId);
                 }
