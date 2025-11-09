@@ -23,7 +23,7 @@ public class HW_Connection
     private static final String WHITE  = "\u001B[37m";
     private static final String PREFIX = CYAN + ">> HW_Connection: " + RESET;
 
-
+    //olvasók nyilvántartása
     private static final Map<String, String> readers = new HashMap<>();
     private static int nextReaderId = 1; // az első kiosztott ID 1 lesz, amit a configureReader fog hasznalni
 
