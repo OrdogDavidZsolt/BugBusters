@@ -193,6 +193,7 @@ public static void sendCommandToReader(int readerId, HW_Command command)
         DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
     {
 
+        out.writeInt(command.getCode()); // egy 4 bájtos egész számot kuld a hálozaton keresztul a kliens fele
     }
     catch (IOException e)
     {
