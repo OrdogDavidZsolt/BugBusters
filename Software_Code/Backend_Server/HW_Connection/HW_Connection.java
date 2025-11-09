@@ -185,7 +185,7 @@ public class HW_Connection
         private void processUID(String uid)
         {
             // DEBUG
-            System.out.println(PREFIX + "Feldolgozandó üzenet: " + uid);
+            System.out.println(PREFIX + "HW_Connection: Feldolgozandó üzenet: " + uid);
         }
     }
 // hasznalat: HW_Connection.sendCommandToReader("DEV-003", HW_Command.RED_LED_ON);
