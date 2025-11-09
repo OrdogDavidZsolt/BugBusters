@@ -211,7 +211,8 @@ public static void sendCommandToReader(String readerId, HW_Command command)
         GREEN_LED_ON(3),
         GREEN_LED_OFF(4),
         BLUE_LED_ON(5),
-        BLUE_LED_OFF(6);
+        BLUE_LED_OFF(6),
+        RESET(7);
 
         private final int code;
 
