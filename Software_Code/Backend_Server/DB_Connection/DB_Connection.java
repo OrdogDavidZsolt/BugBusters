@@ -1,16 +1,26 @@
 package DB_Connection;
 
-import Dao.*;
-import Manager.*;
+import Model.Attendance;
+import Model.Course;
+import Model.CourseSession;
+import Model.User;
+import Repository.AttendanceRepository;
+import Repository.CourseRepository;
+import Repository.CourseSessionRepository;
+import Repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+@RequiredArgsConstructor
 @Component
-public class DB_Connection {
+public class DB_Connection implements CommandLineRunner {
 
     private static final String RESET  = "\u001B[0m";
     private static final String RED    = "\u001B[31m";
@@ -22,40 +32,73 @@ public class DB_Connection {
     private static final String WHITE  = "\u001B[37m";
     private static final String PREFIX = PURPLE + ">> DB_Connection: " + RESET;
 
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    private UserDAO userDAO;
+    private CourseRepository courseRepository;
 
     @Autowired
-    private CourseDAO courseDAO;
+    private CourseSessionRepository courseSessionRepository;
 
     @Autowired
-    private CourseSessionDAO courseSessionDAO;
-
-    @Autowired
-    private AttendanceDAO attendanceDAO;
+    private AttendanceRepository attendanceRepository;
 
     public void startDatabase() {
-        // H2 adatbázis indítása
         try {
-            new Server().runTool("-tcp", "-web", "-ifNotExists");
+            Server.createTcpServer("-tcp", "-web", "-ifNotExists").start();
+            System.out.println("http://localhost:8080/h2-console");
+            System.out.println(PREFIX + "Database running");
         } catch (SQLException e) {
             System.out.println(PREFIX + RED + "SQL Exception raised: " + RESET + e.getMessage());
         }
-        
-        // DAO-k automatikusan injektálva vannak a Spring által
-        UserManager userManager = new UserManager(userDAO);
-        userManager.manage();
+    }
 
-        CourseManager courseManager = new CourseManager(courseDAO);
-        courseManager.manage();
+    @Override
+    public void run(String... args) throws Exception {
+        // 1. Users
+        User teacher = User.builder()
+                .name("Prof. Smith")
+                .email("smith@university.com")
+                .role(User.UserRole.TEACHER)
+                .cardId("100")
+                .neptunCode("ABC123")
+                .hashedPassword("password123")
+                .build();
 
-        CourseSessionManager courseSessionManager = new CourseSessionManager(courseSessionDAO);
-        courseSessionManager.manage();
+        User student = User.builder()
+                .name("Alice")
+                .role(User.UserRole.STUDENT)
+                .cardId("101")
+                .neptunCode("DEF456")
+                .build();
 
-        AttendanceManager attendanceManager = new AttendanceManager(attendanceDAO);
-        attendanceManager.manage();
-        
-        System.out.println(PREFIX + "Database running");
+        userRepository.save(teacher);
+        userRepository.save(student);
+
+        // 2. Course
+        Course course = Course.builder()
+                .name("Math 101")
+                .teacher(teacher)
+                .build();
+        courseRepository.save(course);
+
+        // 3. Course Session
+        CourseSession session = CourseSession.builder()
+                .course(course)
+                .date(LocalDate.now())
+                .startTime(LocalDateTime.now())
+                .endTime(LocalDateTime.now().plusHours(1))
+                .build();
+        courseSessionRepository.save(session);
+
+        // 4. Attendance
+        Attendance attendance = Attendance.builder()
+                .student(student)
+                .session(session)
+                .status(Attendance.AttendanceStatus.PRESENT)
+                .scannedAt(LocalDateTime.now())
+                .build();
+        attendanceRepository.save(attendance);
     }
 }
