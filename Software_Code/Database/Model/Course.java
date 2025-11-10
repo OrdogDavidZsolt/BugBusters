@@ -1,9 +1,18 @@
 package Model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "courses")
 public class Course {
@@ -22,29 +31,5 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseSession> sessions = new ArrayList<>();
-
-    public Course() {
-    }
-
-    public Course(String name, User teacher) {
-        this.name = name;
-        this.teacher = teacher;
-    }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public User getTeacher() { return teacher; }
-    public void setTeacher(User teacher) { this.teacher = teacher; }
-    public List<CourseSession> getSessions() { return sessions; }
-    public void setSessions(List<CourseSession> sessions) { this.sessions = sessions; }
-
-    @Override
-    public String toString() {
-        return "Course{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", teacherId=" + (teacher != null ? teacher.getCardId() : null) +
-                '}';
-    }
 }
 
