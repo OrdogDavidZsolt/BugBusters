@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link id="faviconLink" rel="icon" type="image/x-icon" href="favicon-light.ico">
+    <link id="faviconLink" rel="icon" type="image/x-icon" href="../favicon-light.ico">
     <title>Teacher Dashboard - Attendance Registration Application</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -1552,7 +1552,7 @@ background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
                 link.rel = 'icon';
                 document.head.appendChild(link);
             }
-            const target = isLight ? 'favicon-light.ico' : 'favicon-dark.ico';
+            const target = isLight ? '../favicon-light.ico' : '../favicon-dark.ico';
             link.setAttribute('href', target + '?v=' + Date.now());
             link.setAttribute('type', 'image/x-icon');
         }
