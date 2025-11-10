@@ -23,8 +23,8 @@ public class HW_Connection
     private static final String WHITE  = "\u001B[37m";
     private static final String PREFIX = CYAN + ">> HW_Connection: " + RESET;
 
-
-    private static final Map<Integer, String> readers = new HashMap<>();
+    //olvasók nyilvántartása
+    private static final Map<String, String> readers = new HashMap<>(); // key -> IP, value-> "DEV-001"
     private static int nextReaderId = 1; // az első kiosztott ID 1 lesz, amit a configureReader fog hasznalni
 
     private static final int PORT = 54321; //ezen a porton hallgat a szerver
@@ -42,6 +42,9 @@ public class HW_Connection
             ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
             //^ ez egy szál kezelő szolgáltatás, létrehoz egy olyan szál poolt,
             // ami legfeljebb 50 kliens kezelését engedi
+
+            //a szerver elindul egy porton (PORT változó) és klie4nsre vár,
+            // amikor jön egy kliens, akkor elindít neki egy külön szálat (CLientHandler)
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
                 System.out.println(PREFIX + "HW Szerver elindult a " + PORT + " porton...");
 
@@ -63,7 +66,7 @@ public class HW_Connection
         return HW_Connection.PORT;
     }
 
-    public static Map<Integer, String> getReaders() {
+    public static Map<String, String> getReaders() {
         return readers;
     }
 
@@ -80,9 +83,14 @@ public class HW_Connection
         @Override
         public void run()
         {
+            //lekéri az adott kliens IP címét
             String clientIP = socket.getInetAddress().getHostAddress(); //kiolvassa kliens IP címét
             System.out.println(PREFIX + "Új kliens kapcsolódott: " + clientIP); //felhasználó tájékoztatása
 
+
+            //beállít két adatfolyamot
+            //in: a kliens küld nekünk adatot
+            //out: mi küldünk adatot a szervernek
             try (InputStream in = socket.getInputStream();
                                 // bejövő adatok a klienstől
                  DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
@@ -101,11 +109,16 @@ public class HW_Connection
                     }
                     bytesReadTotal += bytesRead;
                 }
+
+                //az első 4 bájt tartalmazza az olvasó azonosítóját (little-edian)
                 int readerID =  (buffer[3] & 0xFF) << 24 |
                                 (buffer[2] & 0xFF) << 16 |
                                 (buffer[1] & 0xFF) << 8  |
                                 (buffer[0] & 0xFF); // kártyaolvasó ID-jának olvasása, little-endian szerint
 
+
+                //UID feldolgozása
+                //a 10 bájtos UID a 9.bájttól kezdődik
                 int uidOffset = 9; // "=" utáni első bájt
                 int uidLength = 10; // 10 bájtos UID
                 // UID sztring előállítása stringbuilderrel
@@ -114,11 +127,12 @@ public class HW_Connection
                     uidHex.append(String.format("%02X", buffer[uidOffset + i]));
                 }
 
+
                 if (readerID == Integer.MAX_VALUE) {
                     // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
                     System.out.print(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ");
-                    int newId = configureReader();
-                    out.writeInt(newId);    // konfigurált ID visszaküldése az olvasónak
+                    String newId = configureReader(); //ASCII string küldése
+                    out.write(newId.getBytes());    // konfigurált ID visszaküldése az olvasónak
                     System.out.println(newId);
                 }
                 else {
@@ -149,7 +163,7 @@ public class HW_Connection
             }
         }
 
-        private int configureReader()
+        private String configureReader()
         {
             // Ez végzi el a kértyaolvasók listázását és az ID-k kiosztását
             /**
@@ -164,18 +178,84 @@ public class HW_Connection
              * majd a kapott sorszámot, mint ID visszaadja return-ben. A sorszám nyilvántartása szintén lehet a külső osztály privát
              * statikus attribútuma
              */
-            int newId = nextReaderId;
+            String ip = socket.getInetAddress().getHostAddress();
 
-            readers.put(newId, socket.getInetAddress().getHostAddress()); // beletesszuk az uj olvasot
+            if (readers.containsKey(ip))
+            {
+                String existingId = readers.get(ip);
+                System.out.println(PREFIX  + ">>HW_Connection: Ismert olvasó újra csatlakozott: " + existingId + " (" + ip + ")" + RESET);
+                return existingId;
+            }
+
+            String newId = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
+            readers.put(ip, newId);
             nextReaderId++;
+
+            System.out.println(PREFIX + ">>HW_Connection: Új olvasó regisztrálva: ID=" + newId + ", IP=" + ip + RESET);
 
             return newId;
         }
 
+        //később bővíteni kell
         private void processUID(String uid)
         {
             // DEBUG
-            System.out.println(PREFIX + "Feldolgozandó üzenet: " + uid);
+            System.out.println(PREFIX + "HW_Connection: Feldolgozandó üzenet: " + uid);
+        }
+    }
+// hasznalat: HW_Connection.sendCommandToReader("DEV-003", HW_Command.RED_LED_ON);
+public static void sendCommandToReader(String readerId, HW_Command command)
+{
+    //érték alapján keresünk kulcsot
+    //keresd meg azt az IP-címet, amihez a megadott olvasó ID tartozik
+    //ha nincs ilyen, akkor térj vissza null-al
+    String targetIp = readers.entrySet().stream()
+            .filter(entry -> entry.getValue().equals(readerId))
+            .map(Map.Entry::getKey)
+            .findFirst()
+            .orElse(null);
+
+    if (targetIp == null)
+    {
+        System.out.println(PREFIX + ">>HW_Connection: Nincs ilyen olvasó ID: " + readerId);
+        return;
+    }
+
+    //felépít egy új TCP kapcsolatot a megadott olvasó IP-címére, azon a porton, amin a harvder figyel
+    try(Socket socket = new Socket(targetIp, PORT);
+        DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
+    {
+
+        out.writeInt(command.getCode()); // egy 4 bájtos egész számot kuld a hálozaton keresztul a kliens fele
+        out.flush(); //puffer uritese --> az adatfolyamot azonnal kuld el
+
+        System.out.println(PREFIX + ">>HW_Connection: Parancs elküldve [" + command + "] a(z) " + targetIp + " címre.");
+    }
+    catch (IOException e)
+    {
+        System.out.println(PREFIX + ">>HW_Connection: Hiba az üzenet küldésekor: " + e.getMessage());
+    }
+}
+
+    //vezérlő parqancsok
+    public enum HW_Command{
+        RED_LED_ON(1),
+        RED_LED_OFF(2),
+        GREEN_LED_ON(3),
+        GREEN_LED_OFF(4),
+        BLUE_LED_ON(5),
+        BLUE_LED_OFF(6),
+        RESET(7);
+
+        private final int code;
+
+        HW_Command(int code) {
+            this.code = code;
+        }
+
+
+        public int getCode() {
+            return code;  //lekérdezhető vele az integer érték, amit a mikrokontroller el fog várni
         }
     }
 }
