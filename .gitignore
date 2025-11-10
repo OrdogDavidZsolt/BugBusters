@@ -13,7 +13,6 @@ bin/
 .idea/
 *.iml
 out/
-src/
 
 # ------------ VS Code ------------
 .vscode/
