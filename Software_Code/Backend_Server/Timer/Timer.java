@@ -45,4 +45,25 @@ public class Timer
 
         thread.start();
     }
+
+    public int getRemainingMinutes() {
+        long remainingMillis = getRemainingMillis();
+        return (int) (remainingMillis / 1000 / 60);
+    }
+
+    public int getRemainingSeconds() {
+        long remainingMillis = getRemainingMillis();
+        return (int) ((remainingMillis / 1000) % 60);
+    }
+
+    public String getRemainingTimeFormatted() {
+        return String.format("%02d:%02d", getRemainingMinutes(), getRemainingSeconds());
+    }
+
+    private long getRemainingMillis() {
+        if (!running) return totalMillis;
+        long elapsed = System.currentTimeMillis() - startTime;
+        long remaining = totalMillis - elapsed;
+        return Math.max(remaining, 0);
+    }
 }
