@@ -60,7 +60,7 @@ public class Timer
         return String.format("%02d:%02d", getRemainingMinutes(), getRemainingSeconds());
     }
 
-    private long getRemainingMillis() {
+    public long getRemainingMillis() {
         if (!running) return totalMillis;
         long elapsed = System.currentTimeMillis() - startTime;
         long remaining = totalMillis - elapsed;
