@@ -1,0 +1,9 @@
+package Repository;
+
+import Model.CourseSession;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CourseSessionRepository extends JpaRepository<CourseSession, Long> {
+}
