@@ -1,1 +1,0 @@
-Ebben a mappában vannak a Backend Server DB_Connection komponenséhez tartozó osztályok
