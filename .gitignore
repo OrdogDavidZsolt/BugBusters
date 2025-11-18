@@ -2,20 +2,24 @@
 *.class
 *.war
 *.ear
+*.log
 
 # ------------ Maven/Gradle ------------
 target/
 build/
 bin/
-
+.mvn/
+wrapper/
 
 # ------------ IntelliJ IDEA ------------
 .idea/
 *.iml
+*.iws
+*.ipr
 out/
-src/
 
 # ------------ VS Code ------------
 .vscode/
 
+# ------------ Secrets ------------
 .env

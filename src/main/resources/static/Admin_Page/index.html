@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link id="faviconLink" rel="icon" type="image/x-icon" href="../favicon-light.ico">
+    <title>Admin Dashboard - Attendance Registration Application</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="../js/theme-manager.js" defer></script>
+    <script src="../js/common.js" defer></script>
+
+    <script type="module" src="../js/admin/main.js"></script>
+</head>
+<body class="light-mode">
+    <div class="controls-left" role="region" aria-label="Left controls">
+        <div class="control-item">
+            <button id="logoutBtn" class="logout-btn" aria-label="Logout" title="Logout">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="#1e293b"/>
+                </svg>
+            </button>
+        </div>
+        
+        <a href="http://localhost:8080/h2-console" target="_blank" class="db-btn" aria-label="Manage Database" title="Manage Database">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4zm8 5.5V11c0 2.21-3.58 4-8 4s-8-1.79-8-4V8.5C4 10.71 7.58 12.5 12 12.5S20 10.71 20 8.5zm0 5V16c0 2.21-3.58 4-8 4s-8-1.79-8-4v-2.5C4 15.71 7.58 17.5 12 17.5S20 15.71 20 13.5z" fill="#1e293b"/>
+            </svg>
+            <span>Manage Database</span>
+        </a>
+    </div>
+
+    <div class="controls-container" role="region" aria-label="Controls">
+        <div class="control-card">
+            <span class="mode-label">Light Mode</span>
+            <label class="switch" aria-hidden="true">
+                <input type="checkbox" id="modeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="control-item">
+            <button id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" title="Fullscreen">
+                <svg id="fullscreenIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="#1e293b"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="main-card">
+        <h1 class="main-title">Device Management Dashboard</h1>
+        <p class="main-label">Monitor and manage all connected devices</p>
+        <div style="position: relative;">
+            <p class="main-label"><strong>Total Devices:</strong> <span id="totalDevices">5</span> | <strong>Online:</strong> <span id="onlineDevices">4</span> | <strong>Offline:</strong> <span id="offlineDevices">1</span></p>
+            <button id="refreshBtn" class="refresh-btn" aria-label="Refresh devices" title="Refresh devices" style="position: absolute; top: 0; right: 0;">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="#1e293b"/>
+                </svg>
+            </button>
+        </div>
+        <div class="devices-container">
+            <div class="container-fluid">
+                <div class="row g-4" id="deviceListContainer"></div>
+            </div>
+        </div>
+        <p class="site-credit" role="note">v0.1 • 2025 • Bug Busters</p>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-card">
+            <div class="modal-icon" id="modalIcon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="#dc2626"/>
+                </svg>
+            </div>
+            <h2 class="modal-title" id="modalTitle">Confirm Action</h2>
+            <p class="modal-message" id="modalMessage">Are you sure you want to proceed?</p>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" id="modalCancel">Cancel</button>
+                <button class="modal-btn confirm" id="modalConfirm">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
