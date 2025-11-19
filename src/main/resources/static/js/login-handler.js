@@ -12,11 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => reject(new Error('Timeout')), 2000)
             );
 
-            // Try to fetch the health endpoint (or just the root)
-            // Using 'HEAD' method is faster if your server supports it
-            const fetchPromise = fetch('http://localhost:8080/login', {
-                method: 'HEAD',
-                mode: 'no-cors' // Allows checking even if CORS is strict
+            // A /login helyett az /api/health végpontot hívjuk GET-tel
+            const fetchPromise = fetch('/api/health', {
+                method: 'GET', // HEAD helyett GET (biztosabb)
+                cache: 'no-store'
             });
 
             await Promise.race([fetchPromise, timeout]);

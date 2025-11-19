@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/", "/index.html", "/style.css", "/js/*.js", "/js/admin/*.js", "/js/teacher/*.js", "/*.ico").permitAll()
+                        .requestMatchers("/api/health").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
