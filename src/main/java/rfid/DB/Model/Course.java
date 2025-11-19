@@ -24,7 +24,6 @@ public class Course {
     @Column(nullable = false)
     private String name;
 
-    // A tanár, aki a tárgyat tartja
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "teacher_id", nullable = false)
     private User teacher;

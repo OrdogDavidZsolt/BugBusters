@@ -9,7 +9,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import rfid.DB.Model.Attendance;
 import rfid.DB.Model.CourseSession;
-
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -22,9 +21,8 @@ public class EmailingService {
 
     public void sendAttendanceCsv(String toEmail, CourseSession session, List<Attendance> attendanceList) {
         try {
-            // 1. CSV Tartalom Generálása
             StringBuilder csvContent = new StringBuilder();
-            csvContent.append("Név,Neptun Kód,Érkezés ideje,Státusz,Megjegyzés\n"); // Fejléc
+            csvContent.append("Név,Neptun Kód,Érkezés ideje,Státusz,Megjegyzés\n");
 
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -37,12 +35,10 @@ public class EmailingService {
 
                 csvContent.append(att.getStatus()).append(",");
 
-                // CSV-ben a vesszők bezavarhatnak, ezért idézőjelbe tehetjük a szöveget, ha kell
                 String note = (att.getNote() != null) ? att.getNote().replace(",", " ") : "";
                 csvContent.append(note).append("\n");
             }
 
-            // 2. Email összeállítása
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
@@ -50,14 +46,12 @@ public class EmailingService {
             helper.setSubject("Jelenléti ív export: " + session.getCourse().getName());
             helper.setText("Tisztelt Tanár Úr/Nő!\n\nMellékelten küldjük a kért jelenléti ívet CSV formátumban.\n\nÜdvözlettel,\nRFID Rendszer");
 
-            // 3. CSV Csatolása
             byte[] csvBytes = csvContent.toString().getBytes(StandardCharsets.UTF_8);
             ByteArrayResource resource = new ByteArrayResource(csvBytes);
 
             String filename = "jelenleti_" + session.getDate() + ".csv";
             helper.addAttachment(filename, resource);
 
-            // 4. Küldés
             mailSender.send(message);
             System.out.println("Email sikeresen elküldve ide: " + toEmail);
 

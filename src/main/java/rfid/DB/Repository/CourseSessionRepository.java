@@ -4,7 +4,6 @@ import rfid.DB.Model.Course;
 import rfid.DB.Model.CourseSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +11,6 @@ import java.util.Optional;
 public interface CourseSessionRepository extends JpaRepository<CourseSession, Long> {
     List<CourseSession> findByCourse_Id(Long courseId);
 
-    // ÚJ: Lekérdezi egy kurzus legutóbbi (vagy aktív) óráját
+    //Lekérdezi egy kurzus legutóbbi (vagy aktív) óráját
     Optional<CourseSession> findTopByCourseOrderByIdDesc(Course course);
 }

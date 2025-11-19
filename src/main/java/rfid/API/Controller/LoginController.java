@@ -1,16 +1,16 @@
 package rfid.API.Controller;
 
-import jakarta.servlet.http.HttpServletRequest; // ÚJ IMPORT
-import jakarta.servlet.http.HttpSession;        // ÚJ IMPORT
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken; // ÚJ IMPORT
-import org.springframework.security.core.authority.SimpleGrantedAuthority; // ÚJ IMPORT
-import org.springframework.security.core.context.SecurityContext; // ÚJ IMPORT
-import org.springframework.security.core.context.SecurityContextHolder; // ÚJ IMPORT
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository; // ÚJ IMPORT
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +18,6 @@ import rfid.API.DTO.LoginRequestDTO;
 import rfid.API.DTO.LoginResponseDTO;
 import rfid.DB.Model.User;
 import rfid.DB.Repository.UserRepository;
-
 import java.util.Collections;
 import java.util.Optional;
 
@@ -31,7 +30,6 @@ public class LoginController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // FONTOS: Hozzáadtuk a HttpServletRequest-et a paraméterekhez!
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request) {
 
@@ -61,27 +59,17 @@ public class LoginController {
         String userRole = user.getRole().name();
 
         if (userRole.equalsIgnoreCase(requestedMode)) {
-
-            // --- ITT KEZDŐDIK A JAVÍTÁS: SESSION LÉTREHOZÁSA ---
-
-            // 1. Létrehozunk egy "Token"-t, ami tartalmazza a felhasználót és a jogosultságát (ROLE)
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     user.getEmail(),
                     null,
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userRole))
             );
 
-            // 2. Beállítjuk a SecurityContext-et (ez mondja meg a Springnek, hogy "BE VAGY LÉPVE")
             SecurityContext sc = SecurityContextHolder.createEmptyContext();
             sc.setAuthentication(authentication);
             SecurityContextHolder.setContext(sc);
-
-            // 3. Létrehozzuk a HTTP Session-t és elmentjük bele a Context-et
-            // Ez generálja le a JSESSIONID cookie-t, amit a böngésző megkap
             HttpSession session = request.getSession(true);
             session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
-
-            // --- JAVÍTÁS VÉGE ---
 
             return ResponseEntity.ok(new LoginResponseDTO(true));
         } else {

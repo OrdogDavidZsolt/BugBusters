@@ -13,7 +13,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,14 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class PopulateDatabase {
-
-    private static final String RESET  = "\u001B[0m";
-    private static final String RED    = "\u001B[31m";
-    private static final String GREEN  = "\u001B[32m";
-    private static final String YELLOW = "\u001B[33m";
-    private static final String BLUE   = "\u001B[34m";
-    private static final String PURPLE = "\u001B[35m";
-    private static final String PREFIX = PURPLE + ">> DB_Connection: " + RESET;
 
     @Bean
     public CommandLineRunner initDatabase(
@@ -40,21 +31,17 @@ public class PopulateDatabase {
             PasswordEncoder passwordEncoder
     ) {
         return args -> {
-            System.out.println(PREFIX + "Initializing database with extended test data...");
+            System.out.println("Initializing database with extended test data...");
 
             // 1. LÉPÉS: Felhasználók (Admin + Tanárok)
-            // -----------------------------------------
             User admin = User.builder().name("Admin User").email("admin@test.com").cardId("ADMIN_CARD").neptunCode("ADMINN").role(User.UserRole.ADMIN).hashedPassword(passwordEncoder.encode("admin123")).build();
             userRepository.save(admin);
-
             User teacher1 = User.builder().name("Ördög Dávid Zsolt").email("ordogdavid2002@gmail.com").cardId("T_CARD_1").neptunCode("TEACH1").role(User.UserRole.TEACHER).hashedPassword(passwordEncoder.encode("123")).build();
             userRepository.save(teacher1);
-
             User teacher2 = User.builder().name("Dr. Nagy Anna").email("anna@test.com").cardId("T_CARD_2").neptunCode("TEACH2").role(User.UserRole.TEACHER).hashedPassword(passwordEncoder.encode("pass123")).build();
             userRepository.save(teacher2);
 
             // 2. LÉPÉS: Diákok (20 db)
-            // -----------------------------------------
             List<User> students = new ArrayList<>();
             // Csoport 1 (1-10)
             students.add(User.builder().name("Kiss Anna").cardId("S_1").neptunCode("ABC001").role(User.UserRole.STUDENT).build());
@@ -67,7 +54,6 @@ public class PopulateDatabase {
             students.add(User.builder().name("Lakatos Réka").cardId("S_8").neptunCode("ABC008").role(User.UserRole.STUDENT).build());
             students.add(User.builder().name("Juhász Bence").cardId("S_9").neptunCode("ABC009").role(User.UserRole.STUDENT).build());
             students.add(User.builder().name("Németh Dóra").cardId("S_10").neptunCode("ABC010").role(User.UserRole.STUDENT).build());
-
             // Csoport 2 (11-20)
             students.add(User.builder().name("Balogh Tamás").cardId("S_11").neptunCode("DEF011").role(User.UserRole.STUDENT).build());
             students.add(User.builder().name("Kelemen Zsófia").cardId("S_12").neptunCode("DEF012").role(User.UserRole.STUDENT).build());
@@ -82,9 +68,7 @@ public class PopulateDatabase {
 
             userRepository.saveAll(students);
 
-
             // 3. LÉPÉS: Kurzusok
-            // -----------------------------------------
             Course c1 = Course.builder().name("Webfejlesztés").teacher(teacher1).build();
             Course c2 = Course.builder().name("Adatbázisrendszerek").teacher(teacher1).build();
             Course c3 = Course.builder().name("Algoritmusok").teacher(teacher2).build();
@@ -92,9 +76,7 @@ public class PopulateDatabase {
 
             courseRepository.saveAll(List.of(c1, c2, c3, c4));
 
-
             // 4. LÉPÉS: Órák (Sessions) és Jelenlétek
-            // -----------------------------------------
             List<CourseSession> sessions = new ArrayList<>();
             List<Attendance> attendances = new ArrayList<>();
 
@@ -120,7 +102,6 @@ public class PopulateDatabase {
             CourseSession s1_3 = CourseSession.builder().course(c1).date(LocalDate.now().plusWeeks(1)).startTime(LocalDateTime.now().plusWeeks(1).withHour(14)).endTime(LocalDateTime.now().plusWeeks(1).withHour(16)).location("IK-101").build();
             sessions.add(s1_3);
 
-
             // --- Adatbázisok (c2) - 2 óra ---
             // 1. óra (Tegnap)
             CourseSession s2_1 = CourseSession.builder().course(c2).date(LocalDate.now().minusDays(1)).startTime(LocalDateTime.now().minusDays(1).withHour(10)).endTime(LocalDateTime.now().minusDays(1).withHour(12)).location("IK-203").build();
@@ -140,7 +121,6 @@ public class PopulateDatabase {
                 attendances.add(Attendance.builder().session(s2_2).student(students.get(i)).status(status).scannedAt(s2_2.getStartTime().plusMinutes(i%10)).note(note).build());
             }
 
-
             // --- Algoritmusok (c3 - Teacher2) - 1 óra ---
             CourseSession s3_1 = CourseSession.builder().course(c3).date(LocalDate.now()).startTime(LocalDateTime.now().minusHours(3)).endTime(LocalDateTime.now().minusHours(1)).location("Lovarda").build();
             sessions.add(s3_1);
@@ -153,12 +133,7 @@ public class PopulateDatabase {
             courseSessionRepository.saveAll(sessions);
             attendanceRepository.saveAll(attendances);
 
-            System.out.println(PREFIX + "Adatbázis feltöltve: " + sessions.size() + " óra és " + attendances.size() + " jelenléti adat.");
+            System.out.println("Adatbázis feltöltve: " + sessions.size() + " óra és " + attendances.size() + " jelenléti adat.");
         };
-    }
-
-    public void startDatabase() {
-        System.out.println("http://localhost:8081/h2-console");
-        System.out.println(PREFIX + "Database running");
     }
 }

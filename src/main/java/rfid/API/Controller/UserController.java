@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/user") // Új útvonal
+@RequestMapping("/api/user")
 public class UserController {
 
     @Autowired

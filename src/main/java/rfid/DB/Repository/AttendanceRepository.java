@@ -11,6 +11,6 @@ import java.util.List;
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> findBySession_Id(Long sessionId);
 
-    // ÚJ: Lekérdezi az összes jelenléti adatot egy adott órához
+    //Lekérdezi az összes jelenléti adatot egy adott órához
     List<Attendance> findBySession(CourseSession session);
 }
