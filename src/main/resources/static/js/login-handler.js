@@ -1,5 +1,61 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- Server Status Check ---
+    const serverCard = document.getElementById('serverCard');
+    const statusText = document.querySelector('.server-status');
+    const statusDot = document.querySelector('.status-dot');
+
+    async function checkServerStatus() {
+        try {
+            // Create a simple timeout promise so we don't wait forever
+            const timeout = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Timeout')), 2000)
+            );
+
+            // Try to fetch the health endpoint (or just the root)
+            // Using 'HEAD' method is faster if your server supports it
+            const fetchPromise = fetch('http://localhost:8080/login', {
+                method: 'HEAD',
+                mode: 'no-cors' // Allows checking even if CORS is strict
+            });
+
+            await Promise.race([fetchPromise, timeout]);
+
+            // If we get here, the server responded
+            updateServerUI(true);
+        } catch (error) {
+            // Server is down or unreachable
+            updateServerUI(false);
+        }
+    }
+
+    function updateServerUI(isOnline) {
+        if (isOnline) {
+            statusText.textContent = 'Online';
+            statusText.style.color = 'var(--success-text)'; // Defined in your new variables
+            statusDot.style.backgroundColor = '#10b981'; // Green
+            statusDot.style.boxShadow = '0 0 8px rgba(16, 185, 129, 0.4)';
+            statusDot.classList.remove('pulse'); // Stop pulsing red
+
+            // Optional: Add a gentle green pulse animation
+            statusDot.style.animation = 'none';
+            serverCard.setAttribute('aria-label', 'Server status: Online');
+        } else {
+            statusText.textContent = 'Offline';
+            statusText.style.color = '#64748b';
+            statusDot.style.backgroundColor = '#ef4444'; // Red
+            statusDot.style.boxShadow = '0 0 8px rgba(239, 68, 68, 0.28)';
+            statusDot.classList.add('pulse');
+            serverCard.setAttribute('aria-label', 'Server status: Offline');
+        }
+    }
+
+    // Check immediately on load
+    checkServerStatus();
+
+    // Then check every 10 seconds
+    setInterval(checkServerStatus, 10000);
+
     // --- Password Toggle ---
     const showPassCheckbox = document.getElementById('showPassword');
     if(showPassCheckbox) {
