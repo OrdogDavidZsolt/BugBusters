@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month; // Új import a konkrét hónap megadásához
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,41 +81,66 @@ public class PopulateDatabase {
             List<CourseSession> sessions = new ArrayList<>();
             List<Attendance> attendances = new ArrayList<>();
 
-            // --- Webfejlesztés (c1) - 3 óra ---
+            // --- Webfejlesztés (c1) ---
+
             // 1. óra (Múlt hét)
             CourseSession s1_1 = CourseSession.builder().course(c1).date(LocalDate.now().minusWeeks(1)).startTime(LocalDateTime.now().minusWeeks(1).withHour(14)).endTime(LocalDateTime.now().minusWeeks(1).withHour(16)).location("IK-101").build();
             sessions.add(s1_1);
-            // Diákok hozzáadása (1-5. diák)
             attendances.add(Attendance.builder().session(s1_1).student(students.get(0)).status(Attendance.AttendanceStatus.PRESENT).scannedAt(s1_1.getStartTime().plusMinutes(2)).build());
             attendances.add(Attendance.builder().session(s1_1).student(students.get(1)).status(Attendance.AttendanceStatus.LATE).scannedAt(s1_1.getStartTime().plusMinutes(15)).note("Késett").build());
             attendances.add(Attendance.builder().session(s1_1).student(students.get(2)).status(Attendance.AttendanceStatus.PRESENT).scannedAt(s1_1.getStartTime().plusMinutes(5)).build());
-            attendances.add(Attendance.builder().session(s1_1).student(students.get(3)).status(Attendance.AttendanceStatus.ABSENT).build()); // Hiányzó
+            attendances.add(Attendance.builder().session(s1_1).student(students.get(3)).status(Attendance.AttendanceStatus.ABSENT).build());
 
             // 2. óra (Ma)
             CourseSession s1_2 = CourseSession.builder().course(c1).date(LocalDate.now()).startTime(LocalDateTime.now().minusHours(1)).endTime(LocalDateTime.now().plusHours(1)).location("IK-101").build();
             sessions.add(s1_2);
-            // Diákok (1-8. diák)
             for(int i=0; i<8; i++) {
                 attendances.add(Attendance.builder().session(s1_2).student(students.get(i)).status(Attendance.AttendanceStatus.PRESENT).scannedAt(s1_2.getStartTime().plusMinutes(i)).build());
             }
 
-            // 3. óra (Jövő hét - még nincs jelenlét)
+            // 3. óra (Jövő hét)
             CourseSession s1_3 = CourseSession.builder().course(c1).date(LocalDate.now().plusWeeks(1)).startTime(LocalDateTime.now().plusWeeks(1).withHour(14)).endTime(LocalDateTime.now().plusWeeks(1).withHour(16)).location("IK-101").build();
             sessions.add(s1_3);
 
+            // --- ÚJ ÓRA: 2025.11.26 14:11 - Webfejlesztés ---
+            LocalDateTime specificStart = LocalDateTime.of(2025, Month.NOVEMBER, 26, 14, 11);
+            LocalDateTime specificEnd = specificStart.plusHours(2);
+
+            CourseSession s1_new = CourseSession.builder()
+                    .course(c1)
+                    .date(specificStart.toLocalDate())
+                    .startTime(specificStart)
+                    .endTime(specificEnd)
+                    .location("IK-105")
+                    .build();
+            sessions.add(s1_new);
+
+            // Adjunk hozzá diákokat ehhez az új órához is (pl. 15 diákot)
+            for(int i=0; i<15; i++) {
+                // Véletlenszerű érkezési idők az óra kezdete után 0-10 perccel
+                LocalDateTime scannedAt = specificStart.plusMinutes(i % 10);
+                Attendance.AttendanceStatus status = (i % 5 == 0) ? Attendance.AttendanceStatus.LATE : Attendance.AttendanceStatus.PRESENT;
+                String note = (status == Attendance.AttendanceStatus.LATE) ? "Késés" : "";
+
+                attendances.add(Attendance.builder()
+                        .session(s1_new)
+                        .student(students.get(i))
+                        .status(status)
+                        .scannedAt(scannedAt)
+                        .note(note)
+                        .build());
+            }
+
+
             // --- Adatbázisok (c2) - 2 óra ---
-            // 1. óra (Tegnap)
             CourseSession s2_1 = CourseSession.builder().course(c2).date(LocalDate.now().minusDays(1)).startTime(LocalDateTime.now().minusDays(1).withHour(10)).endTime(LocalDateTime.now().minusDays(1).withHour(12)).location("IK-203").build();
             sessions.add(s2_1);
-            // Vegyes diákok (5-15. diák)
             for(int i=5; i<15; i++) {
                 attendances.add(Attendance.builder().session(s2_1).student(students.get(i)).status(Attendance.AttendanceStatus.PRESENT).scannedAt(s2_1.getStartTime().plusMinutes(i-4)).build());
             }
 
-            // 2. óra (Ma reggel)
             CourseSession s2_2 = CourseSession.builder().course(c2).date(LocalDate.now()).startTime(LocalDateTime.now().withHour(8)).endTime(LocalDateTime.now().withHour(10)).location("IK-203").build();
             sessions.add(s2_2);
-            // Sok diák (10-19. diák)
             for(int i=10; i<20; i++) {
                 Attendance.AttendanceStatus status = (i % 5 == 0) ? Attendance.AttendanceStatus.LATE : Attendance.AttendanceStatus.PRESENT;
                 String note = (status == Attendance.AttendanceStatus.LATE) ? "Busz késett" : "";
@@ -124,7 +150,6 @@ public class PopulateDatabase {
             // --- Algoritmusok (c3 - Teacher2) - 1 óra ---
             CourseSession s3_1 = CourseSession.builder().course(c3).date(LocalDate.now()).startTime(LocalDateTime.now().minusHours(3)).endTime(LocalDateTime.now().minusHours(1)).location("Lovarda").build();
             sessions.add(s3_1);
-            // Mindenki (Nagy előadás)
             for(User s : students) {
                 attendances.add(Attendance.builder().session(s3_1).student(s).status(Attendance.AttendanceStatus.PRESENT).scannedAt(s3_1.getStartTime().plusMinutes(1)).build());
             }
