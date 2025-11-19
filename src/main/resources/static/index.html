@@ -17,7 +17,7 @@
     <div class="controls-left" role="region" aria-label="Left controls">
         <div class="control-item">
             <button id="helpBtn" class="help-btn" aria-label="Open help" title="Help">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(37,99,235,0.12)"/>
                     <path d="M12 7a3 3 0 00-3 3h2a1 1 0 112 0c0 .552-.448 1-1 1-.552 0-1 .448-1 1v1h2v-1c0-1.105.895-2 2-2a3 3 0 00-3-3zM11 17h2v2h-2z" fill="currentColor"/>
                 </svg>
@@ -25,7 +25,7 @@
         </div>
 
         <div class="control-card server-card" id="serverCard" role="status" aria-label="Szerver állapota: offline" title="Szerver státusz">
-            <svg class="server-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+            <svg class="server-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
                 <rect x="3" y="4" width="18" height="6" rx="1.5" fill="#eef2ff" stroke="#c7d2fe"/>
                 <rect x="3" y="14" width="18" height="6" rx="1.5" fill="#f8fafc" stroke="#e6e9f7"/>
                 <rect x="7" y="8" width="2" height="2" rx="0.5" fill="#1e293b"/>
@@ -49,7 +49,7 @@
 
         <div class="control-item">
             <button id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" title="Fullscreen">
-                <svg id="fullscreenIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                <svg id="fullscreenIcon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="currentColor"/>
                 </svg>
             </button>
@@ -89,14 +89,14 @@
 
         <button type="submit" class="login-btn">Log In</button>
 
-        <footer class="site-credit" role="note">v0.1 • 2025 • Bug Busters</footer>
+        <footer class="site-credit" role="none">v0.1 • 2025 • Bug Busters</footer>
     </form>
 </main>
 
 <div id="helpOverlay" class="help-overlay" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="help-modal" role="document" aria-labelledby="helpTitle">
         <button class="help-close" id="helpCloseBtn" aria-label="Close help">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </button>
