@@ -5,13 +5,13 @@
  * illetve a HTML oldalak betöltéséért felel
  */
 
-package hu.bugbusters.checkinapp.backendserver.uiconnection;
+package hu.bugbusters.checkinapp.backendserver.maincomponents.uiconnection;
 
 // ------------- Importok -------------
 import com.sun.net.httpserver.HttpServer;
 
-import hu.bugbusters.checkinapp.backendserver.dbconnection.DB_Connection;
-import hu.bugbusters.checkinapp.backendserver.hwconnection.HW_Connection;
+import hu.bugbusters.checkinapp.backendserver.maincomponents.dbconnection.DB_Connection;
+import hu.bugbusters.checkinapp.backendserver.maincomponents.hwconnection.HW_Connection;
 
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
@@ -64,10 +64,10 @@ public class UI_Connection
              *      második paraméter a HttpHandler-t implementáló osztály: UI_Connection.java
              *      ez az osztály tartalmaz egy 'public void handle(HttpExchange exchange)' metódust
              */
-            server.createContext("/", new StaticFileHandler("Software_Code/UI"));
-            server.createContext("/login", new LoginDataHandler());
-            server.createContext("/admin", new AdminDataHandler());
-            server.createContext("/student-data", new StudentDataHandler());
+            server.createContext("/", new StaticFileHandler("src/main/java/hu/bugbusters/checkinapp/web"));
+            //server.createContext("/login", new LoginDataHandler());
+            //server.createContext("/admin", new AdminDataHandler());
+            //server.createContext("/student-data", new StudentDataHandler());
             /**
              * setExecutor: a HttpServer külön szálakon képes kéréseket kezelni
              * az executor határozza meg a szálakat

@@ -1,4 +1,4 @@
-package hu.bugbusters.checkinapp.backendserver.dbconnection;
+package hu.bugbusters.checkinapp.backendserver.maincomponents.dbconnection;
 
 import hu.bugbusters.checkinapp.database.model.Attendance;
 import hu.bugbusters.checkinapp.database.model.Course;
