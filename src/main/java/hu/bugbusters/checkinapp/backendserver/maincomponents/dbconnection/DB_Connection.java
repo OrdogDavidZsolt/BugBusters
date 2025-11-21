@@ -1,9 +1,5 @@
 package hu.bugbusters.checkinapp.backendserver.maincomponents.dbconnection;
 
-import hu.bugbusters.checkinapp.database.model.Attendance;
-import hu.bugbusters.checkinapp.database.model.Course;
-import hu.bugbusters.checkinapp.database.model.CourseSession;
-import hu.bugbusters.checkinapp.database.model.User;
 import hu.bugbusters.checkinapp.database.repository.AttendanceRepository;
 import hu.bugbusters.checkinapp.database.repository.CourseRepository;
 import hu.bugbusters.checkinapp.database.repository.CourseSessionRepository;

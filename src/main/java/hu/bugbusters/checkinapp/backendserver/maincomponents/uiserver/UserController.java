@@ -1,6 +1,6 @@
 package hu.bugbusters.checkinapp.backendserver.maincomponents.uiserver;
 
-import rfid.API.DTO.UserMeDTO;
+import hu.bugbusters.checkinapp.backendserver.dto.UserMeDTO;
 import hu.bugbusters.checkinapp.database.model.User;
 import hu.bugbusters.checkinapp.database.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

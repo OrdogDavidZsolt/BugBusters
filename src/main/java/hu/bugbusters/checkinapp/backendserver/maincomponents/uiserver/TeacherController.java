@@ -1,9 +1,9 @@
 package hu.bugbusters.checkinapp.backendserver.maincomponents.uiserver;
 
-import rfid.API.DTO.ClassDetailsDTO;
-import rfid.API.DTO.CourseSummaryDTO;
-import rfid.API.DTO.NoteUpdateDTO;
-import rfid.API.DTO.StudentAttendanceDTO;
+import hu.bugbusters.checkinapp.backendserver.dto.ClassDetailsDTO;
+import hu.bugbusters.checkinapp.backendserver.dto.CourseSummaryDTO;
+import hu.bugbusters.checkinapp.backendserver.dto.NoteUpdateDTO;
+import hu.bugbusters.checkinapp.backendserver.dto.StudentAttendanceDTO;
 import hu.bugbusters.checkinapp.database.model.Attendance;
 import hu.bugbusters.checkinapp.database.model.Course;
 import hu.bugbusters.checkinapp.database.model.CourseSession;

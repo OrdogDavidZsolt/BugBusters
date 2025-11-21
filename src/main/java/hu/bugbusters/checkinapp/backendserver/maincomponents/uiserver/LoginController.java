@@ -14,10 +14,10 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import rfid.API.DTO.LoginRequestDTO;
-import rfid.API.DTO.LoginResponseDTO;
-import rfid.DB.Model.User;
-import rfid.DB.Repository.UserRepository;
+import hu.bugbusters.checkinapp.backendserver.dto.LoginRequestDTO;
+import hu.bugbusters.checkinapp.backendserver.dto.LoginResponseDTO;
+import hu.bugbusters.checkinapp.database.model.User;
+import hu.bugbusters.checkinapp.database.repository.UserRepository;
 import java.util.Collections;
 import java.util.Optional;
 
