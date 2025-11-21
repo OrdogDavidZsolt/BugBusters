@@ -46,18 +46,21 @@ public class DB_Connection implements CommandLineRunner {
     private AttendanceRepository attendanceRepository;
 
     public void startDatabase() {
-        try {
+        try
+        {
             Server.createTcpServer("-tcp", "-web", "-ifNotExists").start();
             System.out.println("http://localhost:8080/h2-console");
             System.out.println(PREFIX + "Database running");
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             System.out.println(PREFIX + RED + "SQL Exception raised: " + RESET + e.getMessage());
         }
     }
 
     @Override
     public void run(String... args) throws Exception {
-        // 1. Users
+        /*// 1. Users
         User teacher = User.builder()
                 .name("Prof. Smith")
                 .email("smith@university.com")
@@ -100,6 +103,6 @@ public class DB_Connection implements CommandLineRunner {
                 .status(Attendance.AttendanceStatus.PRESENT)
                 .scannedAt(LocalDateTime.now())
                 .build();
-        attendanceRepository.save(attendance);
+        attendanceRepository.save(attendance);*/
     }
 }
