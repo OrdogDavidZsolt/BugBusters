@@ -5,7 +5,6 @@ package Controller;
 import HW_Connection.HW_Connection;
 import UI_Connection.UI_Connection;
 import DB_Connection.DB_Connection;
-import Timer.Timer;
 
 // Spring-boot komponensek
 import org.springframework.boot.SpringApplication;
