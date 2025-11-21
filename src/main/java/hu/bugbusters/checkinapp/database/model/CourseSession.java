@@ -28,6 +28,9 @@ public class CourseSession {
     private Course course;
 
     @Column(nullable = false)
+    private String location;
+
+    @Column(nullable = false)
     private LocalDate date;
 
     @Column(nullable = false)
@@ -39,4 +42,3 @@ public class CourseSession {
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Attendance> attendanceList = new ArrayList<>();
 }
-

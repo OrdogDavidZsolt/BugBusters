@@ -24,7 +24,6 @@ public class Course {
     @Column(nullable = false)
     private String name;
 
-    // A tanár, aki a tárgyat tartja
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "teacher_id", nullable = false)
     private User teacher;
@@ -32,4 +31,3 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseSession> sessions = new ArrayList<>();
 }
-

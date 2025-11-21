@@ -6,8 +6,8 @@ public class Timer
      * Ez az osztály valósít meg minden olyan implementéciót, ami a timerekkel kapcsolatos
      */
 
-    private final int initialMinutes;
-    private final int initialSeconds;
+    /*private final int initialMinutes;
+    private final int initialSeconds;*/
     private final long totalMillis;
 
     private volatile boolean running = false;
@@ -15,8 +15,8 @@ public class Timer
     private Thread thread;
 
     public Timer(int minutes, int seconds) {
-        this.initialMinutes = minutes;
-        this.initialSeconds = seconds;
+        //this.initialMinutes = minutes;
+        //this.initialSeconds = seconds;
         this.totalMillis = (minutes * 60L + seconds) * 1000L;
     }
 

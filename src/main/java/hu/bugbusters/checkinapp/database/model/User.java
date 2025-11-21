@@ -25,24 +25,22 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    // Email is optional — only required for teachers
     @Column(unique = true)
     private String email;
 
     @Column(nullable = false, unique = true)
-    private String cardId; // RFID kártya azonosító
+    private String cardId;
 
     @Column(nullable = false, unique = true, length = 6)
-    private String neptunCode; // NEPTUN kód (6 karakter)
+    private String neptunCode;
 
     public enum UserRole {
-        TEACHER, STUDENT
+        TEACHER, STUDENT, ADMIN
     }
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role; // STUDENT or TEACHER
+    private UserRole role;
 
-    // Only teachers will have this set
     private String hashedPassword;
 }
