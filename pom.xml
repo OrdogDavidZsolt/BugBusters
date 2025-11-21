@@ -142,7 +142,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <mainClass>hu.bugbusters.checkinapp.backendserver.controller.Controller</mainClass>
+                    <mainClass>hu.bugbusters.checkinapp.backendserver.maincomponents.controller.Controller</mainClass>
                 </configuration>
             </plugin>
         </plugins>
