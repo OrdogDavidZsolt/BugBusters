@@ -1,13 +1,14 @@
-package DB_Connection;
+package hu.bugbusters.checkinapp.backendserver.dbconnection;
 
-import Model.Attendance;
-import Model.Course;
-import Model.CourseSession;
-import Model.User;
-import Repository.AttendanceRepository;
-import Repository.CourseRepository;
-import Repository.CourseSessionRepository;
-import Repository.UserRepository;
+import hu.bugbusters.checkinapp.database.model.Attendance;
+import hu.bugbusters.checkinapp.database.model.Course;
+import hu.bugbusters.checkinapp.database.model.CourseSession;
+import hu.bugbusters.checkinapp.database.model.User;
+import hu.bugbusters.checkinapp.database.repository.AttendanceRepository;
+import hu.bugbusters.checkinapp.database.repository.CourseRepository;
+import hu.bugbusters.checkinapp.database.repository.CourseSessionRepository;
+import hu.bugbusters.checkinapp.database.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;

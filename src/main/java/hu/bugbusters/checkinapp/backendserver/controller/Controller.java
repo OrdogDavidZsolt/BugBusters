@@ -1,10 +1,10 @@
-package Controller;
+package hu.bugbusters.checkinapp.backendserver.controller;
 
 // ------------- Importok -------------
 // Saját komponensek
-import HW_Connection.HW_Connection;
-import UI_Connection.UI_Connection;
-import DB_Connection.DB_Connection;
+import hu.bugbusters.checkinapp.backendserver.hwconnection.HW_Connection;
+import hu.bugbusters.checkinapp.backendserver.uiconnection.UI_Connection;
+import hu.bugbusters.checkinapp.backendserver.dbconnection.DB_Connection;
 
 // Spring-boot komponensek
 import org.springframework.boot.SpringApplication;

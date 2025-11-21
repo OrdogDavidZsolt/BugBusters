@@ -1,4 +1,4 @@
-package Timer;
+package hu.bugbusters.checkinapp.backendserver.timer;
 
 public class Timer
 {

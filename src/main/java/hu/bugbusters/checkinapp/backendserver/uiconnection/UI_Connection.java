@@ -5,13 +5,13 @@
  * illetve a HTML oldalak betöltéséért felel
  */
 
-package UI_Connection;
+package hu.bugbusters.checkinapp.backendserver.uiconnection;
 
 // ------------- Importok -------------
 import com.sun.net.httpserver.HttpServer;
 
-import DB_Connection.DB_Connection;
-import HW_Connection.HW_Connection;
+import hu.bugbusters.checkinapp.backendserver.dbconnection.DB_Connection;
+import hu.bugbusters.checkinapp.backendserver.hwconnection.HW_Connection;
 
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;

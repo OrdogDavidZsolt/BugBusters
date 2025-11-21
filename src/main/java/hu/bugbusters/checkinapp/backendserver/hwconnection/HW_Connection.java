@@ -1,4 +1,4 @@
-package HW_Connection;
+package hu.bugbusters.checkinapp.backendserver.hwconnection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

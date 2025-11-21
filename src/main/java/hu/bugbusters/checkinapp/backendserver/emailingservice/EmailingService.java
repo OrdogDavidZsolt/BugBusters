@@ -1,4 +1,4 @@
-package EmailingService;
+package hu.bugbusters.checkinapp.backendserver.emailingservice;
 
 public class EmailingService
 {

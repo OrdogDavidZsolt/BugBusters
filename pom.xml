@@ -97,31 +97,8 @@
     </dependencies>
 
     <build>
-        <!-- Az alap forrásmappa -->
-        <sourceDirectory>Software_Code/Backend_Server</sourceDirectory>
 
         <plugins>
-            <!-- Hozzáadjuk a második source mappát -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.5.0</version>
-                <executions>
-                    <execution>
-                        <id>add-database-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>Software_Code/Database</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -147,7 +124,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <mainClass>Controller.Controller</mainClass>
+                    <mainClass>hu.bugbusters.checkinapp.backendserver.controller.Controller</mainClass>
                 </configuration>
             </plugin>
         </plugins>

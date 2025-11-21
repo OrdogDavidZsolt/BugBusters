@@ -1,6 +1,6 @@
-package Repository;
+package hu.bugbusters.checkinapp.database.repository;
 
-import Model.CourseSession;
+import hu.bugbusters.checkinapp.database.model.CourseSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

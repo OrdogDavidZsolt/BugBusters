@@ -1,4 +1,4 @@
-package Model;
+package hu.bugbusters.checkinapp.database.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

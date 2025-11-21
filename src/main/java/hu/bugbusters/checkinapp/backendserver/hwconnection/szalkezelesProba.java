@@ -1,4 +1,4 @@
-package HW_Connection;
+package hu.bugbusters.checkinapp.backendserver.hwconnection;
 
 public class szalkezelesProba
 {
