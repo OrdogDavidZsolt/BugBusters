@@ -30,7 +30,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class UI_Connection
 {
     private static final String RESET  = "\u001B[0m";
