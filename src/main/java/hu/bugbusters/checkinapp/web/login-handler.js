@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch(`${API_BASE}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify(data)
             })
                 .then(response => response.json())
