@@ -42,7 +42,7 @@ public class DB_Connection {
         try
         {
             Server.createTcpServer("-tcp", "-web", "-ifNotExists").start();
-            System.out.println("http://localhost:8080/h2-console");
+            System.out.println(PREFIX + "Database link: http://localhost:8080/h2-console");
             System.out.println(PREFIX + "Database running");
         }
         catch (SQLException e)
