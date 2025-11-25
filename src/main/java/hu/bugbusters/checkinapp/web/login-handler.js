@@ -5,9 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusText = document.querySelector('.server-status');
     const statusDot = document.querySelector('.status-dot');
 
+    const API_PORT = 8080;
+    const API_BASE = `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
+
     async function checkServerStatus() {
-        const API_PORT = 8080; // Spring Boot port
-        const API_BASE = `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
         
         try {
             // Create a simple timeout promise so we don't wait forever
@@ -83,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 mode: mode
             };
 
-            fetch('/login', {
+            fetch(`${API_BASE}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
