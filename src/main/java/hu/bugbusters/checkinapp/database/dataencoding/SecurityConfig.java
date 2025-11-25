@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/", "/index.html", "/style.css", "/js/*.js", "/js/admin/*.js", "/js/teacher/*.js", "/*.ico").permitAll()
+                        .requestMatchers("/", "/index.html", "/style.css", "/web/*.js", "/js/Admin_Page/*.js", "/js/Teachers_Page/*.js", "/*.ico").permitAll()
                         .requestMatchers("/api/health").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
@@ -45,9 +45,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        //configuration.setAllowedOrigins(Arrays.asList("http://localhost:80", "http://localhost", "http://bence-mint.local"));
-        //configuration.addAllowedOriginPattern("*");
-        configuration.setAllowedOrigins(Arrays.asList("http://bence-mint.local"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:80", "http://localhost:8080", "http://localhost", "http://bence-mint.local"));
+        configuration.addAllowedOriginPattern("*");
+        //configuration.setAllowedOrigins(Arrays.asList("http://bence-mint.local"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
