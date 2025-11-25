@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusDot = document.querySelector('.status-dot');
 
     async function checkServerStatus() {
+        const API_PORT = 8080; // Spring Boot port
+        const API_BASE = `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
+        
         try {
             // Create a simple timeout promise so we don't wait forever
             const timeout = new Promise((_, reject) =>
@@ -13,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             );
 
             // A /login helyett az /api/health végpontot hívjuk GET-tel
-            const fetchPromise = fetch('/api/health', {
+            const fetchPromise = fetch(`${API_BASE}/api/health`, {
                 method: 'GET', // HEAD helyett GET (biztosabb)
                 cache: 'no-store'
             });
