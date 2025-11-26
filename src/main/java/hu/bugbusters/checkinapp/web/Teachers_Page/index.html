@@ -400,64 +400,49 @@
             color: #2563eb;
         }
 
-        .class-selector-wrapper {
-            margin-bottom: 32px;
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+        .select-wrapper {
+            position: relative;
+            width: 100%;
             display: flex;
             align-items: center;
-            gap: 20px;
-        }
-
-        .class-selector-wrapper.compact {
-            margin-bottom: 24px;
-        }
-
-        .class-selector-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #4a5568;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            flex-shrink: 0;
-            opacity: 1;
-            transition: opacity 0.3s ease;
-        }
-
-        .class-selector-label.hidden {
-            opacity: 0;
-            width: 0;
-            overflow: hidden;
-        }
-
-        .class-selector-container {
-            flex: 1;
-            max-width: 100%;
-            transition: max-width 0.4s ease;
-        }
-
-        .class-selector-wrapper.compact .class-selector-container {
-            max-width: 50%;
         }
 
         .class-selector {
             width: 100%;
             padding: 16px 20px;
+            padding-right: 48px; /* Hely a nyílnak */
             border: 2px solid #e2e8f0;
             border-radius: 16px;
             font-size: 16px;
             font-weight: 600;
             color: #1a202c;
-            background: #f7fafc;
+            background-color: #f7fafc;
             cursor: pointer;
-            transition: all 0.3s ease;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M7 10l5 5 5-5' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 48px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            appearance: none; /* Eltünteti az alapértelmezett rendszer ikont */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            position: relative;
+            z-index: 1;
+            background-image: none !important; /* Biztosítjuk, hogy ne legyen háttérkép */
+        }
+
+        /* Az új nyíl ikon stílusa */
+        .select-arrow-icon {
+            position: absolute;
+            right: 20px;
+            width: 24px;
+            height: 24px;
+            pointer-events: none; /* Átkattinthatóvá teszi, hogy a select működjön alatta */
+            color: #4a5568; /* Alap szín */
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), color 0.3s ease; /* Ruganyos animáció */
+            z-index: 2;
+        }
+
+        /* Animáció: Amikor a select fókuszban van (megnyitva), elforgatjuk a nyilat */
+        .class-selector:focus + .select-arrow-icon {
+            transform: rotate(180deg);
+            color: var(--accent-1); /* Aktív állapotban felveszi az akcentus színét */
         }
 
         .class-selector:hover {
@@ -478,8 +463,9 @@
             font-weight: 600;
         }
 
+        /* Light Mode specifikus színek */
         body.light-mode .class-selector {
-            background: #f8fafc;
+            background-color: #f8fafc;
         }
 
         body.light-mode .class-selector:hover,
@@ -1274,10 +1260,8 @@ background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             </div>
         </div>
 
-        <div class="class-selector-wrapper" id="classSelectorWrapper">
-            <div class="class-selector-label" id="classSelectorLabel">Select Your Class</div>
-            <div class="class-selector-container">
-                <select class="class-selector" id="classSelector">
+        <div class="class-selector-container">
+            <div class="select-wrapper"> <select class="class-selector" id="classSelector">
                     <option value="">Choose a class...</option>
                     <option value="class1">Advanced Programming - Monday 14:00</option>
                     <option value="class2">Database Systems - Tuesday 10:00</option>
@@ -1285,6 +1269,9 @@ background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
                     <option value="class4">Algorithm Design - Thursday 14:00</option>
                     <option value="class5">Software Engineering - Friday 12:00</option>
                 </select>
+                <svg class="select-arrow-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </div>
         </div>
 
