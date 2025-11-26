@@ -7,8 +7,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties.Tomcat.UseApr;
+
+import hu.bugbusters.checkinapp.database.model.User;
+import hu.bugbusters.checkinapp.database.repository.UserRepository;
 
 
 public class HW_Connection
@@ -74,6 +81,9 @@ public class HW_Connection
     public static class ClientHandler implements Runnable  //futtatható szál legyen
     {
         private Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
+
+        @Autowired
+        private UserRepository ur;
 
         public ClientHandler(Socket socket) //konstruktor
         {
@@ -201,6 +211,17 @@ public class HW_Connection
         {
             // DEBUG
             System.out.println(PREFIX + "HW_Connection: Feldolgozandó üzenet: " + uid);
+
+            // Itt van lekérdezve az ID az adatbázisból. 
+            Optional<User> result = ur.findByCardId(uid);
+            // DEBUG
+            System.out.println(result);
+            if (result.get().getRole() == User.UserRole.TEACHER) {
+                // Ez egy tanár volt, itt kell 20p timert indítani
+            }
+            else if (result.get().getRole() == User.UserRole.STUDENT) {
+                // Ez egy hallgató, itt kell betenni az aktuális session listájába, elmenteni a megfelelő helyre.
+            }
         }
     }
 // hasznalat: HW_Connection.sendCommandToReader("DEV-003", HW_Command.RED_LED_ON);

@@ -6,6 +6,11 @@
     <link id="faviconLink" rel="icon" type="image/x-icon" href="../favicon-light.ico">
     <title>Teacher Dashboard - Attendance Registration Application</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="../theme-manager.js" defer></script>
+    <script src="../common.js" defer></script>
+    <script type="module" src="./main.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1408,552 +1413,552 @@ background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Class data with different students and info for each class
-        const classesData = {
-            class1: {
-                name: "Advanced Programming",
-                location: "IK-105",
-                dateTime: "2025-11-04 14:00",
-                teacher: "Dr. János Kovács",
-                students: [
-                    { name: "Kiss Anna", code: "ABC123", time: "14:02:15", note: "" },
-                    { name: "Nagy Péter", code: "DEF456", time: "14:03:42", note: "" },
-                    { name: "Szabó Márta", code: "GHI789", time: "14:01:28", note: "" },
-                    { name: "Horváth László", code: "JKL012", time: "14:05:19", note: "" },
-                    { name: "Tóth Eszter", code: "MNO345", time: "14:00:53", note: "" },
-                    { name: "Molnár Gábor", code: "PQR678", time: "14:04:37", note: "" },
-                    { name: "Varga Júlia", code: "STU901", time: "14:06:14", note: "" },
-                    { name: "Kovács Tamás", code: "VWX234", time: "14:02:48", note: "" },
-                    { name: "Balogh Emma", code: "YZA567", time: "14:07:22", note: "" },
-                    { name: "Simon Ferenc", code: "BCD890", time: "14:03:05", note: "" }
-                ]
-            },
-            class2: {
-                name: "Database Systems",
-                location: "IK-207",
-                dateTime: "2025-11-05 10:00",
-                teacher: "Dr. János Kovács",
-                students: [
-                    { name: "Farkas Viktória", code: "EFG123", time: "10:01:41", note: "" },
-                    { name: "Papp Zoltán", code: "HIJ456", time: "10:00:59", note: "" },
-                    { name: "Lakatos Réka", code: "KLM789", time: "10:03:17", note: "" },
-                    { name: "Juhász Bence", code: "NOP012", time: "10:02:52", note: "" },
-                    { name: "Németh Dóra", code: "QRS345", time: "10:04:38", note: "" },
-                    { name: "Szilágyi Márk", code: "TUV678", time: "10:05:21", note: "" },
-                    { name: "Rácz Adrienn", code: "WXY901", time: "10:01:15", note: "" },
-                    { name: "Fekete Balázs", code: "ZAB234", time: "10:06:44", note: "" }
-                ]
-            },
-            class3: {
-                name: "Web Development",
-                location: "IK-312",
-                dateTime: "2025-11-06 16:00",
-                teacher: "Dr. János Kovács",
-                students: [
-                    { name: "Oláh Kristóf", code: "CDE567", time: "16:02:33", note: "" },
-                    { name: "Pintér Laura", code: "FGH890", time: "16:01:18", note: "" },
-                    { name: "Mészáros Dániel", code: "IJK123", time: "16:03:55", note: "" },
-                    { name: "Antal Zsófia", code: "LMN456", time: "16:00:42", note: "" },
-                    { name: "Bodnár Máté", code: "OPQ789", time: "16:04:27", note: "" },
-                    { name: "Sipos Nikolett", code: "RST012", time: "16:02:09", note: "" },
-                    { name: "Hegedűs Ádám", code: "UVW345", time: "16:05:51", note: "" },
-                    { name: "Máté Vivien", code: "XYZ678", time: "16:01:36", note: "" },
-                    { name: "Vas Olivér", code: "ABC901", time: "16:06:13", note: "" },
-                    { name: "Szűcs Hanna", code: "DEF234", time: "16:03:28", note: "" },
-                    { name: "Boros Levente", code: "GHI567", time: "16:07:05", note: "" }
-                ]
-            },
-            class4: {
-                name: "Algorithm Design",
-                location: "IK-105",
-                dateTime: "2025-11-07 14:00",
-                teacher: "Dr. János Kovács",
-                students: [
-                    { name: "Katona Norbert", code: "JKL890", time: "14:01:24", note: "" },
-                    { name: "Lengyel Petra", code: "MNO123", time: "14:02:57", note: "" },
-                    { name: "Orbán Richárd", code: "PQR456", time: "14:00:38", note: "" },
-                    { name: "Vass Eszter", code: "STU789", time: "14:04:16", note: "" },
-                    { name: "Gál Kornél", code: "VWX012", time: "14:03:43", note: "" },
-                    { name: "Fábián Lili", code: "YZA345", time: "14:05:29", note: "" }
-                ]
-            },
-            class5: {
-                name: "Software Engineering",
-                location: "IK-401",
-                dateTime: "2025-11-08 12:00",
-                teacher: "Dr. János Kovács",
-                students: [
-                    { name: "Kis Áron", code: "BCD678", time: "12:01:52", note: "" },
-                    { name: "Kocsis Luca", code: "EFG901", time: "12:00:37", note: "" },
-                    { name: "Pál Dominik", code: "HIJ234", time: "12:03:18", note: "" },
-                    { name: "Takács Fanni", code: "KLM567", time: "12:02:45", note: "" },
-                    { name: "Váradi Bálint", code: "NOP890", time: "12:04:21", note: "" },
-                    { name: "Vincze Kitti", code: "QRS123", time: "12:01:09", note: "" },
-                    { name: "Balog Erik", code: "TUV456", time: "12:05:54", note: "" },
-                    { name: "Csiki Nóra", code: "WXY789", time: "12:03:31", note: "" },
-                    { name: "Kelemen Csaba", code: "ZAB012", time: "12:06:47", note: "" }
-                ]
-            }
-        };
+<!--    <script>-->
+<!--        // Class data with different students and info for each class-->
+<!--        const classesData = {-->
+<!--            class1: {-->
+<!--                name: "Advanced Programming",-->
+<!--                location: "IK-105",-->
+<!--                dateTime: "2025-11-04 14:00",-->
+<!--                teacher: "Dr. János Kovács",-->
+<!--                students: [-->
+<!--                    { name: "Kiss Anna", code: "ABC123", time: "14:02:15", note: "" },-->
+<!--                    { name: "Nagy Péter", code: "DEF456", time: "14:03:42", note: "" },-->
+<!--                    { name: "Szabó Márta", code: "GHI789", time: "14:01:28", note: "" },-->
+<!--                    { name: "Horváth László", code: "JKL012", time: "14:05:19", note: "" },-->
+<!--                    { name: "Tóth Eszter", code: "MNO345", time: "14:00:53", note: "" },-->
+<!--                    { name: "Molnár Gábor", code: "PQR678", time: "14:04:37", note: "" },-->
+<!--                    { name: "Varga Júlia", code: "STU901", time: "14:06:14", note: "" },-->
+<!--                    { name: "Kovács Tamás", code: "VWX234", time: "14:02:48", note: "" },-->
+<!--                    { name: "Balogh Emma", code: "YZA567", time: "14:07:22", note: "" },-->
+<!--                    { name: "Simon Ferenc", code: "BCD890", time: "14:03:05", note: "" }-->
+<!--                ]-->
+<!--            },-->
+<!--            class2: {-->
+<!--                name: "Database Systems",-->
+<!--                location: "IK-207",-->
+<!--                dateTime: "2025-11-05 10:00",-->
+<!--                teacher: "Dr. János Kovács",-->
+<!--                students: [-->
+<!--                    { name: "Farkas Viktória", code: "EFG123", time: "10:01:41", note: "" },-->
+<!--                    { name: "Papp Zoltán", code: "HIJ456", time: "10:00:59", note: "" },-->
+<!--                    { name: "Lakatos Réka", code: "KLM789", time: "10:03:17", note: "" },-->
+<!--                    { name: "Juhász Bence", code: "NOP012", time: "10:02:52", note: "" },-->
+<!--                    { name: "Németh Dóra", code: "QRS345", time: "10:04:38", note: "" },-->
+<!--                    { name: "Szilágyi Márk", code: "TUV678", time: "10:05:21", note: "" },-->
+<!--                    { name: "Rácz Adrienn", code: "WXY901", time: "10:01:15", note: "" },-->
+<!--                    { name: "Fekete Balázs", code: "ZAB234", time: "10:06:44", note: "" }-->
+<!--                ]-->
+<!--            },-->
+<!--            class3: {-->
+<!--                name: "Web Development",-->
+<!--                location: "IK-312",-->
+<!--                dateTime: "2025-11-06 16:00",-->
+<!--                teacher: "Dr. János Kovács",-->
+<!--                students: [-->
+<!--                    { name: "Oláh Kristóf", code: "CDE567", time: "16:02:33", note: "" },-->
+<!--                    { name: "Pintér Laura", code: "FGH890", time: "16:01:18", note: "" },-->
+<!--                    { name: "Mészáros Dániel", code: "IJK123", time: "16:03:55", note: "" },-->
+<!--                    { name: "Antal Zsófia", code: "LMN456", time: "16:00:42", note: "" },-->
+<!--                    { name: "Bodnár Máté", code: "OPQ789", time: "16:04:27", note: "" },-->
+<!--                    { name: "Sipos Nikolett", code: "RST012", time: "16:02:09", note: "" },-->
+<!--                    { name: "Hegedűs Ádám", code: "UVW345", time: "16:05:51", note: "" },-->
+<!--                    { name: "Máté Vivien", code: "XYZ678", time: "16:01:36", note: "" },-->
+<!--                    { name: "Vas Olivér", code: "ABC901", time: "16:06:13", note: "" },-->
+<!--                    { name: "Szűcs Hanna", code: "DEF234", time: "16:03:28", note: "" },-->
+<!--                    { name: "Boros Levente", code: "GHI567", time: "16:07:05", note: "" }-->
+<!--                ]-->
+<!--            },-->
+<!--            class4: {-->
+<!--                name: "Algorithm Design",-->
+<!--                location: "IK-105",-->
+<!--                dateTime: "2025-11-07 14:00",-->
+<!--                teacher: "Dr. János Kovács",-->
+<!--                students: [-->
+<!--                    { name: "Katona Norbert", code: "JKL890", time: "14:01:24", note: "" },-->
+<!--                    { name: "Lengyel Petra", code: "MNO123", time: "14:02:57", note: "" },-->
+<!--                    { name: "Orbán Richárd", code: "PQR456", time: "14:00:38", note: "" },-->
+<!--                    { name: "Vass Eszter", code: "STU789", time: "14:04:16", note: "" },-->
+<!--                    { name: "Gál Kornél", code: "VWX012", time: "14:03:43", note: "" },-->
+<!--                    { name: "Fábián Lili", code: "YZA345", time: "14:05:29", note: "" }-->
+<!--                ]-->
+<!--            },-->
+<!--            class5: {-->
+<!--                name: "Software Engineering",-->
+<!--                location: "IK-401",-->
+<!--                dateTime: "2025-11-08 12:00",-->
+<!--                teacher: "Dr. János Kovács",-->
+<!--                students: [-->
+<!--                    { name: "Kis Áron", code: "BCD678", time: "12:01:52", note: "" },-->
+<!--                    { name: "Kocsis Luca", code: "EFG901", time: "12:00:37", note: "" },-->
+<!--                    { name: "Pál Dominik", code: "HIJ234", time: "12:03:18", note: "" },-->
+<!--                    { name: "Takács Fanni", code: "KLM567", time: "12:02:45", note: "" },-->
+<!--                    { name: "Váradi Bálint", code: "NOP890", time: "12:04:21", note: "" },-->
+<!--                    { name: "Vincze Kitti", code: "QRS123", time: "12:01:09", note: "" },-->
+<!--                    { name: "Balog Erik", code: "TUV456", time: "12:05:54", note: "" },-->
+<!--                    { name: "Csiki Nóra", code: "WXY789", time: "12:03:31", note: "" },-->
+<!--                    { name: "Kelemen Csaba", code: "ZAB012", time: "12:06:47", note: "" }-->
+<!--                ]-->
+<!--            }-->
+<!--        };-->
 
-        let currentClassStudents = [];
-        let currentSort = { field: 'name', order: 'asc' };
-        let editingCard = null;
-        let deleteTarget = null;
-        let timerInterval = null;
-        let timeRemaining = 1200;
-        let isClassSelected = false;
+<!--        let currentClassStudents = [];-->
+<!--        let currentSort = { field: 'name', order: 'asc' };-->
+<!--        let editingCard = null;-->
+<!--        let deleteTarget = null;-->
+<!--        let timerInterval = null;-->
+<!--        let timeRemaining = 1200;-->
+<!--        let isClassSelected = false;-->
 
-        // Timer functionality
-        const timerBadge = document.getElementById('timerBadge');
-        const timerValue = document.getElementById('timerValue');
+<!--        // Timer functionality-->
+<!--        const timerBadge = document.getElementById('timerBadge');-->
+<!--        const timerValue = document.getElementById('timerValue');-->
 
-        function updateTimer() {
-            const minutes = Math.floor(timeRemaining / 60);
-            const seconds = timeRemaining % 60;
-            timerValue.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+<!--        function updateTimer() {-->
+<!--            const minutes = Math.floor(timeRemaining / 60);-->
+<!--            const seconds = timeRemaining % 60;-->
+<!--            timerValue.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;-->
 
-            timerBadge.classList.remove('warning', 'danger');
+<!--            timerBadge.classList.remove('warning', 'danger');-->
 
-            if (timeRemaining <= 60) {
-                timerBadge.classList.add('danger');
-            } else if (timeRemaining <= 300) {
-                timerBadge.classList.add('warning');
-            }
+<!--            if (timeRemaining <= 60) {-->
+<!--                timerBadge.classList.add('danger');-->
+<!--            } else if (timeRemaining <= 300) {-->
+<!--                timerBadge.classList.add('warning');-->
+<!--            }-->
 
-            if (timeRemaining > 0) {
-                timeRemaining--;
-            } else {
-                clearInterval(timerInterval);
-                timerValue.textContent = '00:00';
-            }
-        }
+<!--            if (timeRemaining > 0) {-->
+<!--                timeRemaining&#45;&#45;;-->
+<!--            } else {-->
+<!--                clearInterval(timerInterval);-->
+<!--                timerValue.textContent = '00:00';-->
+<!--            }-->
+<!--        }-->
 
-        function startTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-            }
-            timeRemaining = 1200;
-            timerInterval = setInterval(updateTimer, 1000);
-            updateTimer();
-        }
+<!--        function startTimer() {-->
+<!--            if (timerInterval) {-->
+<!--                clearInterval(timerInterval);-->
+<!--            }-->
+<!--            timeRemaining = 1200;-->
+<!--            timerInterval = setInterval(updateTimer, 1000);-->
+<!--            updateTimer();-->
+<!--        }-->
 
-        // Mode toggle functionality
-        const modeToggle = document.getElementById('modeToggle');
-        const body = document.body;
-        const modeLabel = document.querySelector('.mode-label');
+<!--        // Mode toggle functionality-->
+<!--        const modeToggle = document.getElementById('modeToggle');-->
+<!--        const body = document.body;-->
+<!--        const modeLabel = document.querySelector('.mode-label');-->
 
-        function setFavicon(isLight) {
-            let link = document.getElementById('faviconLink') || document.querySelector("link[rel~='icon']");
-            if (!link) {
-                link = document.createElement('link');
-                link.id = 'faviconLink';
-                link.rel = 'icon';
-                document.head.appendChild(link);
-            }
-            const target = isLight ? '../favicon-light.ico' : '../favicon-dark.ico';
-            link.setAttribute('href', target + '?v=' + Date.now());
-            link.setAttribute('type', 'image/x-icon');
-        }
+<!--        function setFavicon(isLight) {-->
+<!--            let link = document.getElementById('faviconLink') || document.querySelector("link[rel~='icon']");-->
+<!--            if (!link) {-->
+<!--                link = document.createElement('link');-->
+<!--                link.id = 'faviconLink';-->
+<!--                link.rel = 'icon';-->
+<!--                document.head.appendChild(link);-->
+<!--            }-->
+<!--            const target = isLight ? '../favicon-light.ico' : '../favicon-dark.ico';-->
+<!--            link.setAttribute('href', target + '?v=' + Date.now());-->
+<!--            link.setAttribute('type', 'image/x-icon');-->
+<!--        }-->
 
-        if (body.classList.contains('light-mode')) {
-            modeToggle.checked = false;
-            modeLabel.textContent = 'Light Mode';
-            setFavicon(true);
-        } else {
-            modeToggle.checked = true;
-            modeLabel.textContent = 'Dark Mode';
-            setFavicon(false);
-        }
+<!--        if (body.classList.contains('light-mode')) {-->
+<!--            modeToggle.checked = false;-->
+<!--            modeLabel.textContent = 'Light Mode';-->
+<!--            setFavicon(true);-->
+<!--        } else {-->
+<!--            modeToggle.checked = true;-->
+<!--            modeLabel.textContent = 'Dark Mode';-->
+<!--            setFavicon(false);-->
+<!--        }-->
 
-        modeToggle.addEventListener('change', function() {
-            if (this.checked) {
-                body.classList.remove('light-mode');
-                modeLabel.textContent = 'Dark Mode';
-                setFavicon(false);
-            } else {
-                body.classList.add('light-mode');
-                modeLabel.textContent = 'Light Mode';
-                setFavicon(true);
-            }
-        });
+<!--        modeToggle.addEventListener('change', function() {-->
+<!--            if (this.checked) {-->
+<!--                body.classList.remove('light-mode');-->
+<!--                modeLabel.textContent = 'Dark Mode';-->
+<!--                setFavicon(false);-->
+<!--            } else {-->
+<!--                body.classList.add('light-mode');-->
+<!--                modeLabel.textContent = 'Light Mode';-->
+<!--                setFavicon(true);-->
+<!--            }-->
+<!--        });-->
 
-        // Fullscreen functionality
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const fullscreenIcon = document.getElementById('fullscreenIcon');
+<!--        // Fullscreen functionality-->
+<!--        const fullscreenBtn = document.getElementById('fullscreenBtn');-->
+<!--        const fullscreenIcon = document.getElementById('fullscreenIcon');-->
 
-        const expandIcon = '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="#1e293b"/>';
-        const compressIcon = '<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" fill="#1e293b"/>';
+<!--        const expandIcon = '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="#1e293b"/>';-->
+<!--        const compressIcon = '<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" fill="#1e293b"/>';-->
 
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
+<!--        function toggleFullscreen() {-->
+<!--            if (!document.fullscreenElement) {-->
+<!--                document.documentElement.requestFullscreen().catch(err => {-->
+<!--                    console.log(`Error attempting to enable fullscreen: ${err.message}`);-->
+<!--                });-->
+<!--            } else {-->
+<!--                document.exitFullscreen();-->
+<!--            }-->
+<!--        }-->
 
-        function updateFullscreenIcon() {
-            if (document.fullscreenElement) {
-                fullscreenIcon.innerHTML = compressIcon;
-                fullscreenBtn.setAttribute('title', 'Exit fullscreen');
-            } else {
-                fullscreenIcon.innerHTML = expandIcon;
-                fullscreenBtn.setAttribute('title', 'Fullscreen');
-}
-        }
+<!--        function updateFullscreenIcon() {-->
+<!--            if (document.fullscreenElement) {-->
+<!--                fullscreenIcon.innerHTML = compressIcon;-->
+<!--                fullscreenBtn.setAttribute('title', 'Exit fullscreen');-->
+<!--            } else {-->
+<!--                fullscreenIcon.innerHTML = expandIcon;-->
+<!--                fullscreenBtn.setAttribute('title', 'Fullscreen');-->
+<!--}-->
+<!--        }-->
 
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-        document.addEventListener('fullscreenchange', updateFullscreenIcon);
+<!--        fullscreenBtn.addEventListener('click', toggleFullscreen);-->
+<!--        document.addEventListener('fullscreenchange', updateFullscreenIcon);-->
 
-        // Class selector functionality
-        const classSelector = document.getElementById('classSelector');
-        const classSelectorWrapper = document.getElementById('classSelectorWrapper');
-        const classSelectorLabel = document.getElementById('classSelectorLabel');
-        const contentWrapper = document.getElementById('contentWrapper');
-        const mainCard = document.querySelector('.main-card');
+<!--        // Class selector functionality-->
+<!--        const classSelector = document.getElementById('classSelector');-->
+<!--        const classSelectorWrapper = document.getElementById('classSelectorWrapper');-->
+<!--        const classSelectorLabel = document.getElementById('classSelectorLabel');-->
+<!--        const contentWrapper = document.getElementById('contentWrapper');-->
+<!--        const mainCard = document.querySelector('.main-card');-->
 
-        classSelector.addEventListener('change', function() {
-            const selectedClass = this.value;
-            
-            if (selectedClass && classesData[selectedClass]) {
-                const placeholderOption = this.querySelector('option[value=""]');
-                if (placeholderOption) {
-                    placeholderOption.remove();
-                }
-                
-                const classData = classesData[selectedClass];
-                
-                // Update class info
-                document.getElementById('classDateTime').textContent = classData.dateTime;
-                document.getElementById('classLocation').textContent = classData.location;
-                
-                // Prepare students data
-                currentClassStudents = classData.students.map((student, i) => ({
-                    ...student,
-                    id: i
-                }));
-                
-                if (!isClassSelected) {
-                    // First time selecting a class
-                    isClassSelected = true;
-                    
-                    // Change label to "Change Class"
-                    classSelectorLabel.textContent = 'Change Class';
-                    
-                    // Make wrapper compact
-                    classSelectorWrapper.classList.add('compact');
-                    
-                    // Show content
-                    setTimeout(() => {
-                        contentWrapper.classList.add('visible');
-                        timerBadge.classList.add('visible');
-                        mainCard.classList.add('expanded');
-                        startTimer();
-                        sortStudents(currentSort.field, currentSort.order);
-                    }, 100);
-                } else {
-                    // Changing to a different class
-                    // Reset timer
-                    startTimer();
-                    
-                    // Re-render students with current sort
-                    sortStudents(currentSort.field, currentSort.order);
-                }
-            }
-        });
+<!--        classSelector.addEventListener('change', function() {-->
+<!--            const selectedClass = this.value;-->
+<!--            -->
+<!--            if (selectedClass && classesData[selectedClass]) {-->
+<!--                const placeholderOption = this.querySelector('option[value=""]');-->
+<!--                if (placeholderOption) {-->
+<!--                    placeholderOption.remove();-->
+<!--                }-->
+<!--                -->
+<!--                const classData = classesData[selectedClass];-->
+<!--                -->
+<!--                // Update class info-->
+<!--                document.getElementById('classDateTime').textContent = classData.dateTime;-->
+<!--                document.getElementById('classLocation').textContent = classData.location;-->
+<!--                -->
+<!--                // Prepare students data-->
+<!--                currentClassStudents = classData.students.map((student, i) => ({-->
+<!--                    ...student,-->
+<!--                    id: i-->
+<!--                }));-->
+<!--                -->
+<!--                if (!isClassSelected) {-->
+<!--                    // First time selecting a class-->
+<!--                    isClassSelected = true;-->
+<!--                    -->
+<!--                    // Change label to "Change Class"-->
+<!--                    classSelectorLabel.textContent = 'Change Class';-->
+<!--                    -->
+<!--                    // Make wrapper compact-->
+<!--                    classSelectorWrapper.classList.add('compact');-->
+<!--                    -->
+<!--                    // Show content-->
+<!--                    setTimeout(() => {-->
+<!--                        contentWrapper.classList.add('visible');-->
+<!--                        timerBadge.classList.add('visible');-->
+<!--                        mainCard.classList.add('expanded');-->
+<!--                        startTimer();-->
+<!--                        sortStudents(currentSort.field, currentSort.order);-->
+<!--                    }, 100);-->
+<!--                } else {-->
+<!--                    // Changing to a different class-->
+<!--                    // Reset timer-->
+<!--                    startTimer();-->
+<!--                    -->
+<!--                    // Re-render students with current sort-->
+<!--                    sortStudents(currentSort.field, currentSort.order);-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
 
-        // Render student cards
-        function renderStudents(students) {
-            const attendanceList = document.getElementById('attendanceList');
-            attendanceList.innerHTML = '';
+<!--        // Render student cards-->
+<!--        function renderStudents(students) {-->
+<!--            const attendanceList = document.getElementById('attendanceList');-->
+<!--            attendanceList.innerHTML = '';-->
 
-            students.forEach((student) => {
-                const card = document.createElement('div');
-                card.className = 'student-card';
-                card.dataset.id = student.id;
-                
-                const noteText = student.note || 'No notes yet';
-                const noteClass = student.note ? '' : ' empty';
-                
-                card.innerHTML = `
-                    <div class="student-card-header">
-                        <div class="student-info">
-                            <div class="student-name">${student.name}</div>
-                            <div class="student-code">${student.code}</div>
-                            <div class="student-note${noteClass}">${noteText}</div>
-                        </div>
-                        <div class="student-actions">
-                            <button class="edit-btn" onclick="editStudent(${student.id})">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                                </svg>
-                            </button>
-                            <button class="delete-btn" onclick="deleteStudent(${student.id})">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
-                                </svg>
-                            </button>
-                            <div class="student-time">${student.time}</div>
-                        </div>
-                    </div>
-                `;
-                attendanceList.appendChild(card);
-            });
+<!--            students.forEach((student) => {-->
+<!--                const card = document.createElement('div');-->
+<!--                card.className = 'student-card';-->
+<!--                card.dataset.id = student.id;-->
+<!--                -->
+<!--                const noteText = student.note || 'No notes yet';-->
+<!--                const noteClass = student.note ? '' : ' empty';-->
+<!--                -->
+<!--                card.innerHTML = `-->
+<!--                    <div class="student-card-header">-->
+<!--                        <div class="student-info">-->
+<!--                            <div class="student-name">${student.name}</div>-->
+<!--                            <div class="student-code">${student.code}</div>-->
+<!--                            <div class="student-note${noteClass}">${noteText}</div>-->
+<!--                        </div>-->
+<!--                        <div class="student-actions">-->
+<!--                            <button class="edit-btn" onclick="editStudent(${student.id})">-->
+<!--                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>-->
+<!--                                </svg>-->
+<!--                            </button>-->
+<!--                            <button class="delete-btn" onclick="deleteStudent(${student.id})">-->
+<!--                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>-->
+<!--                                </svg>-->
+<!--                            </button>-->
+<!--                            <div class="student-time">${student.time}</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                `;-->
+<!--                attendanceList.appendChild(card);-->
+<!--            });-->
 
-            // Update counter
-            document.getElementById('studentCounter').textContent = students.length;
-        }
+<!--            // Update counter-->
+<!--            document.getElementById('studentCounter').textContent = students.length;-->
+<!--        }-->
 
-        // Edit student function
-        function editStudent(id) {
-            // Prevent editing if already editing another card
-            if (editingCard !== null) {
-                return;
-            }
+<!--        // Edit student function-->
+<!--        function editStudent(id) {-->
+<!--            // Prevent editing if already editing another card-->
+<!--            if (editingCard !== null) {-->
+<!--                return;-->
+<!--            }-->
 
-            const index = currentClassStudents.findIndex(s => s.id === id);
-            if (index === -1) return;
+<!--            const index = currentClassStudents.findIndex(s => s.id === id);-->
+<!--            if (index === -1) return;-->
 
-            const student = currentClassStudents[index];
-            const cards = document.querySelectorAll('.student-card');
-            const card = Array.from(cards).find(c => parseInt(c.dataset.id) === id);
-            if (!card) return;
-            
-            editingCard = id;
-            card.classList.add('editing');
-            
-            const currentNote = student.note || '';
-            
-            card.innerHTML = `
-                <div class="student-card-header">
-                    <div class="student-info">
-                        <div class="student-name">${student.name}</div>
-                        <div class="student-code">${student.code}</div>
-                    </div>
-                    <div class="student-actions">
-                        <button class="edit-btn" style="opacity: 0.5; cursor: not-allowed;">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                            </svg>
-                        </button>
-                        <button class="delete-btn" style="opacity: 0.5; cursor: not-allowed;">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
-                            </svg>
-                        </button>
-                        <div class="student-time">${student.time}</div>
-                    </div>
-                </div>
-                <textarea class="note-edit-field" placeholder="Enter notes for this student...">${currentNote}</textarea>
-                <div class="edit-actions">
-                    <button class="save-btn" onclick="saveNote(${id})">Save</button>
-                    <button class="cancel-btn" onclick="cancelEdit(${id})">Cancel</button>
-                </div>
-            `;
-        }
+<!--            const student = currentClassStudents[index];-->
+<!--            const cards = document.querySelectorAll('.student-card');-->
+<!--            const card = Array.from(cards).find(c => parseInt(c.dataset.id) === id);-->
+<!--            if (!card) return;-->
+<!--            -->
+<!--            editingCard = id;-->
+<!--            card.classList.add('editing');-->
+<!--            -->
+<!--            const currentNote = student.note || '';-->
+<!--            -->
+<!--            card.innerHTML = `-->
+<!--                <div class="student-card-header">-->
+<!--                    <div class="student-info">-->
+<!--                        <div class="student-name">${student.name}</div>-->
+<!--                        <div class="student-code">${student.code}</div>-->
+<!--                    </div>-->
+<!--                    <div class="student-actions">-->
+<!--                        <button class="edit-btn" style="opacity: 0.5; cursor: not-allowed;">-->
+<!--                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>-->
+<!--                            </svg>-->
+<!--                        </button>-->
+<!--                        <button class="delete-btn" style="opacity: 0.5; cursor: not-allowed;">-->
+<!--                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>-->
+<!--                            </svg>-->
+<!--                        </button>-->
+<!--                        <div class="student-time">${student.time}</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <textarea class="note-edit-field" placeholder="Enter notes for this student...">${currentNote}</textarea>-->
+<!--                <div class="edit-actions">-->
+<!--                    <button class="save-btn" onclick="saveNote(${id})">Save</button>-->
+<!--                    <button class="cancel-btn" onclick="cancelEdit(${id})">Cancel</button>-->
+<!--                </div>-->
+<!--            `;-->
+<!--        }-->
 
-        // Save note function
-        function saveNote(id) {
-            const cards = document.querySelectorAll('.student-card');
-            const card = Array.from(cards).find(c => parseInt(c.dataset.id) === id);
-            if (!card) return;
-            const textarea = card.querySelector('.note-edit-field');
-            const newNote = textarea.value.trim();
-            
-            const index = currentClassStudents.findIndex(s => s.id === id);
-            if (index !== -1) {
-                currentClassStudents[index].note = newNote;
-            }
-            editingCard = null;
-            
-            // Re-render with current sort
-            sortStudents(currentSort.field, currentSort.order);
-        }
+<!--        // Save note function-->
+<!--        function saveNote(id) {-->
+<!--            const cards = document.querySelectorAll('.student-card');-->
+<!--            const card = Array.from(cards).find(c => parseInt(c.dataset.id) === id);-->
+<!--            if (!card) return;-->
+<!--            const textarea = card.querySelector('.note-edit-field');-->
+<!--            const newNote = textarea.value.trim();-->
+<!--            -->
+<!--            const index = currentClassStudents.findIndex(s => s.id === id);-->
+<!--            if (index !== -1) {-->
+<!--                currentClassStudents[index].note = newNote;-->
+<!--            }-->
+<!--            editingCard = null;-->
+<!--            -->
+<!--            // Re-render with current sort-->
+<!--            sortStudents(currentSort.field, currentSort.order);-->
+<!--        }-->
 
-        // Cancel edit function
-        function cancelEdit(id) {
-            editingCard = null;
-            // Re-render with current sort
-            sortStudents(currentSort.field, currentSort.order);
-        }
+<!--        // Cancel edit function-->
+<!--        function cancelEdit(id) {-->
+<!--            editingCard = null;-->
+<!--            // Re-render with current sort-->
+<!--            sortStudents(currentSort.field, currentSort.order);-->
+<!--        }-->
 
-        // Delete student function
-        function deleteStudent(id) {
-            const index = currentClassStudents.findIndex(s => s.id === id);
-            if (index === -1) return;
-            const student = currentClassStudents[index];
-            deleteTarget = id;
-            
-            const deleteModal = document.getElementById('deleteModal');
-            const deleteMessage = document.getElementById('deleteMessage');
-            deleteMessage.textContent = `Are you sure you want to delete "${student.name}" from the attendance list?`;
-            deleteModal.classList.add('active');
-        }
+<!--        // Delete student function-->
+<!--        function deleteStudent(id) {-->
+<!--            const index = currentClassStudents.findIndex(s => s.id === id);-->
+<!--            if (index === -1) return;-->
+<!--            const student = currentClassStudents[index];-->
+<!--            deleteTarget = id;-->
+<!--            -->
+<!--            const deleteModal = document.getElementById('deleteModal');-->
+<!--            const deleteMessage = document.getElementById('deleteMessage');-->
+<!--            deleteMessage.textContent = `Are you sure you want to delete "${student.name}" from the attendance list?`;-->
+<!--            deleteModal.classList.add('active');-->
+<!--        }-->
 
-        // Sort functionality
-        function sortStudents(field, order) {
-            const sorted = [...currentClassStudents].sort((a, b) => {
-                let aVal = a[field];
-                let bVal = b[field];
+<!--        // Sort functionality-->
+<!--        function sortStudents(field, order) {-->
+<!--            const sorted = [...currentClassStudents].sort((a, b) => {-->
+<!--                let aVal = a[field];-->
+<!--                let bVal = b[field];-->
 
-                if (field === 'time') {
-                    // Convert time to comparable format
-                    aVal = aVal.split(':').join('');
-                    bVal = bVal.split(':').join('');
-                }
+<!--                if (field === 'time') {-->
+<!--                    // Convert time to comparable format-->
+<!--                    aVal = aVal.split(':').join('');-->
+<!--                    bVal = bVal.split(':').join('');-->
+<!--                }-->
 
-                if (order === 'asc') {
-                    return aVal > bVal ? 1 : -1;
-                } else {
-                    return aVal < bVal ? 1 : -1;
-                }
-            });
+<!--                if (order === 'asc') {-->
+<!--                    return aVal > bVal ? 1 : -1;-->
+<!--                } else {-->
+<!--                    return aVal < bVal ? 1 : -1;-->
+<!--                }-->
+<!--            });-->
 
-            renderStudents(sorted);
-        }
+<!--            renderStudents(sorted);-->
+<!--        }-->
 
-        // Sort button handlers
-        document.querySelectorAll('.sort-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const field = this.dataset.sort;
-                let order = this.dataset.order;
+<!--        // Sort button handlers-->
+<!--        document.querySelectorAll('.sort-btn').forEach(btn => {-->
+<!--            btn.addEventListener('click', function() {-->
+<!--                const field = this.dataset.sort;-->
+<!--                let order = this.dataset.order;-->
 
-                // If clicking the same button, toggle order
-                if (currentSort.field === field) {
-                    order = currentSort.order === 'asc' ? 'desc' : 'asc';
-                } else {
-                    order = 'asc';
-                }
+<!--                // If clicking the same button, toggle order-->
+<!--                if (currentSort.field === field) {-->
+<!--                    order = currentSort.order === 'asc' ? 'desc' : 'asc';-->
+<!--                } else {-->
+<!--                    order = 'asc';-->
+<!--                }-->
 
-                // Update button states
-                document.querySelectorAll('.sort-btn').forEach(b => {
-                    b.classList.remove('active');
-                    b.querySelector('.sort-arrow').textContent = '▲';
-                });
+<!--                // Update button states-->
+<!--                document.querySelectorAll('.sort-btn').forEach(b => {-->
+<!--                    b.classList.remove('active');-->
+<!--                    b.querySelector('.sort-arrow').textContent = '▲';-->
+<!--                });-->
 
-                this.classList.add('active');
-                this.querySelector('.sort-arrow').textContent = order === 'asc' ? '▲' : '▼';
-                this.dataset.order = order;
+<!--                this.classList.add('active');-->
+<!--                this.querySelector('.sort-arrow').textContent = order === 'asc' ? '▲' : '▼';-->
+<!--                this.dataset.order = order;-->
 
-                currentSort = { field, order };
-                sortStudents(field, order);
-            });
-        });
+<!--                currentSort = { field, order };-->
+<!--                sortStudents(field, order);-->
+<!--            });-->
+<!--        });-->
 
-        // Clear All button functionality
-        const clearAllBtn = document.getElementById('clearAllBtn');
-        const clearAllModal = document.getElementById('clearAllModal');
-        const clearAllCancel = document.getElementById('clearAllCancel');
-        const clearAllConfirm = document.getElementById('clearAllConfirm');
+<!--        // Clear All button functionality-->
+<!--        const clearAllBtn = document.getElementById('clearAllBtn');-->
+<!--        const clearAllModal = document.getElementById('clearAllModal');-->
+<!--        const clearAllCancel = document.getElementById('clearAllCancel');-->
+<!--        const clearAllConfirm = document.getElementById('clearAllConfirm');-->
 
-        clearAllBtn.addEventListener('click', function() {
-            if (currentClassStudents.length > 0) {
-                clearAllModal.classList.add('active');
-            }
-        });
+<!--        clearAllBtn.addEventListener('click', function() {-->
+<!--            if (currentClassStudents.length > 0) {-->
+<!--                clearAllModal.classList.add('active');-->
+<!--            }-->
+<!--        });-->
 
-        clearAllCancel.addEventListener('click', function() {
-            clearAllModal.classList.remove('active');
-        });
+<!--        clearAllCancel.addEventListener('click', function() {-->
+<!--            clearAllModal.classList.remove('active');-->
+<!--        });-->
 
-        clearAllConfirm.addEventListener('click', function() {
-            currentClassStudents = [];
-            clearAllModal.classList.remove('active');
-            sortStudents(currentSort.field, currentSort.order);
-        });
+<!--        clearAllConfirm.addEventListener('click', function() {-->
+<!--            currentClassStudents = [];-->
+<!--            clearAllModal.classList.remove('active');-->
+<!--            sortStudents(currentSort.field, currentSort.order);-->
+<!--        });-->
 
-        clearAllModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
+<!--        clearAllModal.addEventListener('click', function(e) {-->
+<!--            if (e.target === this) {-->
+<!--                this.classList.remove('active');-->
+<!--            }-->
+<!--        });-->
 
-        // Export modal
-        const exportBtn = document.getElementById('exportBtn');
-        const exportModal = document.getElementById('exportModal');
-        const exportCancel = document.getElementById('exportCancel');
-        const exportConfirm = document.getElementById('exportConfirm');
+<!--        // Export modal-->
+<!--        const exportBtn = document.getElementById('exportBtn');-->
+<!--        const exportModal = document.getElementById('exportModal');-->
+<!--        const exportCancel = document.getElementById('exportCancel');-->
+<!--        const exportConfirm = document.getElementById('exportConfirm');-->
 
-        exportBtn.addEventListener('click', function() {
-            exportModal.classList.add('active');
-        });
+<!--        exportBtn.addEventListener('click', function() {-->
+<!--            exportModal.classList.add('active');-->
+<!--        });-->
 
-        exportCancel.addEventListener('click', function() {
-            exportModal.classList.remove('active');
-        });
+<!--        exportCancel.addEventListener('click', function() {-->
+<!--            exportModal.classList.remove('active');-->
+<!--        });-->
 
-        exportConfirm.addEventListener('click', function() {
-            const email = document.getElementById('exportEmail').value;
-            if (email && email.includes('@')) {
-                alert(`Attendance report will be sent to: ${email}`);
-                exportModal.classList.remove('active');
-            } else {
-                alert('Please enter a valid email address');
-            }
-        });
+<!--        exportConfirm.addEventListener('click', function() {-->
+<!--            const email = document.getElementById('exportEmail').value;-->
+<!--            if (email && email.includes('@')) {-->
+<!--                alert(`Attendance report will be sent to: ${email}`);-->
+<!--                exportModal.classList.remove('active');-->
+<!--            } else {-->
+<!--                alert('Please enter a valid email address');-->
+<!--            }-->
+<!--        });-->
 
-        exportModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
+<!--        exportModal.addEventListener('click', function(e) {-->
+<!--            if (e.target === this) {-->
+<!--                this.classList.remove('active');-->
+<!--            }-->
+<!--        });-->
 
-        // Logout modal
-        const logoutBtn = document.getElementById('logoutBtn');
-        const logoutModal = document.getElementById('logoutModal');
-        const logoutCancel = document.getElementById('logoutCancel');
-        const logoutConfirm = document.getElementById('logoutConfirm');
+<!--        // Logout modal-->
+<!--        const logoutBtn = document.getElementById('logoutBtn');-->
+<!--        const logoutModal = document.getElementById('logoutModal');-->
+<!--        const logoutCancel = document.getElementById('logoutCancel');-->
+<!--        const logoutConfirm = document.getElementById('logoutConfirm');-->
 
-        logoutBtn.addEventListener('click', function() {
-            logoutModal.classList.add('active');
-        });
+<!--        logoutBtn.addEventListener('click', function() {-->
+<!--            logoutModal.classList.add('active');-->
+<!--        });-->
 
-        logoutCancel.addEventListener('click', function() {
-            logoutModal.classList.remove('active');
-        });
+<!--        logoutCancel.addEventListener('click', function() {-->
+<!--            logoutModal.classList.remove('active');-->
+<!--        });-->
 
-        logoutConfirm.addEventListener('click', function() {
-            window.location.href = '../index.html';
-        });
+<!--        logoutConfirm.addEventListener('click', function() {-->
+<!--            window.location.href = '../index.html';-->
+<!--        });-->
 
-        logoutModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
+<!--        logoutModal.addEventListener('click', function(e) {-->
+<!--            if (e.target === this) {-->
+<!--                this.classList.remove('active');-->
+<!--            }-->
+<!--        });-->
 
-        // Delete modal
-        const deleteModal = document.getElementById('deleteModal');
-        const deleteCancel = document.getElementById('deleteCancel');
-        const deleteConfirm = document.getElementById('deleteConfirm');
+<!--        // Delete modal-->
+<!--        const deleteModal = document.getElementById('deleteModal');-->
+<!--        const deleteCancel = document.getElementById('deleteCancel');-->
+<!--        const deleteConfirm = document.getElementById('deleteConfirm');-->
 
-        deleteCancel.addEventListener('click', function() {
-            deleteModal.classList.remove('active');
-            deleteTarget = null;
-        });
+<!--        deleteCancel.addEventListener('click', function() {-->
+<!--            deleteModal.classList.remove('active');-->
+<!--            deleteTarget = null;-->
+<!--        });-->
 
-        deleteConfirm.addEventListener('click', function() {
-            if (deleteTarget !== null) {
-                const index = currentClassStudents.findIndex(s => s.id === deleteTarget);
-                if (index !== -1) {
-                    currentClassStudents.splice(index, 1);
-                }
-                deleteTarget = null;
-                deleteModal.classList.remove('active');
-                sortStudents(currentSort.field, currentSort.order);
-            }
-        });
+<!--        deleteConfirm.addEventListener('click', function() {-->
+<!--            if (deleteTarget !== null) {-->
+<!--                const index = currentClassStudents.findIndex(s => s.id === deleteTarget);-->
+<!--                if (index !== -1) {-->
+<!--                    currentClassStudents.splice(index, 1);-->
+<!--                }-->
+<!--                deleteTarget = null;-->
+<!--                deleteModal.classList.remove('active');-->
+<!--                sortStudents(currentSort.field, currentSort.order);-->
+<!--            }-->
+<!--        });-->
 
-        deleteModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-                deleteTarget = null;
-            }
-        });
-    </script>
+<!--        deleteModal.addEventListener('click', function(e) {-->
+<!--            if (e.target === this) {-->
+<!--                this.classList.remove('active');-->
+<!--                deleteTarget = null;-->
+<!--            }-->
+<!--        });-->
+<!--    </script>-->
 </body>
 </html>
