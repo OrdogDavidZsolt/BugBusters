@@ -3,20 +3,25 @@ const API_BASE = `${window.location.protocol}//${window.location.hostname}:${API
 
 export const AdminAPI = {
     async getDatabaseLink() {
-        const res = await fetch(`${API_BASE}/api/admin/db-link`, {
-            credentials: 'include'
-        });
-
+        const res = await fetch(`${API_BASE}/api/admin/db-link`, { credentials: 'include' });
         if (!res.ok) throw new Error(`Error ${res.status}`);
         return res.json();
     },
 
     async getReaders() {
-        const res = await fetch(`${API_BASE}/api/admin/readers`, {
-            credentials: 'include'
-        });
-
+        const res = await fetch(`${API_BASE}/api/admin/readers`, { credentials: 'include' });
         if (!res.ok) throw new Error(`Error ${res.status}`);
         return res.json();
+    },
+
+    async updateDevice(device) {
+        const res = await fetch(`${API_BASE}/api/admin/device/${device.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(device),
+            credentials: 'include'
+        });
+        if (!res.ok) throw new Error('Update failed');
+        return res;
     }
 };
