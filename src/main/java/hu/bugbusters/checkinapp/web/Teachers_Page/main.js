@@ -54,7 +54,6 @@ function initClassSelector() {
         if (!this.value) return;
 
         try {
-
             const data = await TeacherAPI.getCourseDetails(this.value);
             state.currentSessionId = data.sessionId;
             document.getElementById('classDateTime').textContent = data.dateTime;
@@ -62,11 +61,8 @@ function initClassSelector() {
 
             state.students = data.students;
 
-            // Handle UI Transition
             if (!state.isClassSelected) {
                 state.isClassSelected = true;
-                document.getElementById('classSelectorLabel').textContent = 'Change Class';
-                document.getElementById('classSelectorWrapper').classList.add('compact');
                 setTimeout(() => {
                     document.getElementById('contentWrapper').classList.add('visible');
                     document.getElementById('timerBadge').classList.add('visible');
