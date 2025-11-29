@@ -47,13 +47,12 @@ async function loadReaders() {
 
         // Check if API returned data
         if (Object.keys(apiReadersMap).length > 0) {
-            // Convert simple backend Map { "Name": "Port" } to Rich Object format
-            devicesToRender = Object.entries(apiReadersMap).map(([name, port], index) => ({
-                name: name,
-                id: `DEV-${String(index + 1).padStart(3, '0')}`, // Auto-generate ID
-                position: port,
-                type: "RFID Reader", // Default type
-                isOnline: true       // Default status
+            devicesToRender = Object.entries(apiReadersMap).map(([ip, deviceId]) => ({
+                name: "RFID Olvasó",
+                id: deviceId,
+                position: ip,
+                type: "RFID Reader",
+                isOnline: true
             }));
         } else {
             // API is empty? Use your specific Dummy Data
