@@ -5,19 +5,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
+import hu.bugbusters.checkinapp.backendserver.dto.ReaderDeviceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties.Tomcat.UseApr;
+import org.springframework.stereotype.Component;
 
 import hu.bugbusters.checkinapp.database.model.User;
 import hu.bugbusters.checkinapp.database.repository.UserRepository;
 
 
+@Component
 public class HW_Connection
 {
     private static final String RESET  = "\u001B[0m";
@@ -31,13 +37,39 @@ public class HW_Connection
     private static final String PREFIX = CYAN + ">> HW_Connection: " + RESET;
 
     //olvasók nyilvántartása
-    private static final Map<String, String> readers = new HashMap<>(); // key -> IP, value-> "DEV-001"
+    private static final Map<String, String> readers = new ConcurrentHashMap<>(); // key -> IP, value-> "DEV-001"
+
+    // ÚJ: Belső állapot osztály a részletes adatok tárolására
+    private static class DeviceState {
+        String fullId; // "DEV-001"
+        String name = "Új Olvasó";
+        String ip;
+        boolean isOnline = false;
+
+        DeviceState(String fullId, String ip, boolean isOnline) {
+            this.fullId = fullId;
+            this.ip = ip;
+            this.isOnline = isOnline;
+        }
+    }
+
+    // ÚJ: Eszközök állapotának tárolása (ID -> DeviceState)
+    private static final Map<String, DeviceState> devices = new ConcurrentHashMap<>();
+
     private static int nextReaderId = 1; // az első kiosztott ID 1 lesz, amit a configureReader fog hasznalni
 
     private static final int PORT = 54321; //ezen a porton hallgat a szerver
     private static final int THREAD_POOL_SIZE = 50; // egyszerre max. 50 kliens
 
     private static final int TOTAL_RECORD_SIZE = 19;    // egy fix bájtszám, amit a szerver olvas
+
+    // ÚJ: Repository injektálása
+    private static UserRepository userRepository;
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        HW_Connection.userRepository = userRepository;
+    }
 
     public static void start_HW_Server() {
 
@@ -60,7 +92,7 @@ public class HW_Connection
                     Socket clientSocket = serverSocket.accept(); //ez a blokkoló hívás, vagyis addig várunk,
                     // amíg egy kliens csatlakozik
                     //^ ha jön egy új kliens, akkor létrejön egy Socket objektum, ami az adott klienssel kommunikál
-                    pool.execute(new ClientHandler(clientSocket));
+                    pool.execute(new ClientHandler(clientSocket, userRepository));
                 }
             } catch (IOException e) {
                 System.out.println(PREFIX + RED + "IOException: " + RESET + e.getMessage());  // ha hiba van kiirjuk mi a baj
@@ -77,17 +109,40 @@ public class HW_Connection
         return readers;
     }
 
+    // --- ÚJ: API metódusok ---
+
+    // Csak az online eszközöket adjuk vissza, egyszerűsített DTO formában
+    public static List<ReaderDeviceDTO> getDeviceList() {
+        return devices.values().stream()
+                .filter(d -> d.isOnline)
+                .map(d -> {
+                    // "DEV-001" -> "001" levágása, hogy a frontend tegye elé
+                    String shortId = d.fullId.replace("DEV-", "");
+                    return new ReaderDeviceDTO(shortId, d.name, d.ip);
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Név frissítése (ID alapján keresünk, de a frontend a rövid ID-t küldi, így vissza kell alakítani)
+    public static boolean updateDeviceName(String shortId, String newName) {
+        String fullId = "DEV-" + shortId;
+        if (devices.containsKey(fullId)) {
+            devices.get(fullId).name = newName;
+            return true;
+        }
+        return false;
+    }
 
     public static class ClientHandler implements Runnable  //futtatható szál legyen
     {
         private Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
+        private String deviceId;
+        private final UserRepository ur;
 
-        @Autowired
-        private UserRepository ur;
-
-        public ClientHandler(Socket socket) //konstruktor
+        public ClientHandler(Socket socket, UserRepository ur) //konstruktor
         {
             this.socket = socket;
+            this.ur = ur;
         }
 
         @Override
@@ -141,19 +196,31 @@ public class HW_Connection
                 if (readerID == Integer.MAX_VALUE) {
                     // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
                     System.out.print(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ");
-                    String newId = configureReader(); //ASCII string küldése
-                    out.write(newId.getBytes());    // konfigurált ID visszaküldése az olvasónak
-                    System.out.println(newId);
+                    this.deviceId = configureReader(clientIP); //ASCII string küldése
+                    out.write(this.deviceId.getBytes());    // konfigurált ID visszaküldése az olvasónak
+                    System.out.println(this.deviceId);
                 }
                 else {
                     /**
                      * Ez az olvasó már konfigurálva van, tovább kell értelmezni az adatot, amit küldött,
                      * mert az tartalmaz egy UID-t is
                      */
-                    System.out.println(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] üzenetének feldolgozása elkezdődött!");
+
+                    // ÚJ: ID visszakeresése vagy újraregisztrálás
+                    if (readers.containsKey(clientIP)) {
+                        this.deviceId = readers.get(clientIP);
+                    } else {
+                        this.deviceId = String.format("DEV-%03d", readerID);
+                        registerDevice(this.deviceId, clientIP);
+                    }
+
+                    System.out.println(PREFIX + "[ID=" + this.deviceId + ", IP=" + clientIP + "] üzenetének feldolgozása elkezdődött!");
                     //Pl:
                     processUID(uidHex.toString());
                 }
+
+                // ÚJ: Online státusz beállítása
+                setDeviceStatus(this.deviceId, true);
 
             } catch (IOException e) {
                 System.out.println(PREFIX + "A kliens bontotta a kapcsolatot: " + clientIP);
@@ -161,6 +228,11 @@ public class HW_Connection
 
             finally
             {
+                // ÚJ: Offline státusz beállítása
+                if (this.deviceId != null) {
+                    setDeviceStatus(this.deviceId, false);
+                }
+
                 try
                 {
                     socket.close(); //lezárja a kapcsolatot, akkor is ha hiba van (ne halmozódjanak fel a hibás kapcsolatok)
@@ -173,7 +245,7 @@ public class HW_Connection
             }
         }
 
-        private String configureReader()
+        private String configureReader(String ip)
         {
             // Ez végzi el a kértyaolvasók listázását és az ID-k kiosztását
             /**
@@ -188,7 +260,6 @@ public class HW_Connection
              * majd a kapott sorszámot, mint ID visszaadja return-ben. A sorszám nyilvántartása szintén lehet a külső osztály privát
              * statikus attribútuma
              */
-            String ip = socket.getInetAddress().getHostAddress();
 
             if (readers.containsKey(ip))
             {
@@ -198,12 +269,29 @@ public class HW_Connection
             }
 
             String newId = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
-            readers.put(ip, newId);
+
+            registerDevice(newId, ip);
             nextReaderId++;
 
             System.out.println(PREFIX + ">>HW_Connection: Új olvasó regisztrálva: ID=" + newId + ", IP=" + ip + RESET);
 
             return newId;
+        }
+
+        // ÚJ: Segédfüggvény a regisztrációhoz
+        private void registerDevice(String id, String ip) {
+            readers.put(ip, id);
+            // Ha még nincs ilyen ID az eszközök között, létrehozzuk alapértelmezett adatokkal
+            devices.putIfAbsent(id, new DeviceState(id, ip, true));
+            // Ha már van (pl. csak újraindult az arduino), frissítjük az IP-t
+            devices.get(id).ip = ip;
+        }
+
+        // ÚJ: Státusz kezelése
+        private void setDeviceStatus(String id, boolean online) {
+            if (id != null && devices.containsKey(id)) {
+                devices.get(id).isOnline = online;
+            }
         }
 
         //később bővíteni kell
@@ -213,14 +301,18 @@ public class HW_Connection
             System.out.println(PREFIX + "HW_Connection: Feldolgozandó üzenet: " + uid);
 
             // Itt van lekérdezve az ID az adatbázisból.
-            Optional<User> result = ur.findByCardId(uid);
-            // DEBUG
-            System.out.println(result);
-            if (result.get().getRole() == User.UserRole.TEACHER) {
-                // Ez egy tanár volt, itt kell 20p timert indítani
-            }
-            else if (result.get().getRole() == User.UserRole.STUDENT) {
-                // Ez egy hallgató, itt kell betenni az aktuális session listájába, elmenteni a megfelelő helyre.
+            if (ur != null) {
+                Optional<User> result = ur.findByCardId(uid);
+                // DEBUG
+                if(result.isPresent()) {
+                    System.out.println("User: " + result.get().getName());
+                    if (result.get().getRole() == User.UserRole.TEACHER) {
+                        // Ez egy tanár volt, itt kell 20p timert indítani
+                    }
+                    else if (result.get().getRole() == User.UserRole.STUDENT) {
+                        // Ez egy hallgató, itt kell betenni az aktuális session listájába, elmenteni a megfelelő helyre.
+                    }
+                }
             }
         }
     }
@@ -230,11 +322,19 @@ public class HW_Connection
         //érték alapján keresünk kulcsot
         //keresd meg azt az IP-címet, amihez a megadott olvasó ID tartozik
         //ha nincs ilyen, akkor térj vissza null-al
-        String targetIp = readers.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(readerId))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
+
+        // MÓDOSÍTVA: Először a devices map-ből próbáljuk
+        String targetIp = null;
+        if (devices.containsKey(readerId)) {
+            targetIp = devices.get(readerId).ip;
+        } else {
+            // Fallback a régi mapre
+            targetIp = readers.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(readerId))
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(null);
+        }
 
         if (targetIp == null)
         {
@@ -280,5 +380,3 @@ public class HW_Connection
         }
     }
 }
-
-

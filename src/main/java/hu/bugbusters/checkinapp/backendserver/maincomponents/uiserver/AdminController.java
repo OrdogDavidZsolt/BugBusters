@@ -1,12 +1,12 @@
 package hu.bugbusters.checkinapp.backendserver.maincomponents.uiserver;
 
+import hu.bugbusters.checkinapp.backendserver.dto.ReaderDeviceDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import hu.bugbusters.checkinapp.backendserver.maincomponents.hwconnection.HW_Connection;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -14,13 +14,17 @@ import java.util.Map;
 public class AdminController {
 
     @GetMapping("/readers")
-    public ResponseEntity<Map<String, String>> getReaderMap() {
+    public ResponseEntity<List<ReaderDeviceDTO>> getReaders() {
+        // A HW_Connection.getDeviceList() már a DTO-k listáját adja vissza
+        return ResponseEntity.ok(HW_Connection.getDeviceList());
+    }
 
-        // Meghívjuk a meglévő statikus metódusodat a rfid.HW_Connection osztályból
-        Map<String, String> readerData = HW_Connection.getReaders();
-
-        // A Spring Boot automatikusan átalakítja a 'readerData' Map-et JSON formátumra
-        return ResponseEntity.ok(readerData);
+    // Csak a nevet frissítjük, az ID a path-ból jön (pl. "001")
+    @PutMapping("/device/{id}")
+    public ResponseEntity<Void> updateDevice(@PathVariable String id, @RequestBody ReaderDeviceDTO dto) {
+        // A dto.getName() tartalmazza az új nevet
+        boolean success = HW_Connection.updateDeviceName(id, dto.getName());
+        return success ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/db-link")
