@@ -82,6 +82,7 @@ public class HW_Connection
     {
         private Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
 
+
         @Autowired
         private UserRepository ur;
 
