@@ -12,7 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties.Tomcat.UseApr;
+
+
 
 import hu.bugbusters.checkinapp.database.model.User;
 import hu.bugbusters.checkinapp.database.repository.UserRepository;

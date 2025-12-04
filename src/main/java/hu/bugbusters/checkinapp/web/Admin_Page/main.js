@@ -27,12 +27,14 @@ async function initData() {
     // 1. Load DB Link
     try {
         const data = await AdminAPI.getDatabaseLink();
-        console.log("DB Link:", data.url);
+        const host = window.location.hostname;
+        const newURL = data.url.replace("localhost", host);
+        console.log("DB Link:", newURL);
 
         // Update the Manage Database button link dynamically
         const dbBtn = document.querySelector('.db-btn'); // Based on your HTML class
         if(dbBtn) {
-            dbBtn.href = data.url;
+            dbBtn.href = newURL;
         }
     } catch (e) { console.error(e); }
 
