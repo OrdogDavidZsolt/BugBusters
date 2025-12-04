@@ -153,7 +153,9 @@ public class HW_Connection
                      */
                     System.out.println(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] üzenetének feldolgozása elkezdődött!");
                     //Pl:
-                    processUID(uidHex.toString());
+                    // Ez az eredmény befolyásolja a kontroll LED-eket a hardveren
+                    boolean result = processUID(uidHex.toString());
+                    // Itt ki kellene írni a választ a socketen keresztül.
                 }
 
             } catch (IOException e) {
@@ -208,7 +210,7 @@ public class HW_Connection
         }
 
         //később bővíteni kell
-        private void processUID(String uid)
+        private boolean processUID(String uid)
         {
             // DEBUG
             System.out.println(PREFIX + "HW_Connection: Feldolgozandó üzenet: " + uid);
@@ -217,6 +219,7 @@ public class HW_Connection
             Optional<User> result = userService.findByCardId(uid);
             if (result.isEmpty()) {
                 System.out.println(PREFIX + "Nincs eredmény a kártyához");
+                return false; // Piros LED
             }
             // DEBUG
             System.out.println(result);
@@ -228,6 +231,7 @@ public class HW_Connection
                 // Ez egy hallgató, itt kell betenni az aktuális session listájába, elmenteni a megfelelő helyre.
                 System.out.println(PREFIX + "Ez egy diák kártya volt");
             }
+            return true; // Zöld LED
         }
     }
 // hasznalat: HW_Connection.sendCommandToReader("DEV-003", HW_Command.RED_LED_ON);

@@ -31,7 +31,7 @@ public class Timer
                 while (true) {
                     long elapsed = System.currentTimeMillis() - startTime;
                     long remaining = totalMillis - elapsed;
-
+                    
                     if (remaining <= 0) {
                         System.out.println("Timer ended SIGNAL!");
                         break;
