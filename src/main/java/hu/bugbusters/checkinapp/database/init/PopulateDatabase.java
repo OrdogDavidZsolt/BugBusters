@@ -4,6 +4,7 @@ import hu.bugbusters.checkinapp.database.model.Attendance;
 import hu.bugbusters.checkinapp.database.model.Course;
 import hu.bugbusters.checkinapp.database.model.CourseSession;
 import hu.bugbusters.checkinapp.database.model.User;
+import hu.bugbusters.checkinapp.database.model.User.UserRole;
 import hu.bugbusters.checkinapp.database.repository.AttendanceRepository;
 import hu.bugbusters.checkinapp.database.repository.CourseRepository;
 import hu.bugbusters.checkinapp.database.repository.CourseSessionRepository;
@@ -43,11 +44,27 @@ public class PopulateDatabase {
             userRepository.save(teacher1);
             User teacher2 = User.builder().name("Dr. Nagy Anna").email("anna@test.com").cardId("T_CARD_2").neptunCode("TEACH2").role(User.UserRole.TEACHER).hashedPassword(passwordEncoder.encode("pass123")).build();
             userRepository.save(teacher2);
+            User testTeacher1 = User.builder().name("Test Teacher1").email("teacher1@test.com").cardId("F39F570B000000000000").neptunCode("TEACH3").role(User.UserRole.TEACHER).hashedPassword(passwordEncoder.encode("1234")).build();
+            userRepository.save(testTeacher1);
+
+            /**
+             * TESZT ADATOK:
+             * 
+             * Teszt diák:
+             *      név ----> Kiss Anna
+             *      kártya -> C115E6A9000000000000 (kártya)
+             *      neptun -> ABC002
+             * Teszt tanár:
+             *      email --> teacher1@test.com
+             *      kártya -> F39F570B000000000000 (kulcstartó)
+             *      jelszó -> 1234
+             */
 
             // 2. LÉPÉS: Diákok (20 db)
             List<User> students = new ArrayList<>();
             // Csoport 1 (1-10)
-            students.add(User.builder().name("Kiss Anna").cardId("S_1").neptunCode("ABC001").role(User.UserRole.STUDENT).build());
+            students.add(User.builder().name("Kiss Anna").cardId("C115E6A9000000000000").neptunCode("ABC001").role(User.UserRole.STUDENT).build());
+            
             students.add(User.builder().name("Nagy Péter").cardId("S_2").neptunCode("ABC002").role(User.UserRole.STUDENT).build());
             students.add(User.builder().name("Szabó Márta").cardId("S_3").neptunCode("ABC003").role(User.UserRole.STUDENT).build());
             students.add(User.builder().name("Horváth László").cardId("S_4").neptunCode("ABC004").role(User.UserRole.STUDENT).build());

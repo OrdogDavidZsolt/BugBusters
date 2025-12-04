@@ -2,6 +2,7 @@ package hu.bugbusters.checkinapp.backendserver.maincomponents.controller;
 
 import hu.bugbusters.checkinapp.backendserver.maincomponents.dbconnection.DB_Connection;
 import hu.bugbusters.checkinapp.backendserver.maincomponents.hwconnection.HW_Connection;
+import hu.bugbusters.checkinapp.backendserver.maincomponents.services.UserService;
 import hu.bugbusters.checkinapp.backendserver.maincomponents.uiconnection.UI_Connection;
 
 // Spring-boot komponensek
@@ -47,7 +48,8 @@ public class Controller {
         UI_Connection.start_UI_Server();  // UI szerver elindítása
         
         System.out.println(PREFIX + "Starting HW Server on port " + HW_Connection.getPort());
-        HW_Connection.start_HW_Server();  // HW szerver elindítása
+        UserService userService = context.getBean(UserService.class);
+        HW_Connection.start_HW_Server(userService);  // HW szerver elindítása
         
     }
 }

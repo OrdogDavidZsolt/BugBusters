@@ -13,8 +13,7 @@ import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-
-
+import hu.bugbusters.checkinapp.backendserver.maincomponents.services.UserService;
 import hu.bugbusters.checkinapp.database.model.User;
 import hu.bugbusters.checkinapp.database.repository.UserRepository;
 
@@ -40,7 +39,7 @@ public class HW_Connection
 
     private static final int TOTAL_RECORD_SIZE = 19;    // egy fix bájtszám, amit a szerver olvas
 
-    public static void start_HW_Server() {
+    public static void start_HW_Server(UserService userService) {
     
         //külön listener szál az accept() blokkoló tulajdonsága miatt --> így most megy a program a fő szálon
         // minden más mehet mellette a szervernél.
@@ -61,7 +60,7 @@ public class HW_Connection
                     Socket clientSocket = serverSocket.accept(); //ez a blokkoló hívás, vagyis addig várunk,
                     // amíg egy kliens csatlakozik
                     //^ ha jön egy új kliens, akkor létrejön egy Socket objektum, ami az adott klienssel kommunikál
-                    pool.execute(new ClientHandler(clientSocket));
+                    pool.execute(new ClientHandler(clientSocket, userService));
                 }
             } catch (IOException e) {
                 System.out.println(PREFIX + RED + "IOException: " + RESET + e.getMessage());  // ha hiba van kiirjuk mi a baj
@@ -84,12 +83,12 @@ public class HW_Connection
         private Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
 
 
-        @Autowired
-        private UserRepository ur;
+        private UserService userService;
 
-        public ClientHandler(Socket socket) //konstruktor
+        public ClientHandler(Socket socket, UserService userService) //konstruktor
         {
             this.socket = socket;
+            this.userService = userService;
         }
 
         @Override
@@ -215,14 +214,19 @@ public class HW_Connection
             System.out.println(PREFIX + "HW_Connection: Feldolgozandó üzenet: " + uid);
 
             // Itt van lekérdezve az ID az adatbázisból. 
-            Optional<User> result = ur.findByCardId(uid);
+            Optional<User> result = userService.findByCardId(uid);
+            if (result.isEmpty()) {
+                System.out.println(PREFIX + "Nincs eredmény a kártyához");
+            }
             // DEBUG
             System.out.println(result);
             if (result.get().getRole() == User.UserRole.TEACHER) {
                 // Ez egy tanár volt, itt kell 20p timert indítani
+                System.out.println(PREFIX + "Ez egy tanári ID");
             }
             else if (result.get().getRole() == User.UserRole.STUDENT) {
                 // Ez egy hallgató, itt kell betenni az aktuális session listájába, elmenteni a megfelelő helyre.
+                System.out.println(PREFIX + "Ez egy diák kártya volt");
             }
         }
     }
