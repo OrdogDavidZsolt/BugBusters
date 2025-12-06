@@ -2,6 +2,7 @@ package hu.bugbusters.checkinapp.backendserver.maincomponents.controller;
 
 import hu.bugbusters.checkinapp.backendserver.maincomponents.dbconnection.DB_Connection;
 import hu.bugbusters.checkinapp.backendserver.maincomponents.hwconnection.HW_Connection;
+import hu.bugbusters.checkinapp.backendserver.maincomponents.services.TimingService;
 import hu.bugbusters.checkinapp.backendserver.maincomponents.services.UserService;
 import hu.bugbusters.checkinapp.backendserver.maincomponents.uiconnection.UI_Connection;
 
@@ -50,6 +51,10 @@ public class Controller {
         System.out.println(PREFIX + "Starting HW Server on port " + HW_Connection.getPort());
         UserService userService = context.getBean(UserService.class);
         HW_Connection.start_HW_Server(userService);  // HW szerver elindítása
+
+        // Timer test
+        System.out.println(PREFIX + "Test timer elindítva");
+        TimingService.startNewTimer(0, 50);
         
     }
 }

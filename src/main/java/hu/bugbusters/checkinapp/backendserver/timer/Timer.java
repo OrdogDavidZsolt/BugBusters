@@ -13,11 +13,17 @@ public class Timer
     private volatile boolean running = false;
     private long startTime;
     private Thread thread;
+    private TimerListener listener;
 
     public Timer(int minutes, int seconds) {
         //this.initialMinutes = minutes;
         //this.initialSeconds = seconds;
         this.totalMillis = (minutes * 60L + seconds) * 1000L;
+    }
+
+    public void setTimerListener(TimerListener listener)
+    {
+        this.listener = listener;
     }
 
     public void start() {
@@ -31,12 +37,17 @@ public class Timer
                 while (true) {
                     long elapsed = System.currentTimeMillis() - startTime;
                     long remaining = totalMillis - elapsed;
-                    
+
                     if (remaining <= 0) {
-                        System.out.println("Timer ended SIGNAL!");
+                        running = false;
+                        if (listener != null) {
+                            // Callback
+                            listener.onTimerEnd(this);
+                        }
+                        // System.out.println("Timer ended SIGNAL!");
                         break;
                     }
-                    Thread.sleep(200);  // free the CPU for 200 ms
+                    Thread.sleep(500);  // free the CPU for 500 ms
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -46,6 +57,7 @@ public class Timer
         thread.start();
     }
 
+    // None of them works via callback !!
     public int getRemainingMinutes() {
         long remainingMillis = getRemainingMillis();
         return (int) (remainingMillis / 1000 / 60);
