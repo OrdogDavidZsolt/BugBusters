@@ -89,6 +89,10 @@ public class HW_Connection
 
     public static int getDataPort()
     {
+        return HW_Connection.DATA_PORT;
+    }
+
+    public static Map<String, String> getReaders() {
         long now = System.currentTimeMillis();
 
         Map<String, String> onlineReaders = new HashMap<>();
@@ -97,13 +101,11 @@ public class HW_Connection
             String readerID = entry.getValue();
 
             Long last = lastHeartbeats.get(readerID);
+            if (last != null && (now - last <= 30_000)) {
+                onlineReaders.put(ip, readerID);
+            }
         }
-
-        return HW_Connection.DATA_PORT;
-    }
-
-    public static Map<String, String> getReaders() {
-        return readers;
+        return onlineReaders;
     }
 
 
