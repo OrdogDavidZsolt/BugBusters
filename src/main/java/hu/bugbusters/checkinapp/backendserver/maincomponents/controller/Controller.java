@@ -48,13 +48,11 @@ public class Controller {
         System.out.println(PREFIX + "Starting UI Server on port " + UI_Connection.getPort());
         UI_Connection.start_UI_Server();  // UI szerver elindítása
         
-        System.out.println(PREFIX + "Starting HW Server on port " + HW_Connection.getPort());
+        System.out.println(PREFIX + "Starting HW Server on port " + HW_Connection.getDataPort());
         UserService userService = context.getBean(UserService.class);
         HW_Connection.start_HW_Server(userService);  // HW szerver elindítása
 
-        // Timer test
-        System.out.println(PREFIX + "Test timer elindítva");
-        TimingService.startNewTimer(0, 50);
+        
         
     }
 }

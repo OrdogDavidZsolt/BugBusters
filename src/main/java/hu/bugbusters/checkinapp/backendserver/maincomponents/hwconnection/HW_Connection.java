@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,9 +33,11 @@ public class HW_Connection
 
     //olvasók nyilvántartása
     private static final Map<String, String> readers = new HashMap<>(); // key -> IP, value-> "DEV-001"
+    private static final Map<Integer, Long> lastHeartbeats = new ConcurrentHashMap<>();   // key -> readerID, value -> utolsó jel ideje
     private static int nextReaderId = 1; // az első kiosztott ID 1 lesz, amit a configureReader fog hasznalni
 
-    private static final int PORT = 54321; //ezen a porton hallgat a szerver
+    private static final int DATA_PORT      = 54321; // ezen a porton hallgat a szerver
+    private static final int HEARTBEAT_PORT = 54322; // itt várjuk a harver státuszokat
     private static final int THREAD_POOL_SIZE = 50; // egyszerre max. 50 kliens
 
     private static final int TOTAL_RECORD_SIZE = 19;    // egy fix bájtszám, amit a szerver olvas
@@ -46,31 +49,57 @@ public class HW_Connection
         // Ha jön egy kliens, akkor létrejön egy külön szál, ami megszűnik, ha elvégzi a feladatát.
         new Thread(() ->
         {
-            ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+            ExecutorService dataPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
             //^ ez egy szál kezelő szolgáltatás, létrehoz egy olyan szál poolt,
             // ami legfeljebb 50 kliens kezelését engedi
 
-            //a szerver elindul egy porton (PORT változó) és klie4nsre vár,
+            //a szerver elindul egy porton (PORT változó) és kliensre vár,
             // amikor jön egy kliens, akkor elindít neki egy külön szálat (CLientHandler)
-            try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-                System.out.println(PREFIX + "HW Szerver elindult a " + PORT + " porton...");
+            try (ServerSocket serverSocket = new ServerSocket(DATA_PORT)) {
+                System.out.println(PREFIX + "HW Szerver (data) elindult a " + DATA_PORT + " porton...");
 
                 while (true) // a szerver folyamatosan figyeli a klienseket
                 {
                     Socket clientSocket = serverSocket.accept(); //ez a blokkoló hívás, vagyis addig várunk,
                     // amíg egy kliens csatlakozik
                     //^ ha jön egy új kliens, akkor létrejön egy Socket objektum, ami az adott klienssel kommunikál
-                    pool.execute(new ClientHandler(clientSocket, userService));
+                    dataPool.execute(new ClientHandler(clientSocket, userService));
                 }
             } catch (IOException e) {
                 System.out.println(PREFIX + RED + "IOException: " + RESET + e.getMessage());  // ha hiba van kiirjuk mi a baj
             }
         }).start();
+
+        // Egy új szál a heartbeat-es logika implementálásáras
+        new Thread(() -> {
+            ExecutorService heartbeatPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+
+            try (ServerSocket serverSocket = new ServerSocket(HEARTBEAT_PORT)) {
+                System.out.println(PREFIX + "HW Szerver (heartbeat) elindult a " + HEARTBEAT_PORT + "porton...");
+                while (true) {
+                    Socket clientSocket = serverSocket.accept();
+
+                    heartbeatPool.execute(null); // TODO: Ide jön a heartbeat kezelő
+                }
+            } catch (IOException e) {
+                System.out.println(PREFIX + RED + "IOException: " + RESET + e.getMessage());
+            }
+        }).start();
     }
 
-    public static int getPort()
+    public static int getDataPort()
     {
-        return HW_Connection.PORT;
+        long now = System.currentTimeMillis();
+
+        Map<String, String> onlineReaders = new HashMap<>();
+        for (var entry : readers.entrySet()) {
+            String ip = entry.getKey();
+            String readerID = entry.getValue();
+
+            Long last = lastHeartbeats.get(readerID);
+        }
+
+        return HW_Connection.DATA_PORT;
     }
 
     public static Map<String, String> getReaders() {
@@ -234,39 +263,72 @@ public class HW_Connection
             return true; // Zöld LED
         }
     }
-// hasznalat: HW_Connection.sendCommandToReader("DEV-003", HW_Command.RED_LED_ON);
-public static void sendCommandToReader(String readerId, HW_Command command)
-{
-    //érték alapján keresünk kulcsot
-    //keresd meg azt az IP-címet, amihez a megadott olvasó ID tartozik
-    //ha nincs ilyen, akkor térj vissza null-al
-    String targetIp = readers.entrySet().stream()
-            .filter(entry -> entry.getValue().equals(readerId))
-            .map(Map.Entry::getKey)
-            .findFirst()
-            .orElse(null);
-
-    if (targetIp == null)
+   
+    public static class HeartbeatHandler implements Runnable
     {
-        System.out.println(PREFIX + ">>HW_Connection: Nincs ilyen olvasó ID: " + readerId);
-        return;
+        private Socket socket;
+
+        public HeartbeatHandler(Socket socket)
+        {
+            this.socket = socket;
+        }
+
+        @Override
+        public void run() {
+            try (InputStream in = socket.getInputStream()) {
+                byte[] buffer = new byte[4];
+                int read = in.read(buffer);
+                if (read == 4) {
+                    int readerId = ((buffer[0] & 0xFF) << 24) |
+                                ((buffer[1] & 0xFF) << 16) |
+                                ((buffer[2] & 0xFF) << 8)  |
+                                (buffer[3] & 0xFF);
+
+                    // itt frissíted a statikus map-et:
+                    lastHeartbeats.put(readerId, System.currentTimeMillis());
+                }
+            } catch (IOException e) {
+                System.out.println(PREFIX + "Heartbeat handler IO exception: " + e.getMessage());
+            } finally {
+                try { socket.close(); } catch (IOException ignored) {}
+            }
+        }
+        
     }
 
-    //felépít egy új TCP kapcsolatot a megadott olvasó IP-címére, azon a porton, amin a harvder figyel
-    try(Socket socket = new Socket(targetIp, PORT);
-        DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
+    // hasznalat: HW_Connection.sendCommandToReader("DEV-003", HW_Command.RED_LED_ON);
+    public static void sendCommandToReader(String readerId, HW_Command command)
     {
+        //érték alapján keresünk kulcsot
+        //keresd meg azt az IP-címet, amihez a megadott olvasó ID tartozik
+        //ha nincs ilyen, akkor térj vissza null-al
+        String targetIp = readers.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(readerId))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
 
-        out.writeInt(command.getCode()); // egy 4 bájtos egész számot kuld a hálozaton keresztul a kliens fele
-        out.flush(); //puffer uritese --> az adatfolyamot azonnal kuld el
+        if (targetIp == null)
+        {
+            System.out.println(PREFIX + ">>HW_Connection: Nincs ilyen olvasó ID: " + readerId);
+            return;
+        }
 
-        System.out.println(PREFIX + ">>HW_Connection: Parancs elküldve [" + command + "] a(z) " + targetIp + " címre.");
+        //felépít egy új TCP kapcsolatot a megadott olvasó IP-címére, azon a porton, amin a harvder figyel
+        try(Socket socket = new Socket(targetIp, DATA_PORT);
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream()))
+        {
+
+            out.writeInt(command.getCode()); // egy 4 bájtos egész számot kuld a hálozaton keresztul a kliens fele
+            out.flush(); //puffer uritese --> az adatfolyamot azonnal kuld el
+
+            System.out.println(PREFIX + ">>HW_Connection: Parancs elküldve [" + command + "] a(z) " + targetIp + " címre.");
+        }
+        catch (IOException e)
+        {
+            System.out.println(PREFIX + ">>HW_Connection: Hiba az üzenet küldésekor: " + e.getMessage());
+        }
     }
-    catch (IOException e)
-    {
-        System.out.println(PREFIX + ">>HW_Connection: Hiba az üzenet küldésekor: " + e.getMessage());
-    }
-}
 
     //vezérlő parqancsok
     public enum HW_Command{

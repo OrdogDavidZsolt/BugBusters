@@ -30,7 +30,8 @@
 #define LED_DELAY 1000
 
 // Server
-#define SERVER_PORT 54321
+#define SERVER_DATA_PORT 54321
+#define SERVER_HEARTBEAT_PORT 54322
 #define SERVER_NAME "bence-Mint.local"
 
 // mDNS
@@ -38,9 +39,11 @@
 #define MDNS_MULTICAST_IP IPAddress(224, 0, 0, 251)
 #define MDNS_TIMEOUT 2000  // ms
 
-
 // RFID related
 #define UID_BYTE_SIZE 10
+
+// Status related
+#define HEARTBEAT_INTERVAL = 5000
 
 
 // ------------ Globals -------------
@@ -53,6 +56,7 @@ int readerID = __INT_MAX__;             // Unique ID for the reader unit, gather
 byte uidBytes[UID_BYTE_SIZE] = { 0 };   // Global array for UID data, prefilled with 0s
 const char DATA_SEPARATOR[] = "-UID=";  // [ID]-UID=[UID] format
 byte outputBuffer[sizeof(int) + sizeof(DATA_SEPARATOR) -1 + UID_BYTE_SIZE] = { 0 };  // Output buffer for uid sending
+unsigned long lastHeartbeat = 0;        // Status check heartbeat timing variable
 
 // ------------ Functions -------------
 void setupMAC();
@@ -108,17 +112,30 @@ void setup() {
     delay(500);
   } while (readerID == __INT_MAX__);
   Serial.print("ID Gathered: "); Serial.println(readerID);
+
   // Initialize RFID reader
   mfrc.PCD_Init();
   setLEDs(false, false, true);
 }
 
 void loop() {
+
+  unsigned long now = millis();
+
+  // RFID reader
   int result = readUID();
   if (result > 0) {
     sendUIDToServer(serverIP, uidBytes);
   }
   delay(10);
+
+  // Heartbeat sending
+  if (now - lastHeartbeat > HEARTBEAT_INTERVAL)
+  {
+    sendHeartbeat(serverIP, readerID);
+    lastHeartbeat = now;
+  }
+  
 }
 
 // Setting up MAC address from ESP's own MAC
@@ -175,16 +192,15 @@ void mdnsResolve() {
 }
 
 // Get unique ID for the reader unit from the server
-// TODO: Complete implementation
 int getReaderID(IPAddress serverIp) {
   // Debug
   Serial.print("Connecting to: ");
   Serial.print(serverIp);
   Serial.print(":");
-  Serial.println(SERVER_PORT);
+  Serial.println(SERVER_DATA_PORT);
 
   // Connect to server
-  if (!client.connect(serverIp, SERVER_PORT)) {
+  if (!client.connect(serverIp, SERVER_DATA_PORT)) {
     Serial.println("Server connection failed");
     return __INT_MAX__;
   }
@@ -267,10 +283,10 @@ bool sendUIDToServer(IPAddress serverIp, byte uid[UID_BYTE_SIZE]) {
   Serial.print("Connecting to: ");
   Serial.print(serverIp);
   Serial.print(":");
-  Serial.println(SERVER_PORT);
+  Serial.println(SERVER_DATA_PORT);
 
   // Connect to server
-  if (!client.connect(serverIp, SERVER_PORT)) {
+  if (!client.connect(serverIp, SERVER_DATA_PORT)) {
     Serial.println("Server connection failed");
     return false;
   }
@@ -449,4 +465,26 @@ void setLEDs(bool red, bool green, bool blue) {
   digitalWrite(LED_R, red);
   digitalWrite(LED_G, green);
   digitalWrite(LED_B, blue);
+}
+
+// this method sends heartbeat
+bool sendHeartbeat(IPAddress serverIP, int readerID) {
+  if (!client.connect(serverIP, SERVER_HEARTBEAT_PORT)) {
+    Serial.println("Heartbeat: Server not reachable");
+    setLEDs(true, false, false);
+    return false;
+  }
+
+  // Simeple message: ID in binary, 4 byte, big endian
+  byte buffer[4];
+  buffer[0] = (readerId >> 24) & 0xFF;
+  buffer[1] = (readerId >> 16) & 0xFF;
+  buffer[2] = (readerId >> 8) & 0xFF;
+  buffer[3] = readerId & 0xFF;
+
+  client.write(buffer, 4);
+
+  client.stop();
+  setLEDs(false, false, true);
+  return true;
 }
