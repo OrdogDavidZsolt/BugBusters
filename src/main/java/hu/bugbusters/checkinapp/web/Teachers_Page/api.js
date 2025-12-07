@@ -3,6 +3,23 @@ const API_BASE = `${window.location.protocol}//${window.location.hostname}:${API
 
 export const TeacherAPI = {
 
+    // ÚJ: Sessionök listázása
+    async getSessions() {
+        const res = await fetch(`${API_BASE}/api/teacher/sessions`, {
+            credentials: 'include'
+        });
+        if (!res.ok) throw new Error('Failed to load sessions');
+        return res.json();
+    },
+
+    // ÚJ: Konkrét session lekérése
+    async getSessionDetails(sessionId) {
+        const res = await fetch(`${API_BASE}/api/teacher/session-details/${sessionId}`, {
+            credentials: 'include'
+        });
+        if (!res.ok) throw new Error('Failed to load session details');
+        return res.json();
+    },
 
     async getCourses() {
         const res = await fetch(`${API_BASE}/api/teacher/courses`, {

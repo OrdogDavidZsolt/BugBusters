@@ -1,9 +1,6 @@
 package hu.bugbusters.checkinapp.backendserver.maincomponents.uiserver;
 
-import hu.bugbusters.checkinapp.backendserver.dto.ClassDetailsDTO;
-import hu.bugbusters.checkinapp.backendserver.dto.CourseSummaryDTO;
-import hu.bugbusters.checkinapp.backendserver.dto.NoteUpdateDTO;
-import hu.bugbusters.checkinapp.backendserver.dto.StudentAttendanceDTO;
+import hu.bugbusters.checkinapp.backendserver.dto.*;
 import hu.bugbusters.checkinapp.database.model.Attendance;
 import hu.bugbusters.checkinapp.database.model.Course;
 import hu.bugbusters.checkinapp.database.model.CourseSession;
@@ -20,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import hu.bugbusters.checkinapp.backendserver.emailingservice.EmailingService;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,6 +51,76 @@ public class TeacherController {
     @GetMapping("/sessions/{sessionId}/attendance")
     public List<Attendance> getAttendanceBySession(@PathVariable Long sessionId) {
         return attendanceRepository.findBySession_Id(sessionId);
+    }
+
+    // ÚJ VÉGPONT: A legördülő lista feltöltéséhez (Minden alkalom listázása)
+    @GetMapping("/sessions")
+    public ResponseEntity<List<SessionSelectDTO>> getAllSessions(Authentication authentication) {
+        String email = authentication.getName();
+        Optional<User> teacherOpt = userRepository.findByEmail(email);
+
+        if (teacherOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // 1. Lekérjük a tanár kurzusait
+        List<Course> courses = courseRepository.findByTeacher(teacherOpt.get());
+
+        // 2. Összegyűjtjük az összes sessiont ezekhez a kurzusokhoz
+        List<SessionSelectDTO> sessionDTOs = new ArrayList<>();
+
+        for (Course course : courses) {
+            List<CourseSession> sessions = courseSessionRepository.findByCourse_Id(course.getId());
+            for (CourseSession session : sessions) {
+                String displayName = course.getName() + " - " + session.getDate().toString() + " " + session.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+                sessionDTOs.add(new SessionSelectDTO(session.getId(), displayName));
+            }
+        }
+
+        // 3. Rendezzük dátum szerint csökkenő sorrendbe (legfrissebb elől)
+        // Megjegyzés: Ehhez a SessionSelectDTO-nak tartalmaznia kellene a nyers dátumot is a rendezéshez,
+        // de egyszerűsítve most feltételezzük, hogy a DB sorrend vagy ID sorrend megfelelő, vagy a frontend rendez.
+        // Itt most ID alapján rendezünk csökkenőbe (általában az újabbnak nagyobb az ID-ja)
+        sessionDTOs.sort((a, b) -> b.getId().compareTo(a.getId()));
+
+        return ResponseEntity.ok(sessionDTOs);
+    }
+
+    // MÓDOSÍTOTT LOGIKA (ÚJ METÓDUS): Konkrét session adatainak lekérése ID alapján
+    @GetMapping("/session-details/{sessionId}")
+    public ResponseEntity<ClassDetailsDTO> getSessionDetails(@PathVariable Long sessionId) {
+        // FindById a sessionhöz, nem findTopByCourse...
+        Optional<CourseSession> sessionOpt = courseSessionRepository.findById(sessionId);
+
+        if (sessionOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CourseSession session = sessionOpt.get();
+        Course course = session.getCourse();
+
+        List<Attendance> attendances = attendanceRepository.findBySession(session);
+
+        // A meglévő mapping logika felhasználása...
+        List<StudentAttendanceDTO> studentDTOs = attendances.stream().map(att -> {
+            StudentAttendanceDTO dto = new StudentAttendanceDTO();
+            dto.setAttendanceId(att.getId());
+            dto.setName(att.getStudent().getName());
+            dto.setCode(att.getStudent().getNeptunCode());
+            dto.setTime(att.getScannedAt() != null ? att.getScannedAt().format(timeFormatter) : "-");
+            dto.setNote(att.getNote() != null ? att.getNote() : "");
+            return dto;
+        }).collect(Collectors.toList());
+
+        ClassDetailsDTO classDetailsDTO = new ClassDetailsDTO();
+        classDetailsDTO.setSessionId(session.getId());
+        classDetailsDTO.setName(course.getName()); // Kurzus neve
+        classDetailsDTO.setTeacher(course.getTeacher().getName());
+        classDetailsDTO.setLocation(session.getLocation());
+        classDetailsDTO.setDateTime(session.getStartTime().format(sessionFormatter));
+        classDetailsDTO.setStudents(studentDTOs);
+
+        return ResponseEntity.ok(classDetailsDTO);
     }
 
     //Lekérdezi a bejelentkezett tanár összes kurzusát (a legördülő listához).

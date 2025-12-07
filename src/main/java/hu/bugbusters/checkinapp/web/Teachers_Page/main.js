@@ -37,6 +37,7 @@ async function loadUser() {
     } catch (e) { console.error(e); }
 }
 
+/*
 function initClassSelector() {
     const selector = document.getElementById('classSelector');
 
@@ -75,6 +76,53 @@ function initClassSelector() {
                 Timer.start();
             }
         } catch (e) { alert('Error loading class'); console.error(e); }
+    });
+}
+*/
+
+function initClassSelector() {
+    const selector = document.getElementById('classSelector');
+
+    // MÓDOSÍTÁS: getCourses helyett getSessions
+    TeacherAPI.getSessions().then(sessions => {
+        selector.innerHTML = '<option value="">Válasszon órát...</option>';
+        sessions.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id; // Ez most már a SESSION ID, nem a Course ID
+            opt.textContent = s.displayName; // Pl: "Webfejlesztés - 2025.11.26 14:00"
+            selector.appendChild(opt);
+        });
+    }).catch(console.error);
+
+    selector.addEventListener('change', async function() {
+        if (!this.value) return;
+
+        try {
+            // MÓDOSÍTÁS: getCourseDetails helyett getSessionDetails
+            const data = await TeacherAPI.getSessionDetails(this.value);
+
+            // Innen minden ugyanaz maradhat, mert a ClassDetailsDTO szerkezete nem változott
+            state.currentSessionId = data.sessionId;
+            document.getElementById('classDateTime').textContent = data.dateTime;
+            document.getElementById('classLocation').textContent = data.location;
+
+            state.students = data.students;
+
+            // UI frissítése...
+            if (!state.isClassSelected) {
+                state.isClassSelected = true;
+                setTimeout(() => {
+                    document.getElementById('contentWrapper').classList.add('visible');
+                    document.getElementById('timerBadge').classList.add('visible');
+                    document.querySelector('.main-card').classList.add('expanded');
+                    refreshList();
+                    Timer.start();
+                }, 100);
+            } else {
+                refreshList();
+                Timer.start();
+            }
+        } catch (e) { alert('Error loading class details'); console.error(e); }
     });
 }
 
