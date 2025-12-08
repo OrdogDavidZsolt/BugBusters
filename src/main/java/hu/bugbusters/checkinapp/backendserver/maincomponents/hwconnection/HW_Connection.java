@@ -33,7 +33,7 @@ public class HW_Connection
 
     //olvasók nyilvántartása
     private static final Map<String, String> readers = new HashMap<>(); // key -> IP, value-> "DEV-001"
-    private static final Map<Integer, Long> lastHeartbeats = new ConcurrentHashMap<>();   // key -> readerID, value -> utolsó jel ideje
+    private static final Map<String, Long> lastHeartbeats = new ConcurrentHashMap<>();   // key -> readerID, value -> utolsó jel ideje
     private static int nextReaderId = 1; // az első kiosztott ID 1 lesz, amit a configureReader fog hasznalni
 
     private static final int DATA_PORT      = 54321; // ezen a porton hallgat a szerver
@@ -75,11 +75,11 @@ public class HW_Connection
             ExecutorService heartbeatPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
             try (ServerSocket serverSocket = new ServerSocket(HEARTBEAT_PORT)) {
-                System.out.println(PREFIX + "HW Szerver (heartbeat) elindult a " + HEARTBEAT_PORT + "porton...");
+                System.out.println(PREFIX + "HW Szerver (heartbeat) elindult a " + HEARTBEAT_PORT + " porton...");
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
 
-                    heartbeatPool.execute(null); // TODO: Ide jön a heartbeat kezelő
+                    heartbeatPool.execute(new HeartbeatHandler(clientSocket)); // TODO: Ide jön a heartbeat kezelő
                 }
             } catch (IOException e) {
                 System.out.println(PREFIX + RED + "IOException: " + RESET + e.getMessage());
@@ -105,6 +105,7 @@ public class HW_Connection
                 onlineReaders.put(ip, readerID);
             }
         }
+        System.out.println("Online readers: " + onlineReaders);
         return onlineReaders;
     }
 
@@ -172,10 +173,9 @@ public class HW_Connection
 
                 if (readerID == Integer.MAX_VALUE) {
                     // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
-                    System.out.print(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ");
-                    String newId = configureReader(); //ASCII string küldése
-                    out.write(newId.getBytes());    // konfigurált ID visszaküldése az olvasónak
-                    System.out.println(newId);
+                    int newId = configureReader(); //ASCII string küldése
+                    out.writeInt(newId);    // konfigurált ID visszaküldése az olvasónak
+                    System.out.println(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ID=" + newId);
                 }
                 else {
                     /**
@@ -207,7 +207,7 @@ public class HW_Connection
             }
         }
 
-        private String configureReader()
+        private int configureReader()
         {
             // Ez végzi el a kértyaolvasók listázását és az ID-k kiosztását
             /**
@@ -228,16 +228,20 @@ public class HW_Connection
             {
                 String existingId = readers.get(ip);
                 System.out.println(PREFIX  + ">>HW_Connection: Ismert olvasó újra csatlakozott: " + existingId + " (" + ip + ")" + RESET);
-                return existingId;
+
+                String lastThree = existingId.substring(existingId.length() - 3);
+                int readerIdInt = Integer.parseInt(lastThree);
+                return readerIdInt;
             }
 
-            String newId = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
-            readers.put(ip, newId);
+            int newID = nextReaderId;
+            String newIdStr = String.format("DEV-%03d", nextReaderId); //3 szamjegy, balrol nullákkal kitöltve
+            readers.put(ip, newIdStr);
             nextReaderId++;
 
-            System.out.println(PREFIX + ">>HW_Connection: Új olvasó regisztrálva: ID=" + newId + ", IP=" + ip + RESET);
+            System.out.println(PREFIX + "Új olvasó regisztrálva: ID=" + newID + ", IP=" + ip + " (" + newIdStr + ")" + RESET);
 
-            return newId;
+            return newID;
         }
 
         //később bővíteni kell
@@ -285,9 +289,11 @@ public class HW_Connection
                                 ((buffer[1] & 0xFF) << 16) |
                                 ((buffer[2] & 0xFF) << 8)  |
                                 (buffer[3] & 0xFF);
-
+                    //System.out.println(PREFIX + "Heartbeat ID: " + readerId);
                     // itt frissíted a statikus map-et:
-                    lastHeartbeats.put(readerId, System.currentTimeMillis());
+                    String readerIdStr = String.format("DEV-%03d", readerId);
+                    lastHeartbeats.put(readerIdStr, System.currentTimeMillis());
+                    //System.out.println(PREFIX + "Heartbeat: " + readerId);
                 }
             } catch (IOException e) {
                 System.out.println(PREFIX + "Heartbeat handler IO exception: " + e.getMessage());

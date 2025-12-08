@@ -43,7 +43,7 @@
 #define UID_BYTE_SIZE 10
 
 // Status related
-#define HEARTBEAT_INTERVAL = 5000
+#define HEARTBEAT_INTERVAL 5000
 
 
 // ------------ Globals -------------
@@ -107,10 +107,18 @@ void setup() {
   mdnsResolve();
 
   // Get ID for reader unit from server
-  do {
+  while (readerID == __INT_MAX__) {
     readerID = getReaderID(serverIP);
-    delay(500);
-  } while (readerID == __INT_MAX__);
+
+    if (readerID == __INT_MAX__) {
+      Serial.println("Server unreachable, retrying...");
+      // Villogó piros LED 1 másodperc intervallummal
+      setLEDs(false, false, false);
+      delay(500);
+      setLEDs(true, false, false);
+      delay(500);
+    }
+  }
   Serial.print("ID Gathered: "); Serial.println(readerID);
 
   // Initialize RFID reader
@@ -120,6 +128,32 @@ void setup() {
 
 void loop() {
 
+  if (readerID == __INT_MAX__)
+  {
+    //setLEDs(true, false, false);
+    Serial.println("Reader not configured");
+    while (readerID == __INT_MAX__)  // Blocking
+    {
+      readerID = getReaderID(serverIP);
+      if (readerID == __INT_MAX__)
+      {
+        Serial.println("Reconnect failed");
+        for (int i = 0; i < 3; i++)
+        {
+          setLEDs(false, false, false);
+          delay(500);
+          setLEDs(true, false, false);
+          delay(500);
+        }
+      }
+    }
+
+    Serial.print("Reconnected, new ID: ");
+    Serial.println(readerID);
+    setLEDs(false, false, true);
+  }
+  
+
   unsigned long now = millis();
 
   // RFID reader
@@ -127,14 +161,20 @@ void loop() {
   if (result > 0) {
     sendUIDToServer(serverIP, uidBytes);
   }
-  delay(10);
-
+  
   // Heartbeat sending
   if (now - lastHeartbeat > HEARTBEAT_INTERVAL)
   {
-    sendHeartbeat(serverIP, readerID);
+    if (!sendHeartbeat(serverIP, readerID))
+    {
+      // No heartbeat
+      Serial.println("Heartbeat failed, reconnection....");
+      readerID = __INT_MAX__;
+    }
     lastHeartbeat = now;
   }
+
+  delay(10);
   
 }
 
@@ -470,21 +510,18 @@ void setLEDs(bool red, bool green, bool blue) {
 // this method sends heartbeat
 bool sendHeartbeat(IPAddress serverIP, int readerID) {
   if (!client.connect(serverIP, SERVER_HEARTBEAT_PORT)) {
-    Serial.println("Heartbeat: Server not reachable");
-    setLEDs(true, false, false);
     return false;
   }
 
   // Simeple message: ID in binary, 4 byte, big endian
   byte buffer[4];
-  buffer[0] = (readerId >> 24) & 0xFF;
-  buffer[1] = (readerId >> 16) & 0xFF;
-  buffer[2] = (readerId >> 8) & 0xFF;
-  buffer[3] = readerId & 0xFF;
+  buffer[0] = (readerID >> 24) & 0xFF;
+  buffer[1] = (readerID >> 16) & 0xFF;
+  buffer[2] = (readerID >> 8) & 0xFF;
+  buffer[3] = readerID & 0xFF;
 
   client.write(buffer, 4);
 
   client.stop();
-  setLEDs(false, false, true);
   return true;
 }
