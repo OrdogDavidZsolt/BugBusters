@@ -14,7 +14,9 @@ import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import hu.bugbusters.checkinapp.backendserver.maincomponents.services.SessionManager;
 import hu.bugbusters.checkinapp.backendserver.maincomponents.services.UserService;
+import hu.bugbusters.checkinapp.database.model.CourseSession;
 import hu.bugbusters.checkinapp.database.model.User;
 import hu.bugbusters.checkinapp.database.repository.UserRepository;
 
@@ -42,7 +44,7 @@ public class HW_Connection
 
     private static final int TOTAL_RECORD_SIZE = 19;    // egy fix bájtszám, amit a szerver olvas
 
-    public static void start_HW_Server(UserService userService) {
+    public static void start_HW_Server(UserService userService, SessionManager sessionManager) {
     
         //külön listener szál az accept() blokkoló tulajdonsága miatt --> így most megy a program a fő szálon
         // minden más mehet mellette a szervernél.
@@ -63,7 +65,7 @@ public class HW_Connection
                     Socket clientSocket = serverSocket.accept(); //ez a blokkoló hívás, vagyis addig várunk,
                     // amíg egy kliens csatlakozik
                     //^ ha jön egy új kliens, akkor létrejön egy Socket objektum, ami az adott klienssel kommunikál
-                    dataPool.execute(new ClientHandler(clientSocket, userService));
+                    dataPool.execute(new ClientHandler(clientSocket, userService, sessionManager));
                 }
             } catch (IOException e) {
                 System.out.println(PREFIX + RED + "IOException: " + RESET + e.getMessage());  // ha hiba van kiirjuk mi a baj
@@ -112,15 +114,15 @@ public class HW_Connection
 
     public static class ClientHandler implements Runnable  //futtatható szál legyen
     {
-        private Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
+        private final Socket socket; // ebben tároljuk az adott klienshez tartozó kapcsolatot
+        private final UserService userService;
+        private final SessionManager sessionManager;
 
-
-        private UserService userService;
-
-        public ClientHandler(Socket socket, UserService userService) //konstruktor
+        public ClientHandler(Socket socket, UserService userService, SessionManager sessionManager) //konstruktor
         {
             this.socket = socket;
             this.userService = userService;
+            this.sessionManager = sessionManager;
         }
 
         @Override
@@ -175,6 +177,7 @@ public class HW_Connection
                     // ez az olvasó nem volt még konfigurálva, kell neki egy új ID
                     int newId = configureReader(); //ASCII string küldése
                     out.writeInt(newId);    // konfigurált ID visszaküldése az olvasónak
+                    out.flush();
                     System.out.println(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] konfigurálva -> ID=" + newId);
                 }
                 else {
@@ -185,8 +188,10 @@ public class HW_Connection
                     System.out.println(PREFIX + "[ID=" + readerID + ", IP=" + clientIP + "] üzenetének feldolgozása elkezdődött!");
                     //Pl:
                     // Ez az eredmény befolyásolja a kontroll LED-eket a hardveren
-                    boolean result = processUID(uidHex.toString());
+                    boolean result = processUID(uidHex.toString(), readerID);
                     // Itt ki kellene írni a választ a socketen keresztül.
+                    out.writeBoolean(result);
+                    out.flush();
                 }
 
             } catch (IOException e) {
@@ -245,10 +250,10 @@ public class HW_Connection
         }
 
         //később bővíteni kell
-        private boolean processUID(String uid)
+        private boolean processUID(String uid, int readerID)
         {
             // DEBUG
-            System.out.println(PREFIX + "HW_Connection: Feldolgozandó üzenet: " + uid);
+            System.out.println(PREFIX + "Feldolgozandó üzenet: " + uid);
 
             // Itt van lekérdezve az ID az adatbázisból. 
             Optional<User> result = userService.findByCardId(uid);
@@ -256,17 +261,43 @@ public class HW_Connection
                 System.out.println(PREFIX + "Nincs eredmény a kártyához");
                 return false; // Piros LED
             }
-            // DEBUG
-            System.out.println(result);
-            if (result.get().getRole() == User.UserRole.TEACHER) {
+            
+            User user= result.get();
+            if (user.getRole() == User.UserRole.TEACHER) {
                 // Ez egy tanár volt, itt kell 20p timert indítani
                 System.out.println(PREFIX + "Ez egy tanári ID");
+
+                if (sessionManager.isTeacherSessionActive(readerID)) {
+                    // Ha már van aktív session, csak leállítjuk
+                    System.out.println(PREFIX + "Második tanári kártya, session lezárul neki (tanár): " + user.getName());
+                    sessionManager.endTeacherSessionEarly(readerID);
+                } else {
+                    // Ha nincs aktív session, indítunk egy újat
+                    sessionManager.startTeacherSession(readerID, user);
+                    System.out.println(PREFIX + "Új session elindult a tanárnak: " + user.getName());
+                    return true;
+                }
             }
-            else if (result.get().getRole() == User.UserRole.STUDENT) {
+            else if (user.getRole() == User.UserRole.STUDENT) {
                 // Ez egy hallgató, itt kell betenni az aktuális session listájába, elmenteni a megfelelő helyre.
                 System.out.println(PREFIX + "Ez egy diák kártya volt");
+                boolean saved = false;
+                if (sessionManager != null) {
+                    saved = sessionManager.registerStudentCard(readerID, user);
+                }
+
+                if (saved) {
+                    System.out.println(PREFIX + "Hallgatói kártya elmentve");
+                }
+                else
+                {
+                    System.out.println(PREFIX + "Hallgatói kártya nincs mentve");
+                }
+
+                return saved;
+
             }
-            return true; // Zöld LED
+            return false; // true -> Zöld LED, false -> Piros LED
         }
     }
    

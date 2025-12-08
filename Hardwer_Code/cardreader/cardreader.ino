@@ -33,6 +33,7 @@
 #define SERVER_DATA_PORT 54321
 #define SERVER_HEARTBEAT_PORT 54322
 #define SERVER_NAME "bence-Mint.local"
+#define SERVER_RESPONSE_TIMEOUT_MS 2000   // 2 mp timeout 
 
 // mDNS
 #define MDNS_PORT 5353
@@ -170,6 +171,7 @@ void loop() {
       // No heartbeat
       Serial.println("Heartbeat failed, reconnection....");
       readerID = __INT_MAX__;
+      memset(uidBytes, 0, sizeof(uidBytes));
     }
     lastHeartbeat = now;
   }
@@ -353,6 +355,38 @@ bool sendUIDToServer(IPAddress serverIp, byte uid[UID_BYTE_SIZE]) {
   Serial.print("Sent ");
   Serial.print(written);
   Serial.println(" bytes");
+
+
+  // --- Visszajelzés olvasása (1 byte) ---
+  unsigned long startTime = millis();
+  while (!client.available()) {
+    if (millis() - startTime > SERVER_RESPONSE_TIMEOUT_MS) { // 2 sec timeout
+      Serial.println("No response from server");
+      client.stop();
+      return false;
+    }
+    delay(1);
+  }
+
+  int serverResponse = client.read(); // 1 byte
+  bool success = (serverResponse != 0); // 0 = false, 1 = true
+
+  Serial.print("Server response: ");
+  Serial.println(success ? "OK (green LED)" : "FAIL (red LED)");
+  if (success)
+  {
+    setLEDs(false, true, false);
+    delay(1500);
+    setLEDs(false, false, true);
+  }
+  else
+  {
+    setLEDs(true, false, false);
+    delay(1500);
+    memset(uidBytes, 0, sizeof(uidBytes));
+    setLEDs(false, false, true);
+  }
+  
 
   // Close TCP connection
   client.stop();
