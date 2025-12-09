@@ -1163,21 +1163,39 @@ background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
         @media (max-width: 1200px) {
             .main-card {
                 width: 85%;
-                min-height: 750px;
+                /* Kivesszük a fix magasságokat, hogy a kártya bármekkorára nőhessen */
+                height: auto !important;
+                min-height: 500px;
             }
 
             .main-card.expanded {
-                height: auto;
+                /* Itt is biztosítjuk, hogy a tartalom határozza meg a magasságot */
+                height: auto !important;
             }
 
             .content-wrapper {
                 flex-direction: column;
             }
 
+            /* --- EZ A KULCS A JAVÍTÁSHOZ --- */
+            /* Kisebb képernyőn kikapcsoljuk az animációs magasság-korlátot */
+            .content-wrapper.visible {
+                max-height: none !important;
+            }
+
             .attendance-section,
             .info-section {
-                flex: 1 1 100%;
+                flex: 1 1 auto; /* Engedjük, hogy akkorák legyenek, amekkorák szükségesek */
             }
+
+            /* Ha azt szeretnéd, hogy mobilon is görgethető legyen a lista fix méretben,
+               akkor ezt a részt hagyd megjegyzésben, vagy vedd ki a kommentjelet,
+               ha azt akarod, hogy a lista ne nyújtsa meg az oldalt a végtelenségig: */
+            /* .attendance-list {
+                max-height: 500px;
+                overflow-y: auto;
+            }
+            */
 
             .class-selector-wrapper.compact .class-selector-container {
                 max-width: 100%;
