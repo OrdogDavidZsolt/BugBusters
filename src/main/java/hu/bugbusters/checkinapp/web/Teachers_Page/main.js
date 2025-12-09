@@ -98,19 +98,29 @@ function initClassSelector() {
         if (!this.value) return;
 
         try {
-            // MÓDOSÍTÁS: getCourseDetails helyett getSessionDetails
             const data = await TeacherAPI.getSessionDetails(this.value);
 
-            // Innen minden ugyanaz maradhat, mert a ClassDetailsDTO szerkezete nem változott
             state.currentSessionId = data.sessionId;
             document.getElementById('classDateTime').textContent = data.dateTime;
             document.getElementById('classLocation').textContent = data.location;
 
             state.students = data.students;
 
-            // UI frissítése...
             if (!state.isClassSelected) {
                 state.isClassSelected = true;
+
+                // --- EZT A RÉSZT FRISSÍTSD/ADZD HOZZÁ ---
+
+                // 1. Felirat megváltoztatása
+                const label = document.getElementById('classSelectorLabel');
+                if(label) label.textContent = 'Change Class'; // Vagy 'Óra cseréje' magyarul
+
+                // 2. Animáció elindítása (compact class hozzáadása)
+                const wrapper = document.getElementById('classSelectorWrapper');
+                if(wrapper) wrapper.classList.add('compact');
+
+                // --- EDDIG TART A MÓDOSÍTÁS ---
+
                 setTimeout(() => {
                     document.getElementById('contentWrapper').classList.add('visible');
                     document.getElementById('timerBadge').classList.add('visible');

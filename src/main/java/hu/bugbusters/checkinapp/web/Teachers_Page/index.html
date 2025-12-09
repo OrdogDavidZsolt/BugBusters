@@ -400,6 +400,59 @@
             color: #2563eb;
         }
 
+        .class-selector-wrapper {
+            margin-bottom: 32px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .class-selector-wrapper.compact {
+            margin-bottom: 24px;
+        }
+
+        .class-selector-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .class-selector-label.hidden {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
+        .class-selector-container {
+            flex: 1;
+            max-width: 100%;
+            transition: max-width 0.4s ease;
+        }
+
+        .class-selector-wrapper.compact .class-selector-container {
+            max-width: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .class-selector-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .class-selector-wrapper.compact .class-selector-container {
+                max-width: 100%;
+            }
+        }
+
         .select-wrapper {
             position: relative;
             width: 100%;
@@ -1260,18 +1313,18 @@ background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             </div>
         </div>
 
-        <div class="class-selector-container">
-            <div class="select-wrapper"> <select class="class-selector" id="classSelector">
-                    <option value="">Choose a class...</option>
-                    <option value="class1">Advanced Programming - Monday 14:00</option>
-                    <option value="class2">Database Systems - Tuesday 10:00</option>
-                    <option value="class3">Web Development - Wednesday 16:00</option>
-                    <option value="class4">Algorithm Design - Thursday 14:00</option>
-                    <option value="class5">Software Engineering - Friday 12:00</option>
-                </select>
-                <svg class="select-arrow-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+        <div class="class-selector-wrapper" id="classSelectorWrapper">
+            <div class="class-selector-label" id="classSelectorLabel">Select Your Class</div>
+
+            <div class="class-selector-container">
+                <div class="select-wrapper">
+                    <select class="class-selector" id="classSelector">
+                        <option value="">Choose a class...</option>
+                    </select>
+                    <svg class="select-arrow-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -1308,7 +1361,7 @@ background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             <div class="info-section">
                 <div class="info-card">
                     <div class="info-item">
-                        <div class="info-label">Start Date & Time</div>
+                        <div class="info-label">Start Day & Time</div>
                         <div class="info-value" id="classDateTime">2025-10-26 14:00</div>
                     </div>
                     <div class="info-item">
