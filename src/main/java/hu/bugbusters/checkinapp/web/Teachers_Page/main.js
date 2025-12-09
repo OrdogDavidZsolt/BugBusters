@@ -157,12 +157,12 @@ function initClassSelector() {
                     document.getElementById('timerBadge').classList.add('visible');
                     document.querySelector('.main-card').classList.add('expanded');
                     refreshList();
-                    Timer.start();
+                    // Timer.start();
                 }, 100);
             } else {
                 // Ha már volt kiválasztva óra, csak frissítjük a listát
                 refreshList();
-                Timer.start();
+                // Timer.start();
             }
         } catch (e) {
             alert('Error loading class details');
