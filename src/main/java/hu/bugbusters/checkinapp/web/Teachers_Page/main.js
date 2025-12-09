@@ -83,49 +83,75 @@ function initClassSelector() {
 function initClassSelector() {
     const selector = document.getElementById('classSelector');
 
-    // MÓDOSÍTÁS: getCourses helyett getSessions
+    // Segédváltozó a wrapper eléréséhez (a nyíl forgatásához szükséges)
+    // A HTML módosítás alapján a select szülője a .select-wrapper
+    const wrapper = selector.closest('.select-wrapper');
+
+    // 1. Sessionök betöltése indításkor
     TeacherAPI.getSessions().then(sessions => {
         selector.innerHTML = '<option value="">Válasszon órát...</option>';
         sessions.forEach(s => {
             const opt = document.createElement('option');
-            opt.value = s.id; // Ez most már a SESSION ID, nem a Course ID
-            opt.textContent = s.displayName; // Pl: "Webfejlesztés - 2025.11.26 14:00"
+            opt.value = s.id;
+            opt.textContent = s.displayName;
             selector.appendChild(opt);
         });
     }).catch(console.error);
 
-    // main.js - initClassSelector függvényen belül
+    // 2. Eseménykezelők a nyíl forgatásához (UX javítás)
 
+    // Kattintáskor (vagy érintéskor) nyílik meg -> aktív
+    selector.addEventListener('click', () => {
+        if (wrapper) wrapper.classList.add('active');
+    });
+
+    // Ha elveszti a fókuszt (kattintás kívülre), záródik -> inaktív
+    selector.addEventListener('blur', () => {
+        if (wrapper) wrapper.classList.remove('active');
+    });
+
+    // Billentyűzet támogatás (Space, Enter, Alt+Le nyitja a menüt)
+    selector.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter' || (e.altKey && e.key === 'ArrowDown')) {
+            if (wrapper) wrapper.classList.add('active');
+        }
+        // Escape-re zárjuk be vizuálisan is
+        if (e.key === 'Escape') {
+            if (wrapper) wrapper.classList.remove('active');
+            selector.blur(); // Fókusz elvétele
+        }
+    });
+
+    // 3. Kiválasztás (Change) eseménykezelő
     selector.addEventListener('change', async function() {
-
-        this.blur(); // Ez veszi el a fókuszt, így a nyíl azonnal visszafordul
+        // Sikeres választáskor levesszük az active class-t és a fókuszt is
+        if (wrapper) wrapper.classList.remove('active');
+        this.blur();
 
         if (!this.value) return;
 
         try {
             const data = await TeacherAPI.getSessionDetails(this.value);
 
+            // State frissítése
             state.currentSessionId = data.sessionId;
             document.getElementById('classDateTime').textContent = data.dateTime;
             document.getElementById('classLocation').textContent = data.location;
-
             state.students = data.students;
 
+            // UI Animáció kezelése
             if (!state.isClassSelected) {
                 state.isClassSelected = true;
 
-                // --- EZT A RÉSZT FRISSÍTSD/ADZD HOZZÁ ---
-
-                // 1. Felirat megváltoztatása
+                // Felirat megváltoztatása
                 const label = document.getElementById('classSelectorLabel');
-                if(label) label.textContent = 'Change Class'; // Vagy 'Óra cseréje' magyarul
+                if(label) label.textContent = 'Change Class';
 
-                // 2. Animáció elindítása (compact class hozzáadása)
-                const wrapper = document.getElementById('classSelectorWrapper');
-                if(wrapper) wrapper.classList.add('compact');
+                // Animáció elindítása (compact class hozzáadása a fő wrapperhez)
+                const mainWrapper = document.getElementById('classSelectorWrapper');
+                if(mainWrapper) mainWrapper.classList.add('compact');
 
-                // --- EDDIG TART A MÓDOSÍTÁS ---
-
+                // Tartalom megjelenítése késleltetéssel (hogy az animáció lefusson)
                 setTimeout(() => {
                     document.getElementById('contentWrapper').classList.add('visible');
                     document.getElementById('timerBadge').classList.add('visible');
@@ -134,10 +160,14 @@ function initClassSelector() {
                     Timer.start();
                 }, 100);
             } else {
+                // Ha már volt kiválasztva óra, csak frissítjük a listát
                 refreshList();
                 Timer.start();
             }
-        } catch (e) { alert('Error loading class details'); console.error(e); }
+        } catch (e) {
+            alert('Error loading class details');
+            console.error(e);
+        }
     });
 }
 
