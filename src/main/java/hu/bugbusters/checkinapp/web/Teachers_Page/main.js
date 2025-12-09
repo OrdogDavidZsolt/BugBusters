@@ -94,7 +94,12 @@ function initClassSelector() {
         });
     }).catch(console.error);
 
+    // main.js - initClassSelector függvényen belül
+
     selector.addEventListener('change', async function() {
+
+        this.blur(); // Ez veszi el a fókuszt, így a nyíl azonnal visszafordul
+
         if (!this.value) return;
 
         try {
