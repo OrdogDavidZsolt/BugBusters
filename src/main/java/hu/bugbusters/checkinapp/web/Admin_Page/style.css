@@ -577,7 +577,6 @@
             box-shadow: 0 22px 80px rgba(2,6,23,0.20);
         }
 
-        /* Modal styles */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -708,21 +707,15 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            /* Mivel a gomb magasabb a szövegnél, negatív margóval kompenzáljuk 
-            a keletkező felesleges üres teret felül és alul */
             margin-top: -14px;
             margin-bottom: -4px;
         }
 
-        /* A soron belüli szöveg margójának törlése */
         .stats-row .main-label {
             margin-bottom: 0;
-            /* Opcionális: biztosítjuk, hogy a szöveg vertikálisan ne csússzon el */
             line-height: 1.2; 
         }
 
-        /* A devices-container távolságának csökkentése, 
-        CSAK akkor, ha közvetlenül a stats-row után jön */
         .stats-row + .devices-container {
-            margin-top: 16px; /* Eredetileg 24px volt, csökkentjük, mert a gomb miatt nőtt a hely */
+            margin-top: 16px;
         }
