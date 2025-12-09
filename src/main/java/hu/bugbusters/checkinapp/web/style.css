@@ -12,7 +12,6 @@
         --accent-shadow: rgba(37,99,235,0.18);
         }
 
-        /* BODY with gradient transition fix */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             min-height: 100vh;
@@ -177,7 +176,7 @@
         body.light-mode .checkbox-container input[type="checkbox"] { accent-color: #2563eb; }
         .checkbox-container label { margin: 0; font-size: 14px; font-weight: 500; color: #4a5568; cursor: pointer; user-select: none; }
 
-        /* LOGIN BUTTON with gradient transition fix */
+        /* LOGIN BUTTON with gradient transition */
         .login-btn {
             width: 100%;
             padding: 14px;
@@ -189,7 +188,7 @@
             cursor: pointer;
             margin-top: 8px;
             position: relative;
-            z-index: 0;              /* create stacking context for the button */
+            z-index: 0;
             overflow: hidden;
             transition: transform 0.25s ease, box-shadow 0.25s ease;
             background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
@@ -205,7 +204,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transition: opacity 0.5s ease;
             opacity: 0;
-            z-index: -1;             /* <- behind the button text/content */
+            z-index: -1;
             pointer-events: none;
         }
 
@@ -217,7 +216,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transition: opacity 0.5s ease;
             opacity: 0;
-            z-index: -2;             /* <- behind ::before */
+            z-index: -2;
             pointer-events: none;
         }
 
@@ -263,7 +262,7 @@
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         
-        /* SLIDER with gradient transition fix */
+        /* SLIDER with gradient transition */
         .slider { 
             position: absolute; 
             cursor: pointer; 
@@ -303,12 +302,11 @@
             z-index: 1;
         }
 
-        /* When toggle is ON (checked) */
         input:checked + .slider::after { 
             opacity: 1;
         }
 
-        /* Light mode gradient overlay - added as new pseudo-element on parent */
+        /* Light mode gradient overlay */
         .switch::before {
             content: '';
             position: absolute;
@@ -442,12 +440,11 @@
             position: relative;
             z-index: 1;
             transform-origin: center center; /* scale from center */
-            /* slightly longer, smoother transform so scaling feels natural */
             transition: color 0.18s ease, transform 180ms cubic-bezier(.2,.9,.2,1);
         }
         .segmented label:hover { transform: scale(1.06); z-index: 3; }
 
-        /* Improved: layered pseudo-elements so selected state background transitions between dark/light smoothly */
+        /* layered pseudo-elements so selected state background transitions between dark/light smoothly */
         .segmented label::before,
         .segmented label::after {
             content: '';
