@@ -83,8 +83,6 @@ function initClassSelector() {
 function initClassSelector() {
     const selector = document.getElementById('classSelector');
 
-    // Segédváltozó a wrapper eléréséhez (a nyíl forgatásához szükséges)
-    // A HTML módosítás alapján a select szülője a .select-wrapper
     const wrapper = selector.closest('.select-wrapper');
 
     // 1. Sessionök betöltése indításkor
@@ -98,19 +96,16 @@ function initClassSelector() {
         });
     }).catch(console.error);
 
-    // 2. Eseménykezelők a nyíl forgatásához (UX javítás)
+    // 2. Eseménykezelők a nyíl forgatásához
 
-    // Kattintáskor (vagy érintéskor) nyílik meg -> aktív
     selector.addEventListener('click', () => {
         if (wrapper) wrapper.classList.add('active');
     });
 
-    // Ha elveszti a fókuszt (kattintás kívülre), záródik -> inaktív
     selector.addEventListener('blur', () => {
         if (wrapper) wrapper.classList.remove('active');
     });
 
-    // Billentyűzet támogatás (Space, Enter, Alt+Le nyitja a menüt)
     selector.addEventListener('keydown', (e) => {
         if (e.key === ' ' || e.key === 'Enter' || (e.altKey && e.key === 'ArrowDown')) {
             if (wrapper) wrapper.classList.add('active');
@@ -143,15 +138,12 @@ function initClassSelector() {
             if (!state.isClassSelected) {
                 state.isClassSelected = true;
 
-                // Felirat megváltoztatása
                 const label = document.getElementById('classSelectorLabel');
                 if(label) label.textContent = 'Change Class';
 
-                // Animáció elindítása (compact class hozzáadása a fő wrapperhez)
                 const mainWrapper = document.getElementById('classSelectorWrapper');
                 if(mainWrapper) mainWrapper.classList.add('compact');
 
-                // Tartalom megjelenítése késleltetéssel (hogy az animáció lefusson)
                 setTimeout(() => {
                     document.getElementById('contentWrapper').classList.add('visible');
                     document.getElementById('timerBadge').classList.add('visible');
@@ -160,7 +152,6 @@ function initClassSelector() {
                     // Timer.start();
                 }, 100);
             } else {
-                // Ha már volt kiválasztva óra, csak frissítjük a listát
                 refreshList();
                 // Timer.start();
             }
