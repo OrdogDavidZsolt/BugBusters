@@ -450,7 +450,7 @@ body.light-mode .main-title {
 .class-selector {
     width: 100%;
     padding: 16px 20px;
-    padding-right: 48px; /* Hely a nyílnak */
+    padding-right: 48px;
     border: 2px solid #e2e8f0;
     border-radius: 16px;
     font-size: 16px;
@@ -459,12 +459,12 @@ body.light-mode .main-title {
     background-color: #f7fafc;
     cursor: pointer;
     transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    appearance: none; /* Eltünteti az alapértelmezett rendszer ikont */
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     position: relative;
     z-index: 1;
-    background-image: none !important; /* Biztosítjuk, hogy ne legyen háttérkép */
+    background-image: none !important;
 }
 
 /* Az új nyíl ikon stílusa */
@@ -473,16 +473,15 @@ body.light-mode .main-title {
     right: 20px;
     width: 24px;
     height: 24px;
-    pointer-events: none; /* Átkattinthatóvá teszi, hogy a select működjön alatta */
-    color: #4a5568; /* Alap szín */
-    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), color 0.3s ease; /* Ruganyos animáció */
+    pointer-events: none;
+    color: #4a5568;
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), color 0.3s ease;
     z-index: 2;
 }
 
-/* Animáció: Amikor a select fókuszban van (megnyitva), elforgatjuk a nyilat */
 .class-selector:focus + .select-arrow-icon {
     transform: rotate(180deg);
-    color: var(--accent-1); /* Aktív állapotban felveszi az akcentus színét */
+    color: var(--accent-1);
 }
 
 .class-selector:hover {
@@ -503,7 +502,6 @@ body.light-mode .main-title {
     font-weight: 600;
 }
 
-/* Light Mode specifikus színek */
 body.light-mode .class-selector {
     background-color: #f8fafc;
 }
