@@ -40,7 +40,7 @@ public class PopulateDatabase {
             /**
              * Teszt adatok:
              *      - 1 tanár (Gréta - kulcstartó)
-             *      - 3 hallgató (Dávid, Gergő, Bence)
+             *      - 3 hallgató (Dávid - kártya, Gergő - kártya, Bence - unipass)
              *      - 1 kurzus (Programozási nyelvek 2)
              *      
              */
@@ -87,9 +87,9 @@ public class PopulateDatabase {
             students.add(User.builder().name("Szekeres Júlia").cardId("S_20").neptunCode("DEF020").role(User.UserRole.STUDENT).build());
             */
 
-            students.add(User.builder().name("Tóth Bence").cardId("C115E6A9000000000000").neptunCode("CODE01").role(User.UserRole.STUDENT).build());
-            students.add(User.builder().name("Ördög Dávid Zsolt").cardId("S_12").neptunCode("CODE02").role(User.UserRole.STUDENT).build());
-            students.add(User.builder().name("Nagy Gergely Tibor").cardId("S_13").neptunCode("CODE03").role(User.UserRole.STUDENT).build());
+            students.add(User.builder().name("Tóth Bence").cardId("045C3CEA537680000000").neptunCode("STUD01").role(User.UserRole.STUDENT).build());
+            students.add(User.builder().name("Ördög Dávid Zsolt").cardId("21DD1CAA000000000000").neptunCode("STUD02").role(User.UserRole.STUDENT).build());
+            students.add(User.builder().name("Nagy Gergely Tibor").cardId("C115E6A9000000000000").neptunCode("STUD03").role(User.UserRole.STUDENT).build());
             
             userRepository.saveAll(students);
 
