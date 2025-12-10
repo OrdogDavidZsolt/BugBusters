@@ -83,46 +83,82 @@ function initClassSelector() {
 function initClassSelector() {
     const selector = document.getElementById('classSelector');
 
-    // MÓDOSÍTÁS: getCourses helyett getSessions
+    const wrapper = selector.closest('.select-wrapper');
+
+    // 1. Sessionök betöltése indításkor
     TeacherAPI.getSessions().then(sessions => {
         selector.innerHTML = '<option value="">Válasszon órát...</option>';
         sessions.forEach(s => {
             const opt = document.createElement('option');
-            opt.value = s.id; // Ez most már a SESSION ID, nem a Course ID
-            opt.textContent = s.displayName; // Pl: "Webfejlesztés - 2025.11.26 14:00"
+            opt.value = s.id;
+            opt.textContent = s.displayName;
             selector.appendChild(opt);
         });
     }).catch(console.error);
 
+    // 2. Eseménykezelők a nyíl forgatásához
+
+    selector.addEventListener('click', () => {
+        if (wrapper) wrapper.classList.add('active');
+    });
+
+    selector.addEventListener('blur', () => {
+        if (wrapper) wrapper.classList.remove('active');
+    });
+
+    selector.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter' || (e.altKey && e.key === 'ArrowDown')) {
+            if (wrapper) wrapper.classList.add('active');
+        }
+        // Escape-re zárjuk be vizuálisan is
+        if (e.key === 'Escape') {
+            if (wrapper) wrapper.classList.remove('active');
+            selector.blur(); // Fókusz elvétele
+        }
+    });
+
+    // 3. Kiválasztás (Change) eseménykezelő
     selector.addEventListener('change', async function() {
+        // Sikeres választáskor levesszük az active class-t és a fókuszt is
+        if (wrapper) wrapper.classList.remove('active');
+        this.blur();
+
         if (!this.value) return;
 
         try {
-            // MÓDOSÍTÁS: getCourseDetails helyett getSessionDetails
             const data = await TeacherAPI.getSessionDetails(this.value);
 
-            // Innen minden ugyanaz maradhat, mert a ClassDetailsDTO szerkezete nem változott
+            // State frissítése
             state.currentSessionId = data.sessionId;
             document.getElementById('classDateTime').textContent = data.dateTime;
             document.getElementById('classLocation').textContent = data.location;
-
             state.students = data.students;
 
-            // UI frissítése...
+            // UI Animáció kezelése
             if (!state.isClassSelected) {
                 state.isClassSelected = true;
+
+                const label = document.getElementById('classSelectorLabel');
+                if(label) label.textContent = 'Change Class';
+
+                const mainWrapper = document.getElementById('classSelectorWrapper');
+                if(mainWrapper) mainWrapper.classList.add('compact');
+
                 setTimeout(() => {
                     document.getElementById('contentWrapper').classList.add('visible');
                     document.getElementById('timerBadge').classList.add('visible');
                     document.querySelector('.main-card').classList.add('expanded');
                     refreshList();
-                    Timer.start();
+                    // Timer.start();
                 }, 100);
             } else {
                 refreshList();
-                Timer.start();
+                // Timer.start();
             }
-        } catch (e) { alert('Error loading class details'); console.error(e); }
+        } catch (e) {
+            alert('Error loading class details');
+            console.error(e);
+        }
     });
 }
 
